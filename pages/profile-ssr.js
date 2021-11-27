@@ -1,5 +1,5 @@
 import Layout from '../components/Layout'
-import withSession from '../lib/session'
+import { withSessionSsr } from "lib/withSession";
 import PropTypes from 'prop-types'
 
 const SsrProfile = ({ user }) => {
@@ -31,8 +31,8 @@ const SsrProfile = ({ user }) => {
   )
 }
 
-export const getServerSideProps = withSession(async function ({ req, res }) {
-  const user = req.session.get('user')
+export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
+  const user = req.session.user
 
   if (!user) {
     return {
@@ -42,9 +42,8 @@ export const getServerSideProps = withSession(async function ({ req, res }) {
       },
     }
   }
-
   return {
-    props: { user: req.session.get('user') },
+    props: { user: req.session.user },
   }
 })
 

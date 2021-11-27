@@ -22,15 +22,13 @@ const Login = () => {
 
     try {
       mutateUser(
-        await fetchJson('/rest-api/authenticate', {
+        await fetchJson('/api/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         })
       )
     } catch (error) {
-      console.error('An unexpected error happened:', error)
-      setErrorMsg(error.data.message)
+      setErrorMsg(error.data.detail)
     }
   }
 
