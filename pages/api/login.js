@@ -1,19 +1,24 @@
-import fetchJson from '../../lib/fetchJson'
-import withSession from '../../lib/session'
+import fetchJson from 'lib/fetchJson'
+import { withSessionRoute } from 'lib/withSession'
 
-export default withSession(async (req, res) => {
-  const { username } = await req.body
-  const url = `https://api.github.com/users/${username}`
+export default withSessionRoute(loginRoute)
 
-  try {
-    // we check that the user exists on GitHub and store some data in session
-    const { login, avatar_url: avatarUrl } = await fetchJson(url)
-    const user = { isLoggedIn: true, login, avatarUrl }
-    req.session.set('user', user)
-    await req.session.save()
-    res.json(user)
-  } catch (error) {
-    const { response: fetchResponse } = error
-    res.status(fetchResponse?.status || 500).json(error.data)
-  }
-})
+async function loginRoute(req, res) {
+    if (req.method !== 'POST') return res.send(req.session.user)
+    const url = `https://api.badals.uk/api/authenticate`
+
+    try {
+        const user = await fetchJson(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: req.body,
+        })
+        req.session.user = { ...user, isLoggedIn: true }
+
+        await req.session.save()
+        res.send(req.session.user)
+    } catch (error) {
+        const { response } = error
+        res.status(response?.status || 500).json(error.data)
+    }
+}

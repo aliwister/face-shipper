@@ -16,7 +16,7 @@ const SgProfile = () => {
         <a href="https://nextjs.org/docs/basic-features/pages#static-generation-recommended">
           Static Generation (SG)
         </a>{' '}
-        and the <a href="/api/user">/api/user</a> route (using{' '}
+        and the GET <a href="/api/user">/api/login</a> route (using{' '}
         <a href="https://github.com/vercel/swr">SWR</a>)
       </h2>
 
