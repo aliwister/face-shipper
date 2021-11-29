@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import useUser from '../lib/useUser'
 import Layout from '../components/Layout'
-import Form from '../components/Form'
+import LoginForm from '../components/LoginForm'
 import fetchJson from '../lib/fetchJson'
 
 const Login = () => {
   const { mutateUser } = useUser({
-    redirectTo: '/profile-sg',
+    redirectTo: '/profile',
     redirectIfFound: true,
   })
 
@@ -35,7 +35,7 @@ const Login = () => {
   return (
     <Layout>
       <div className="login">
-        <Form isLogin errorMessage={errorMsg} onSubmit={handleSubmit} />
+        <LoginForm isLogin errorMessage={errorMsg} onSubmit={handleSubmit} />
       </div>
       <style jsx>{`
         .login {
