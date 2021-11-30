@@ -58,7 +58,12 @@ function QuoteForm() {
             component="form"
             noValidate
             autoComplete="off"
-            onSubmit={handleSubmit(onSubmit)}>
+            onSubmit={handleSubmit(onSubmit)}
+            boxShadow="0px 0px 15px rgba(147, 162, 181, 0.2)"
+            maxWidth="65rem"
+            borderRadius="0.5rem"
+            mx="auto"
+            background="white">
             <Grid container spacing={2}>
                 <Grid item xs={12} justifyContent="center">
                     <ToggleButtonGroup
@@ -221,17 +226,39 @@ function QuoteForm() {
                         {results.detail}
                     </Typography>
                 )}
-                <Typography variant="h5" component="h5" color="text.secondary">
-                    Esitimated Cost:
-                    <Typography
-                        variant="h5"
-                        ml="1rem"
-                        component="span"
-                        color="text.primary">
-                        {results?.products?.[0]?.totalPrice[0].price}{' '}
-                        {results?.products?.[0]?.totalPrice[0].priceCurrency}
-                    </Typography>
-                </Typography>
+                {results && !results.status && (
+                    <>
+                        <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            color="text.secondary">
+                            ESTIMATED COST:
+                            <Typography
+                                variant="h6"
+                                fontWeight="bold"
+                                ml="1rem"
+                                component="span"
+                                color="text.primary">
+                                {results?.price} {results?.priceCurrency}
+                            </Typography>
+                        </Typography>
+                        <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            color="text.secondary">
+                            ESTIMATED DELIVERY DATE AND TIME:
+                            <Typography
+                                variant="h6"
+                                fontWeight="bold"
+                                ml="1rem"
+                                component="span"
+                                color="text.primary">
+                                {results?.estimatedDeliveryDateAndTime} (
+                                {results?.totalTransitDays} days in transit)
+                            </Typography>
+                        </Typography>
+                    </>
+                )}
             </Box>
         </Box>
     )

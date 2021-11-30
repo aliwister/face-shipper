@@ -1,26 +1,32 @@
-import useUser from '../lib/useUser'
+import { withSessionSsr } from 'lib/withSession'
 import { shopFetcher } from '../lib/utils'
 import Layout from '../components/Layout'
-import ActiveForm from '../components/Forms'
+import RateForm from '../components/Forms/Rate'
 import { ADDRESS_DESCRIPTION } from '../graphql/address-description.query'
 
 const Home = ({ addressDescription }) => {
-    const { user } = useUser({ redirectTo: '/login' })
-
-    if (!user || user.isLoggedIn === false) {
-        return <Layout>loading...</Layout>
-    }
     return (
         <Layout>
             <h1>Ship with Badals.com</h1>
-            <ActiveForm addressDescription={addressDescription} />
+            <RateForm/>
         </Layout>
     )
 }
 
 export default Home
 
-export async function getServerSideProps() {
+export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
+    const user = req.session.user
+
+    if (!user || user.authorities.includes('ROLE_SHIPPER')) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        }
+    }
+
     const addressDescription = await shopFetcher(
         ADDRESS_DESCRIPTION,
         {
@@ -31,8 +37,6 @@ export async function getServerSideProps() {
     )
 
     return {
-        props: {
-            addressDescription,
-        },
+        props: { user: req.session.user, addressDescription },
     }
-}
+})

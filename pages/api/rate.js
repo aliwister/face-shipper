@@ -1,6 +1,7 @@
 import { withSessionRoute } from 'lib/withSession'
 import axios from 'axios'
-export default withSessionRoute(getRateRoute)
+import { shopFetcher } from 'lib/utils'
+import { ME_PLUS } from '../../graphql/me-plus.query.ts'
 
 const auth = {
     username: 'apH4fY3vJ5iD1k',
@@ -58,9 +59,33 @@ async function getRateRoute(req, res) {
 
     try {
         const { data } = await axios(config)
-        res.send(data)
+
+        const mePlus = await shopFetcher(
+            ME_PLUS,
+            {
+                Authorization: req.session.user.id_token,
+            },
+            'en'
+        ).catch((e) => ({}))
+        const { shipperMarkup = 0 } = mePlus
+
+        const lowestPrice = data.products?.[0]?.totalPrice.sort((a, b) =>
+            a.price > b.price ? 1 : -1
+        )[0]
+
+        lowestPrice.price = (1 + shipperMarkup) * lowestPrice.price
+        res.send({
+            ...lowestPrice,
+            estimatedDeliveryDateAndTime:
+                data.products?.[0]?.deliveryCapabilities
+                    .estimatedDeliveryDateAndTime,
+            totalTransitDays:
+                data.products?.[0]?.deliveryCapabilities.totalTransitDays,
+        })
     } catch (error) {
         const { response } = error
-        res.status(response?.status || 500).json(response.data)
+        res.status(response?.status || 500).json(response?.data)
     }
 }
+
+export default withSessionRoute(getRateRoute)
