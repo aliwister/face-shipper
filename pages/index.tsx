@@ -1,19 +1,19 @@
+import useUser from '../lib/useUser'
+import { shopFetcher } from '../lib/utils'
 import Layout from '../components/Layout'
-import { ADDRESS_DESCRIPTION } from '../graphql/address-description.query'
 import ActiveForm from '../components/Forms'
-import { shopFetcher } from '../utils'
+import { ADDRESS_DESCRIPTION } from '../graphql/address-description.query'
 
 const Home = ({ addressDescription }) => {
+    const { user } = useUser({ redirectTo: '/login' })
+
+    if (!user || user.isLoggedIn === false) {
+        return <Layout>loading...</Layout>
+    }
     return (
         <Layout>
             <h1>Ship with Badals.com</h1>
             <ActiveForm addressDescription={addressDescription} />
-
-            <style jsx>{`
-                li {
-                    margin-bottom: 0.5rem;
-                }
-            `}</style>
         </Layout>
     )
 }

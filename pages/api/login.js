@@ -4,7 +4,7 @@ import { withSessionRoute } from 'lib/withSession'
 export default withSessionRoute(loginRoute)
 
 async function loginRoute(req, res) {
-    if (req.method !== 'POST') return res.send(req.session.user)
+    if (req.method !== 'POST') return res.send(req.session.user || { isLoggedIn: false })
     const url = `https://api.badals.uk/api/authenticate`
 
     try {
