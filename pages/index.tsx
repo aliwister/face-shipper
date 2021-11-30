@@ -1,20 +1,13 @@
 import Layout from '../components/Layout'
-
-import { useState } from 'react'
 import { ADDRESS_DESCRIPTION } from '../graphql/address-description.query'
-
-import Steps from '../components/Steps'
-import QuoteForm from '../components/Steps/QuoteForm'
-
+import ActiveForm from '../components/Forms'
 import { shopFetcher } from '../utils'
 
 const Home = ({ addressDescription }) => {
-   
-
     return (
         <Layout>
             <h1>Ship with Badals.com</h1>
-            <Steps addressDescription={addressDescription}/>
+            <ActiveForm addressDescription={addressDescription} />
 
             <style jsx>{`
                 li {

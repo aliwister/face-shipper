@@ -13,11 +13,13 @@ import {
     InputAdornment,
     Typography,
 } from '@mui/material'
-
 import { useForm } from 'react-hook-form'
+import axios from 'axios'
 
 function QuoteForm() {
-    const [alignment, setAlignment] = useState('exp')
+    const [alignment, setAlignment] = useState('imp')
+    const [unit, setUnit] = useState('metric')
+    const [results, setResults] = useState(null)
 
     const {
         register,
@@ -25,8 +27,23 @@ function QuoteForm() {
         formState: { errors },
     } = useForm()
 
-    const onSubmit = (data) => {
-        console.log(data)
+    const onSubmit = async (data) => {
+        const { city, country, weight, width, height } = data
+        const body = {
+            alignment,
+            city,
+            country,
+            weight,
+            width,
+            height,
+            unit,
+        }
+        try {
+            const { data } = await axios.post('/api/rate', body)
+            setResults(data)
+        } catch (err) {
+            setResults(err.response.data)
+        }
         return false
     }
 
@@ -64,11 +81,11 @@ function QuoteForm() {
                             labelId="select-country-label"
                             label="Country*"
                             required
-                            error={errors.country}
+                            error={!!errors.country}
                             {...register('country', { required: true })}>
                             <MenuItem value={'OM'}>Oman</MenuItem>
                             <MenuItem value={'MA'}>Morocco</MenuItem>
-                            <MenuItem value={'IS'}>USA</MenuItem>
+                            <MenuItem value={'US'}>USA</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -79,12 +96,12 @@ function QuoteForm() {
                         variant="outlined"
                         required
                         helperText={errors.city?.type}
-                        error={errors.city}
+                        error={!!errors.city}
                         {...register('city', { required: true, maxLength: 50 })}
                     />
                 </Grid>
             </Grid>
-            <Grid container marginTop="1rem" spacing={0}>
+            <Grid container marginTop="1rem" columnSpacing={2}>
                 <Grid item xs={4}>
                     <TextField
                         fullWidth
@@ -93,7 +110,7 @@ function QuoteForm() {
                         variant="outlined"
                         required
                         helperText={errors.weight?.type}
-                        error={errors.weight}
+                        error={!!errors.weight}
                         {...register('weight', {
                             required: true,
                             min: 0,
@@ -102,26 +119,36 @@ function QuoteForm() {
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    kg
+                                    {unit === 'metric' ? 'kg' : 'lb'}
                                 </InputAdornment>
                             ),
                         }}
                     />
                 </Grid>
+                <Grid item xs={4} justifyContent="center">
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={unit}
+                        exclusive
+                        onChange={(e, newUnit) => setUnit(newUnit)}>
+                        <ToggleButton value="metric">Metric</ToggleButton>
+                        <ToggleButton value="imperial">Imperial</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
             </Grid>
             <Grid container marginTop="1rem" columnSpacing={1}>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <TextField
                         fullWidth
                         label="Height"
                         helperText={errors.height?.type}
-                        error={errors.height}
+                        error={!!errors.height}
                         {...register('height', { max: 9999, min: 0 })}
                         variant="outlined"
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    cm
+                                    {unit === 'metric' ? 'cm' : 'in'}
                                 </InputAdornment>
                             ),
                         }}
@@ -132,23 +159,48 @@ function QuoteForm() {
                         variant="h3"
                         component="h3"
                         color="text.secondary"
-                        textAlign="center"
-                        >
+                        textAlign="center">
                         X
                     </Typography>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                     <TextField
                         fullWidth
                         label="Width"
                         variant="outlined"
                         helperText={errors.width?.type}
-                        error={errors.width}
+                        error={!!errors.width}
                         {...register('width', { max: 9999, min: 0 })}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    cm
+                                    {unit === 'metric' ? 'cm' : 'in'}
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={1}>
+                    <Typography
+                        variant="h3"
+                        component="h3"
+                        color="text.secondary"
+                        textAlign="center">
+                        X
+                    </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                    <TextField
+                        fullWidth
+                        label="Length"
+                        variant="outlined"
+                        helperText={errors.length?.type}
+                        error={!!errors.length}
+                        {...register('length', { max: 9999, min: 0 })}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    {unit === 'metric' ? 'cm' : 'in'}
                                 </InputAdornment>
                             ),
                         }}
@@ -161,6 +213,14 @@ function QuoteForm() {
                 </Button>
             </Box>
             <Box>
+                {results && results.status && (
+                    <Typography
+                        variant="h6"
+                        component="span"
+                        color="error.main">
+                        {results.detail}
+                    </Typography>
+                )}
                 <Typography variant="h5" component="h5" color="text.secondary">
                     Esitimated Cost:
                     <Typography
@@ -168,7 +228,8 @@ function QuoteForm() {
                         ml="1rem"
                         component="span"
                         color="text.primary">
-                        $45
+                        {results?.products?.[0]?.totalPrice[0].price}{' '}
+                        {results?.products?.[0]?.totalPrice[0].priceCurrency}
                     </Typography>
                 </Typography>
             </Box>
