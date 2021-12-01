@@ -60,13 +60,10 @@ async function getRateRoute(req, res) {
     try {
         const { data } = await axios(config)
 
-        const mePlus = await shopFetcher(
-            ME_PLUS,
-            {
-                Authorization: req.session.user.id_token,
-            },
-            'en'
-        ).catch((e) => ({}))
+        const { mePlus } = await shopFetcher(ME_PLUS, {}, 'en', {
+            Authorization: `Bearer ${req.session.user.id_token}`,
+        }).catch((e) => ({}))
+
         const { shipperMarkup = 0 } = mePlus
 
         const lowestPrice = data.products?.[0]?.totalPrice.sort((a, b) =>
@@ -74,6 +71,7 @@ async function getRateRoute(req, res) {
         )[0]
 
         lowestPrice.price = (1 + shipperMarkup) * lowestPrice.price
+
         res.send({
             ...lowestPrice,
             estimatedDeliveryDateAndTime:
