@@ -29,7 +29,7 @@ const Login = () => {
                     body: JSON.stringify(body),
                 })
             )
-        } catch (error) {
+        } catch (error: any) {
             setErrorMsg(error.data.detail)
         }
     }
@@ -46,7 +46,7 @@ const Login = () => {
 export default Login
 
 export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
-    const user = req.session.user;
+    const user = req.session['user'];
 
     if (user) {
         return {

@@ -8,7 +8,7 @@ const Home = ({ addressDescription }) => {
     return (
         <Layout>
             <h1>Ship with Badals.com</h1>
-            <RateForm/>
+            <RateForm />
         </Layout>
     )
 }
@@ -16,7 +16,7 @@ const Home = ({ addressDescription }) => {
 export default Home
 
 export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
-    const user = req.session.user
+    const user = req.session['user']
 
     if (!user || user.authorities.includes('ROLE_SHIPPER')) {
         return {
@@ -33,10 +33,11 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
             isoCode: 'om',
             lang: 'en',
         },
-        'en'
+        'en',
+        {}
     )
 
     return {
-        props: { user: req.session.user, addressDescription },
+        props: { user: req.session['user'], addressDescription },
     }
 })

@@ -19,7 +19,7 @@ import axios from 'axios'
 function QuoteForm() {
     const [alignment, setAlignment] = useState('imp')
     const [unit, setUnit] = useState('metric')
-    const [results, setResults] = useState(null)
+    const [results, setResults]: [any, any] = useState(null)
 
     const {
         register,
@@ -27,7 +27,7 @@ function QuoteForm() {
         formState: { errors },
     } = useForm()
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: any) => {
         const { city, country, weight, width, height } = data
         const body = {
             alignment,
@@ -41,7 +41,7 @@ function QuoteForm() {
         try {
             const { data } = await axios.post('/api/rate', body)
             setResults(data)
-        } catch (err) {
+        } catch (err: any) {
             setResults(err.response.data)
         }
         return false
@@ -62,8 +62,7 @@ function QuoteForm() {
             boxShadow="0px 0px 15px rgba(147, 162, 181, 0.2)"
             maxWidth="65rem"
             borderRadius="0.5rem"
-            mx="auto"
-            background="white">
+            mx="auto">
             <Grid container spacing={2}>
                 <Grid item xs={12} justifyContent="center">
                     <ToggleButtonGroup

@@ -9,7 +9,7 @@ const auth = {
 }
 
 async function getRateRoute(req, res) {
-    if (!req.session.user) return res.status(401).json('Unauthorized')
+    if (!req.session['user']) return res.status(401).json('Unauthorized')
     const url = 'https://express.api.dhl.com/mydhlapi/test/rates?'
 
     const { unit, alignment, country, city, weight, length, width, height } =
@@ -61,7 +61,7 @@ async function getRateRoute(req, res) {
         const { data } = await axios(config)
 
         const { mePlus } = await shopFetcher(ME_PLUS, {}, 'en', {
-            Authorization: `Bearer ${req.session.user.id_token}`,
+            Authorization: `Bearer ${req.session['user'].id_token}`,
         }).catch((e) => ({}))
 
         const { shipperMarkup = 0 } = mePlus
