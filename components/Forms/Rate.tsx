@@ -15,17 +15,12 @@ import {
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-
-const dhlAccountsList = {
-    // [0] will be used as default
-    imp: ['959359716', '968278967', '959719994'],
-    exp: ['453044439', '453016579', '453050874'],
-}
+import { COUNTRIES, DHL_ACCOUNTS } from '../../constants'
 
 function QuoteForm() {
     const [alignment, setAlignment] = useState('imp')
     const [unit, setUnit] = useState('metric')
-    const [dhlAccount, setDhlAccount] = useState(dhlAccountsList[alignment][0])
+    const [dhlAccount, setDhlAccount] = useState(DHL_ACCOUNTS[alignment][0])
     const [results, setResults]: [any, any] = useState(null)
 
     const {
@@ -36,7 +31,7 @@ function QuoteForm() {
     } = useForm()
 
     useEffect(() => {
-        setDhlAccount(dhlAccountsList[alignment][0])
+        setDhlAccount(DHL_ACCOUNTS[alignment][0])
     }, [alignment])
 
     useEffect(() => {
@@ -107,7 +102,7 @@ function QuoteForm() {
                             autoWidth
                             {...register('account', { required: true })}
                             onChange={(e) => setDhlAccount(e.target.value)}>
-                            {dhlAccountsList[alignment].map((acc) => (
+                            {DHL_ACCOUNTS[alignment].map((acc) => (
                                 <MenuItem value={acc}>{acc}</MenuItem>
                             ))}
                         </Select>
@@ -126,9 +121,11 @@ function QuoteForm() {
                             required
                             error={!!errors.country}
                             {...register('country', { required: true })}>
-                            <MenuItem value={'OM'}>Oman</MenuItem>
-                            <MenuItem value={'MA'}>Morocco</MenuItem>
-                            <MenuItem value={'US'}>USA</MenuItem>
+                            {COUNTRIES.map((country) => (
+                                <MenuItem value={country.value}>
+                                    {country.label}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Grid>

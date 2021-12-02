@@ -1,7 +1,7 @@
 import { withSessionRoute } from 'lib/withSession'
 import axios from 'axios'
 import { shopFetcher } from 'lib/utils'
-import { ME_PLUS } from '../../graphql/me-plus.query.ts'
+import { ME_PLUS } from '../../constants/graphql.ts'
 
 const auth = {
     username: 'apH4fY3vJ5iD1k',
