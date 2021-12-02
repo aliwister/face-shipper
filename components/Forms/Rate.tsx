@@ -13,6 +13,9 @@ import {
     InputAdornment,
     Typography,
 } from '@mui/material'
+import AdapterDateFns from '@mui/lab/AdapterMoment'
+import { LocalizationProvider, DesktopDatePicker } from '@mui/lab'
+
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { COUNTRIES, DHL_ACCOUNTS } from '../../constants'
@@ -22,6 +25,9 @@ function QuoteForm() {
     const [unit, setUnit] = useState('metric')
     const [dhlAccount, setDhlAccount] = useState(DHL_ACCOUNTS[alignment][0])
     const [results, setResults]: [any, any] = useState(null)
+    const [date, setDate] = useState<Date | null>(
+        new Date(new Date().setDate(new Date().getDate() + 1))
+    )
 
     const {
         register,
@@ -49,6 +55,7 @@ function QuoteForm() {
             height,
             unit,
             account,
+            date
         }
         try {
             const { data } = await axios.post('/api/rate', body)
@@ -76,7 +83,7 @@ function QuoteForm() {
             borderRadius="0.5rem"
             mx="auto">
             <Grid container spacing={2}>
-                <Grid item xs={4} justifyContent="center">
+                <Grid item xs={4}>
                     <ToggleButtonGroup
                         color="primary"
                         value={alignment}
@@ -108,7 +115,24 @@ function QuoteForm() {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={4}></Grid>
+                <Grid item xs={4}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                            label="Shipping date"
+                            inputFormat="MM/DD/yyyy"
+                            value={date}
+                            onChange={(newValue) => {
+                                setDate(newValue)
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    {...register('date', { required: true })}
+                                />
+                            )}
+                        />
+                    </LocalizationProvider>
+                </Grid>
                 <Grid item xs={4}>
                     <FormControl fullWidth>
                         <InputLabel id="select-country-label">
@@ -165,7 +189,7 @@ function QuoteForm() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={4} justifyContent="center">
+                <Grid item xs={4}>
                     <ToggleButtonGroup
                         color="primary"
                         value={unit}
