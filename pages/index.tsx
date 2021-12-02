@@ -2,7 +2,7 @@ import { withSessionSsr } from 'lib/withSession'
 import { shopFetcher } from '../lib/utils'
 import Layout from '../components/Layout'
 import RateForm from '../components/Forms/Rate'
-import { ADDRESS_DESCRIPTION } from '../graphql/address-description.query'
+import { ADDRESS_DESCRIPTION } from '../constants/graphql'
 
 const Home = ({ addressDescription }) => {
     return (

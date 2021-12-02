@@ -1,18 +1,6 @@
 import { Controller } from 'react-hook-form';
 import { Autocomplete, TextField } from '@mui/material';
-
-const COUNTRIES = [
-  {value: 'OM', label: 'Oman'},
-  {value: 'AE', label: 'UAE'},
-  {value: 'US', label: 'USA'},
-  {value: 'CN', label: 'China'},
-  {value: 'SW', label: 'Switzerland'},
-  {value: 'UK', label: 'UK'},
-  {value: 'SP', label: 'Spain'},
-  {value: 'GR', label: 'Germany'},
-  {value: 'AU', label: 'Australia'},
-  {value: 'SA', label: 'Saudi Arabia'},
-];
+import { COUNTRIES } from 'constants/';
 
 export const TestForm = ({ control }) => (
   <>
