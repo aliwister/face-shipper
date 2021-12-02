@@ -1,3 +1,5 @@
+export const API_URL = process.env.API_URL || 'https://api.badals.uk/graphql';
+
 export const ADDRESS_DESCRIPTION =`query addressDescription ($isoCode: String, $lang: String) {
     addressDescription(isoCode:$isoCode, lang:$lang) {
         inputFormat
