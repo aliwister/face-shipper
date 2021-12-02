@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Button,
     Box,
@@ -16,19 +16,35 @@ import {
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 
+const dhlAccountsList = {
+    // [0] will be used as default
+    imp: ['959359716', '968278967', '959719994'],
+    exp: ['453044439', '453016579', '453050874'],
+}
+
 function QuoteForm() {
     const [alignment, setAlignment] = useState('imp')
     const [unit, setUnit] = useState('metric')
+    const [dhlAccount, setDhlAccount] = useState(dhlAccountsList[alignment][0])
     const [results, setResults]: [any, any] = useState(null)
 
     const {
         register,
         handleSubmit,
+        resetField,
         formState: { errors },
     } = useForm()
 
+    useEffect(() => {
+        setDhlAccount(dhlAccountsList[alignment][0])
+    }, [alignment])
+
+    useEffect(() => {
+        resetField('account', { defaultValue: dhlAccount })
+    }, [dhlAccount])
+
     const onSubmit = async (data: any) => {
-        const { city, country, weight, width, height } = data
+        const { city, country, weight, width, height, account } = data
         const body = {
             alignment,
             city,
@@ -37,6 +53,7 @@ function QuoteForm() {
             width,
             height,
             unit,
+            account,
         }
         try {
             const { data } = await axios.post('/api/rate', body)
@@ -64,18 +81,39 @@ function QuoteForm() {
             borderRadius="0.5rem"
             mx="auto">
             <Grid container spacing={2}>
-                <Grid item xs={12} justifyContent="center">
+                <Grid item xs={4} justifyContent="center">
                     <ToggleButtonGroup
                         color="primary"
                         value={alignment}
                         exclusive
                         onChange={(e, newAlignment) =>
-                            setAlignment(newAlignment)
+                            setAlignment(newAlignment || alignment)
                         }>
                         <ToggleButton value="imp">From (Import)</ToggleButton>
                         <ToggleButton value="exp">To (Export)</ToggleButton>
                     </ToggleButtonGroup>
                 </Grid>
+                <Grid item xs={4}>
+                    <FormControl fullWidth>
+                        <InputLabel id="select-account-label">
+                            Account*
+                        </InputLabel>
+                        <Select
+                            labelId="select-account-label"
+                            label="Account"
+                            required
+                            error={!!errors.account}
+                            value={dhlAccount}
+                            autoWidth
+                            {...register('account', { required: true })}
+                            onChange={(e) => setDhlAccount(e.target.value)}>
+                            {dhlAccountsList[alignment].map((acc) => (
+                                <MenuItem value={acc}>{acc}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={4}></Grid>
                 <Grid item xs={4}>
                     <FormControl fullWidth>
                         <InputLabel id="select-country-label">
@@ -84,6 +122,7 @@ function QuoteForm() {
                         <Select
                             labelId="select-country-label"
                             label="Country*"
+                            defaultValue=""
                             required
                             error={!!errors.country}
                             {...register('country', { required: true })}>
