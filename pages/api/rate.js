@@ -22,6 +22,7 @@ async function getRateRoute(req, res) {
         width,
         height,
         account,
+        date,
     } = req.body
 
     const defaultForImport = {
@@ -44,11 +45,7 @@ async function getRateRoute(req, res) {
         length: length || 1,
         width: width || 1,
         height: height || 1,
-        plannedShippingDate: new Date(
-            new Date().setDate(new Date().getDate() + 1)
-        )
-            .toJSON()
-            .slice(0, 10),
+        plannedShippingDate: date.slice(0, 10),
         isCustomsDeclarable: true,
         unitOfMeasurement: unit,
         ...(alignment === 'imp' ? defaultForImport : defaultForExport),
@@ -68,9 +65,9 @@ async function getRateRoute(req, res) {
     try {
         const { data } = await axios(config)
 
-        const { mePlus } = (await shopFetcher(ME_PLUS, {}, 'en', {
-            Authorization: `Bearer ${req.session['user'].id_token}`,
-        }).catch((e) => ({})))
+        const { mePlus } = await shopFetcher(ME_PLUS, {}, 'en', {
+            Authorization: `${req.session['user'].tokenType} ${req.session['user'].id_token}`,
+        }).catch((e) => ({}))
 
         const { shipperMarkup = 100 } = mePlus || { mePlus: {} }
 
@@ -78,7 +75,7 @@ async function getRateRoute(req, res) {
             a.price > b.price ? 1 : -1
         )[0]
 
-        lowestPrice.price = (1 + shipperMarkup/100) * lowestPrice.price
+        lowestPrice.price = (1 + shipperMarkup / 100) * lowestPrice.price
 
         res.send({
             ...lowestPrice,
