@@ -9,7 +9,7 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 import { AddressForm } from '../address-form/address-form'
 
-function QuoteForm({ addressDescription }) {
+function QuoteForm({ addressDescription }: { addressDescription: any }) {
     const [alignment, setAlignment] = useState('exp')
     const {
         register,
@@ -18,7 +18,7 @@ function QuoteForm({ addressDescription }) {
         formState: { errors },
     } = useForm()
 
-    const onSubmit = (data) => {
+    const onSubmit = (data: any) => {
         console.log(data)
         return false
     }
@@ -29,8 +29,7 @@ function QuoteForm({ addressDescription }) {
             padding="1rem"
             marginTop="2rem"
             flexDirection="column"
-            justifyContent="center"
-            >
+            justifyContent="center">
             <Box alignSelf="center" display="inline-flex">
                 <ToggleButtonGroup
                     color="primary"
@@ -46,7 +45,10 @@ function QuoteForm({ addressDescription }) {
                 sx={{
                     '& .MuiTextField-root': { m: 1, width: '25ch' },
                 }}>
-                <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                <form
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}>
                     <div>
                         <AddressForm
                             control={control}
@@ -57,7 +59,9 @@ function QuoteForm({ addressDescription }) {
                         />
                     </div>
                     <div>
-                    <Button type="submit" variant="contained">Submit</Button>
+                        <Button type="submit" variant="contained">
+                            Submit
+                        </Button>
                     </div>
                 </form>
             </Box>
