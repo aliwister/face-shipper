@@ -17,7 +17,7 @@ const Form = ({ errorMessage, onSubmit }) => (
         <Box mb="1rem">
             <TextField
                 fullWidth
-                type="text"
+                type="password"
                 name="password"
                 required
                 label="Password"

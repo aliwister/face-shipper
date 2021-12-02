@@ -8,7 +8,7 @@ import { withSessionSsr } from 'lib/withSession'
 
 const Login = () => {
     const { mutateUser } = useUser({
-        redirectTo: '/profile',
+        redirectTo: '/',
         redirectIfFound: true,
     })
 

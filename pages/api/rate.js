@@ -72,13 +72,13 @@ async function getRateRoute(req, res) {
             Authorization: `Bearer ${req.session['user'].id_token}`,
         }).catch((e) => ({})))
 
-        const { shipperMarkup = 0 } = mePlus || { mePlus: {} }
+        const { shipperMarkup = 100 } = mePlus || { mePlus: {} }
 
         const lowestPrice = data.products?.[0]?.totalPrice.sort((a, b) =>
             a.price > b.price ? 1 : -1
         )[0]
 
-        lowestPrice.price = (1 + shipperMarkup) * lowestPrice.price
+        lowestPrice.price = (1 + shipperMarkup/100) * lowestPrice.price
 
         res.send({
             ...lowestPrice,
