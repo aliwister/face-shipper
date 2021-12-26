@@ -16,3 +16,15 @@ export const DHL_ACCOUNTS = {
     imp: ['959359716', '968278967', '959719994'],
     exp: ['453044439', '453016579', '453050874'],
 }
+
+export const CURRENCY_TYPES = {
+    BILLC: 'Billing currency',
+    PULCL: 'country public rates currency',
+    BASEC: 'Base currency',
+}
+
+export const BREAKDOWN_TYPES = {
+    STTXA: 'Total tax for the shipment',
+    STDIS: 'Total discount for the shipment',
+    SPRQT: 'Net shipment / weight charge',
+}
