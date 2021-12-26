@@ -71,14 +71,40 @@ async function getRateRoute(req, res) {
 
         const { shipperMarkup = 100 } = mePlus || { mePlus: {} }
 
-        const lowestPrice = data.products?.[0]?.totalPrice.sort((a, b) =>
-            a.price > b.price ? 1 : -1
-        )[0]
+        const prices = data.products?.[0]?.totalPrice
+            .sort((a, b) => (a.price > b.price ? 1 : -1))
+            .map((price) => {
+                price.price = (price.price * (1 + shipperMarkup / 100)).toFixed(
+                    2
+                )
 
-        lowestPrice.price = (1 + shipperMarkup / 100) * lowestPrice.price
+                price.breakdown = data.products[0].detailedPriceBreakdown.find(
+                    (breakdown) =>
+                        price.priceCurrency === breakdown.priceCurrency &&
+                        price.currencyType === breakdown.currencyType
+                )
+
+                price.breakdown.breakdown =
+                    price.breakdown.breakdown.map((priceBreakdown) => {
+                        priceBreakdown.price = (
+                            priceBreakdown.price *
+                            (1 + shipperMarkup / 100)
+                        ).toFixed(2)
+                        priceBreakdown.priceBreakdown = priceBreakdown.priceBreakdown.map((bd) => {
+                            bd.basePrice = (
+                                bd.basePrice *
+                                (1 + shipperMarkup / 100)
+                            ).toFixed(2)
+                            return bd
+                        })
+                        return priceBreakdown
+                    })
+
+                return price
+            })
 
         res.send({
-            ...lowestPrice,
+            prices,
             estimatedDeliveryDateAndTime:
                 data.products?.[0]?.deliveryCapabilities
                     .estimatedDeliveryDateAndTime,

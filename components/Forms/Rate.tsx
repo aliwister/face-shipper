@@ -18,7 +18,11 @@ import { LocalizationProvider, DesktopDatePicker } from '@mui/lab'
 
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import { COUNTRIES, DHL_ACCOUNTS } from '../../constants'
+import {
+    COUNTRIES,
+    DHL_ACCOUNTS,
+    CURRENCY_TYPES,
+} from '../../constants'
 
 function QuoteForm() {
     const [alignment, setAlignment] = useState('imp')
@@ -55,7 +59,7 @@ function QuoteForm() {
             height,
             unit,
             account,
-            date
+            date,
         }
         try {
             const { data } = await axios.post('/api/rate', body)
@@ -287,20 +291,62 @@ function QuoteForm() {
                 )}
                 {results && !results.status && (
                     <>
-                        <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            color="text.secondary">
-                            ESTIMATED COST:
-                            <Typography
-                                variant="h6"
-                                fontWeight="bold"
-                                ml="1rem"
-                                component="span"
-                                color="text.primary">
-                                {results?.price} {results?.priceCurrency}
-                            </Typography>
-                        </Typography>
+                        {results?.prices.map((price) => (
+                            <>
+                                <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                    color="text.secondary">
+                                    ESTIMATED COST:
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight="bold"
+                                        ml="1rem"
+                                        component="span"
+                                        color="text.primary">
+                                        {price.price} {price.priceCurrency}
+                                        <Typography
+                                            fontWeight="light"
+                                            fontSize="medium"
+                                            component="small"
+                                            color="text.secondary">
+                                            {' '}
+                                            {CURRENCY_TYPES[price.currencyType]}
+                                        </Typography>
+                                    </Typography>
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    fontWeight="light"
+                                    color="text.secondary">
+                                    COST BREAKDOWN:
+                                </Typography>
+                                <ul style={{ margin: 0 }}>
+                                    {price.breakdown.breakdown.map(
+                                        (breakdown) => (
+                                            <li>
+                                                <b>{breakdown.name.toLowerCase()}:</b>{' '}
+                                                {breakdown.price}{' '}
+                                                {price.priceCurrency}
+                                                <ul>
+                                                    {breakdown.priceBreakdown.map(
+                                                        (bd) => (
+                                                            <li>
+                                                                <b>{bd.priceType.toLowerCase()}</b>:{' '}
+                                                                {bd.basePrice}{' '}
+                                                                {
+                                                                    price.priceCurrency
+                                                                }
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            </li>
+                                        )
+                                    )}
+                                </ul>
+                            </>
+                        ))}
                         <Typography
                             variant="h6"
                             fontWeight="bold"
