@@ -71,48 +71,54 @@ async function getRateRoute(req, res) {
 
         const { shipperMarkup = 100 } = mePlus || { mePlus: {} }
 
-        const products = data.products.map((product) => {
-            return {
-                name: product.productName,
-                estimatedDeliveryDateAndTime:
-                    product.deliveryCapabilities.estimatedDeliveryDateAndTime,
-                totalTransitDays: product.deliveryCapabilities.totalTransitDays,
-                prices: product?.totalPrice
-                    .sort((a, b) => (a.price > b.price ? 1 : -1))
-                    .filter(
-                        (price) =>
-                            'BILLC' === price.currencyType &&
-                            price.priceCurrency &&
-                            'OMR' === price.priceCurrency
-                    )
-                    .map((price) => {
-                        price.price = (
-                            price.price *
-                            (1 + shipperMarkup / 100)
-                        ).toFixed(2)
-                        price.breakdown = product.detailedPriceBreakdown.find(
-                            (breakdown) =>
-                                price.priceCurrency ===
-                                    breakdown.priceCurrency &&
-                                price.currencyType === breakdown.currencyType
+        const products = data.products
+            .filter((product) => product.productCode !== 'Q') // filter out Q which is for medical express
+            .map((product) => {
+                return {
+                    name: product.productName,
+                    estimatedDeliveryDateAndTime:
+                        product.deliveryCapabilities
+                            .estimatedDeliveryDateAndTime,
+                    totalTransitDays:
+                        product.deliveryCapabilities.totalTransitDays,
+                    prices: product?.totalPrice
+                        .sort((a, b) => (a.price > b.price ? 1 : -1))
+                        .filter(
+                            (price) =>
+                                'BILLC' === price.currencyType &&
+                                price.priceCurrency &&
+                                'OMR' === price.priceCurrency
                         )
-                        if (price.breakdown) {
-                            price.breakdown.breakdown =
-                                price.breakdown.breakdown.map(
-                                    (priceBreakdown) => {
-                                        priceBreakdown.price = (
-                                            priceBreakdown.price *
-                                            (1 + shipperMarkup / 100)
-                                        ).toFixed(2)
-                                        return priceBreakdown
-                                    }
+                        .map((price) => {
+                            price.price = (
+                                price.price *
+                                (1 + shipperMarkup / 100)
+                            ).toFixed(2)
+                            price.breakdown =
+                                product.detailedPriceBreakdown.find(
+                                    (breakdown) =>
+                                        price.priceCurrency ===
+                                            breakdown.priceCurrency &&
+                                        price.currencyType ===
+                                            breakdown.currencyType
                                 )
-                        }
+                            if (price.breakdown) {
+                                price.breakdown.breakdown =
+                                    price.breakdown.breakdown.map(
+                                        (priceBreakdown) => {
+                                            priceBreakdown.price = (
+                                                priceBreakdown.price *
+                                                (1 + shipperMarkup / 100)
+                                            ).toFixed(2)
+                                            return priceBreakdown
+                                        }
+                                    )
+                            }
 
-                        return price
-                    }),
-            }
-        })
+                            return price
+                        }),
+                }
+            })
 
         res.send({
             products,
