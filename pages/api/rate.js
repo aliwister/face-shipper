@@ -71,45 +71,52 @@ async function getRateRoute(req, res) {
 
         const { shipperMarkup = 100 } = mePlus || { mePlus: {} }
 
-        const prices = data.products?.[0]?.totalPrice
-            .sort((a, b) => (a.price > b.price ? 1 : -1))
-            .map((price) => {
-                price.price = (price.price * (1 + shipperMarkup / 100)).toFixed(
-                    2
-                )
-
-                price.breakdown = data.products[0].detailedPriceBreakdown.find(
-                    (breakdown) =>
-                        price.priceCurrency === breakdown.priceCurrency &&
-                        price.currencyType === breakdown.currencyType
-                )
-
-                price.breakdown.breakdown =
-                    price.breakdown.breakdown.map((priceBreakdown) => {
-                        priceBreakdown.price = (
-                            priceBreakdown.price *
+        const products = data.products.map((product) => {
+            return {
+                name: product.productName,
+                estimatedDeliveryDateAndTime:
+                    product.deliveryCapabilities.estimatedDeliveryDateAndTime,
+                totalTransitDays: product.deliveryCapabilities.totalTransitDays,
+                prices: product?.totalPrice
+                    .sort((a, b) => (a.price > b.price ? 1 : -1))
+                    .filter(
+                        (price) =>
+                            'BILLC' === price.currencyType &&
+                            ((price.priceCurrency &&
+                                'OMR' === price.priceCurrency) ||
+                                !price.priceCurrency)
+                    )
+                    .map((price) => {
+                        price.price = (
+                            price.price *
                             (1 + shipperMarkup / 100)
                         ).toFixed(2)
-                        priceBreakdown.priceBreakdown = priceBreakdown.priceBreakdown.map((bd) => {
-                            bd.basePrice = (
-                                bd.basePrice *
-                                (1 + shipperMarkup / 100)
-                            ).toFixed(2)
-                            return bd
-                        })
-                        return priceBreakdown
-                    })
+                        price.breakdown = product.detailedPriceBreakdown.find(
+                            (breakdown) =>
+                                price.priceCurrency ===
+                                    breakdown.priceCurrency &&
+                                price.currencyType === breakdown.currencyType
+                        )
+                        if (price.breakdown) {
+                            price.breakdown.breakdown =
+                                price.breakdown.breakdown.map(
+                                    (priceBreakdown) => {
+                                        priceBreakdown.price = (
+                                            priceBreakdown.price *
+                                            (1 + shipperMarkup / 100)
+                                        ).toFixed(2)
+                                        return priceBreakdown
+                                    }
+                                )
+                        }
 
-                return price
-            })
+                        return price
+                    }),
+            }
+        })
 
         res.send({
-            prices,
-            estimatedDeliveryDateAndTime:
-                data.products?.[0]?.deliveryCapabilities
-                    .estimatedDeliveryDateAndTime,
-            totalTransitDays:
-                data.products?.[0]?.deliveryCapabilities.totalTransitDays,
+            products,
         })
     } catch (error) {
         const { response } = error

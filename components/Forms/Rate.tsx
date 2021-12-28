@@ -18,11 +18,7 @@ import { LocalizationProvider, DesktopDatePicker } from '@mui/lab'
 
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import {
-    COUNTRIES,
-    DHL_ACCOUNTS,
-    CURRENCY_TYPES,
-} from '../../constants'
+import { COUNTRIES, DHL_ACCOUNTS, CURRENCY_TYPES } from '../../constants'
 
 function QuoteForm() {
     const [alignment, setAlignment] = useState('imp')
@@ -291,77 +287,88 @@ function QuoteForm() {
                 )}
                 {results && !results.status && (
                     <>
-                        {results?.prices.map((price) => (
+                        {results.products.map((product) => (
                             <>
+                                <Box
+                                    bgcolor="darkgray"
+                                    color="white"
+                                    fontSize="large"
+                                    padding="1rem"
+                                    fontWeight="bold"
+                                    >
+                                    {product.name}
+                                </Box>
+                                {product.prices.map((price) => (
+                                    <>
+                                        <Typography
+                                            variant="h6"
+                                            fontWeight="bold"
+                                            color="text.secondary">
+                                            ESTIMATED COST:
+                                            <Typography
+                                                variant="h6"
+                                                fontWeight="bold"
+                                                ml="1rem"
+                                                component="span"
+                                                color="text.primary">
+                                                {price.price}{' '}
+                                                {price.priceCurrency}
+                                                <Typography
+                                                    fontWeight="light"
+                                                    fontSize="medium"
+                                                    component="small"
+                                                    color="text.secondary">
+                                                    {' '}
+                                                    {
+                                                        CURRENCY_TYPES[
+                                                            price.currencyType
+                                                        ]
+                                                    }
+                                                </Typography>
+                                            </Typography>
+                                        </Typography>
+                                        {price.breakdown && (
+                                            <Typography
+                                                variant="caption"
+                                                fontWeight="light"
+                                                color="text.secondary">
+                                                COST BREAKDOWN:
+                                            </Typography>
+                                        )}
+                                        <ul style={{ margin: 0 }}>
+                                            {price.breakdown?.breakdown.map(
+                                                (breakdown) => (
+                                                    <li>
+                                                        <b>
+                                                            {breakdown.name.toLowerCase()}
+                                                            :
+                                                        </b>{' '}
+                                                        {breakdown.price}{' '}
+                                                        {price.priceCurrency}
+                                                    </li>
+                                                )
+                                            )}
+                                        </ul>
+                                    </>
+                                ))}
                                 <Typography
                                     variant="h6"
                                     fontWeight="bold"
                                     color="text.secondary">
-                                    ESTIMATED COST:
+                                    ESTIMATED DELIVERY DATE AND TIME:
                                     <Typography
                                         variant="h6"
                                         fontWeight="bold"
                                         ml="1rem"
                                         component="span"
                                         color="text.primary">
-                                        {price.price} {price.priceCurrency}
-                                        <Typography
-                                            fontWeight="light"
-                                            fontSize="medium"
-                                            component="small"
-                                            color="text.secondary">
-                                            {' '}
-                                            {CURRENCY_TYPES[price.currencyType]}
-                                        </Typography>
+                                        {product.estimatedDeliveryDateAndTime} (
+                                        {product.totalTransitDays} days in
+                                        transit)
                                     </Typography>
                                 </Typography>
-                                <Typography
-                                    variant="caption"
-                                    fontWeight="light"
-                                    color="text.secondary">
-                                    COST BREAKDOWN:
-                                </Typography>
-                                <ul style={{ margin: 0 }}>
-                                    {price.breakdown.breakdown.map(
-                                        (breakdown) => (
-                                            <li>
-                                                <b>{breakdown.name.toLowerCase()}:</b>{' '}
-                                                {breakdown.price}{' '}
-                                                {price.priceCurrency}
-                                                <ul>
-                                                    {breakdown.priceBreakdown.map(
-                                                        (bd) => (
-                                                            <li>
-                                                                <b>{bd.priceType.toLowerCase()}</b>:{' '}
-                                                                {bd.basePrice}{' '}
-                                                                {
-                                                                    price.priceCurrency
-                                                                }
-                                                            </li>
-                                                        )
-                                                    )}
-                                                </ul>
-                                            </li>
-                                        )
-                                    )}
-                                </ul>
                             </>
                         ))}
-                        <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            color="text.secondary">
-                            ESTIMATED DELIVERY DATE AND TIME:
-                            <Typography
-                                variant="h6"
-                                fontWeight="bold"
-                                ml="1rem"
-                                component="span"
-                                color="text.primary">
-                                {results?.estimatedDeliveryDateAndTime} (
-                                {results?.totalTransitDays} days in transit)
-                            </Typography>
-                        </Typography>
                     </>
                 )}
             </Box>
