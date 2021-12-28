@@ -82,9 +82,8 @@ async function getRateRoute(req, res) {
                     .filter(
                         (price) =>
                             'BILLC' === price.currencyType &&
-                            ((price.priceCurrency &&
-                                'OMR' === price.priceCurrency) ||
-                                !price.priceCurrency)
+                            price.priceCurrency &&
+                            'OMR' === price.priceCurrency
                     )
                     .map((price) => {
                         price.price = (
