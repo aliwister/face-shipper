@@ -64,64 +64,27 @@ async function getRateRoute(req, res) {
 
     try {
         const { data } = await axios(config)
-
+        console.log(data)
         const { mePlus } = await shopFetcher(ME_PLUS, {}, 'en', {
             Authorization: `${req.session['user'].tokenType} ${req.session['user'].id_token}`,
         }).catch((e) => ({}))
 
         const { shipperMarkup = 100 } = mePlus || { mePlus: {} }
 
-        const products = data.products
-            .filter((product) => product.productCode !== 'Q') // filter out Q which is for medical express
-            .map((product) => {
-                return {
-                    name: product.productName,
-                    estimatedDeliveryDateAndTime:
-                        product.deliveryCapabilities
-                            .estimatedDeliveryDateAndTime,
-                    totalTransitDays:
-                        product.deliveryCapabilities.totalTransitDays,
-                    prices: product?.totalPrice
-                        .sort((a, b) => (a.price > b.price ? 1 : -1))
-                        .filter(
-                            (price) =>
-                                'BILLC' === price.currencyType &&
-                                price.priceCurrency &&
-                                'OMR' === price.priceCurrency
-                        )
-                        .map((price) => {
-                            price.price = (
-                                price.price *
-                                (1 + shipperMarkup / 100)
-                            ).toFixed(2)
-                            price.breakdown =
-                                product.detailedPriceBreakdown.find(
-                                    (breakdown) =>
-                                        price.priceCurrency ===
-                                            breakdown.priceCurrency &&
-                                        price.currencyType ===
-                                            breakdown.currencyType
-                                )
-                            if (price.breakdown) {
-                                price.breakdown.breakdown =
-                                    price.breakdown.breakdown.map(
-                                        (priceBreakdown) => {
-                                            priceBreakdown.price = (
-                                                priceBreakdown.price *
-                                                (1 + shipperMarkup / 100)
-                                            ).toFixed(2)
-                                            return priceBreakdown
-                                        }
-                                    )
-                            }
+        const lowestPrice = data.products?.[0]?.totalPrice.sort((a, b) =>
+            a.price > b.price ? 1 : -1
+        )[0]
 
-                            return price
-                        }),
-                }
-            })
+        lowestPrice.price = (1 + shipperMarkup / 100) * lowestPrice.price
 
         res.send({
-            products,
+            ...lowestPrice,
+            estimatedDeliveryDateAndTime:
+                data.products?.[0]?.deliveryCapabilities
+                    .estimatedDeliveryDateAndTime,
+            totalTransitDays:
+                data.products?.[0]?.deliveryCapabilities.totalTransitDays,
+               // data
         })
     } catch (error) {
         const { response } = error

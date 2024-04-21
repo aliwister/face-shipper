@@ -1,5 +1,5 @@
 import { withSessionSsr } from 'lib/withSession'
-import { shopFetcher } from '../lib/utils'
+import { checkoutFetcher } from '../lib/utils'
 import Layout from '../components/Layout'
 import RateForm from '../components/Forms/Rate'
 import { ADDRESS_DESCRIPTION } from '../constants/graphql'
@@ -26,7 +26,7 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
         }
     }
 
-    const addressDescription = await shopFetcher(
+    const addressDescription = await checkoutFetcher(
         ADDRESS_DESCRIPTION,
         {
             isoCode: 'om',

@@ -9,6 +9,8 @@ export const COUNTRIES = [
     { value: 'GR', label: 'Germany' },
     { value: 'AU', label: 'Australia' },
     { value: 'SA', label: 'Saudi Arabia' },
+    { value: 'SI', label: 'Slovenia' },
+
 ]
 
 export const DHL_ACCOUNTS = {
