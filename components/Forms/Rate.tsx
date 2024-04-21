@@ -21,7 +21,7 @@ import axios from 'axios'
 import { COUNTRIES, DHL_ACCOUNTS, CURRENCY_TYPES } from '../../constants'
 
 function QuoteForm() {
-    const [alignment, setAlignment] = useState('imp')
+    const [alignment, setAlignment] = useState('exp')
     const [unit, setUnit] = useState('metric')
     const [dhlAccount, setDhlAccount] = useState(DHL_ACCOUNTS[alignment][0])
     const [results, setResults]: [any, any] = useState(null)
@@ -83,38 +83,38 @@ function QuoteForm() {
             borderRadius="0.5rem"
             mx="auto">
             <Grid container spacing={2}>
-                <Grid item xs={4}>
-                    <ToggleButtonGroup
-                        color="primary"
-                        value={alignment}
-                        exclusive
-                        onChange={(e, newAlignment) =>
-                            setAlignment(newAlignment || alignment)
-                        }>
-                        <ToggleButton value="imp">From (Import)</ToggleButton>
-                        <ToggleButton value="exp">To (Export)</ToggleButton>
-                    </ToggleButtonGroup>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormControl fullWidth>
-                        <InputLabel id="select-account-label">
-                            Account*
-                        </InputLabel>
-                        <Select
-                            labelId="select-account-label"
-                            label="Account"
-                            required
-                            error={!!errors.account}
-                            value={dhlAccount}
-                            autoWidth
-                            {...register('account', { required: true })}
-                            onChange={(e) => setDhlAccount(e.target.value)}>
-                            {DHL_ACCOUNTS[alignment].map((acc) => (
-                                <MenuItem value={acc}>{acc}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
+                {/*<Grid item xs={4}>*/}
+                {/*    <ToggleButtonGroup*/}
+                {/*        color="primary"*/}
+                {/*        value={alignment}*/}
+                {/*        exclusive*/}
+                {/*        onChange={(e, newAlignment) =>*/}
+                {/*            setAlignment(newAlignment || alignment)*/}
+                {/*        }>*/}
+                {/*        <ToggleButton value="imp">From (Import)</ToggleButton>*/}
+                {/*        <ToggleButton value="exp">To (Export)</ToggleButton>*/}
+                {/*    </ToggleButtonGroup>*/}
+                {/*</Grid>*/}
+                {/*<Grid item xs={4}>*/}
+                {/*    <FormControl fullWidth>*/}
+                {/*        <InputLabel id="select-account-label">*/}
+                {/*            Account**/}
+                {/*        </InputLabel>*/}
+                {/*        <Select*/}
+                {/*            labelId="select-account-label"*/}
+                {/*            label="Account"*/}
+                {/*            required*/}
+                {/*            error={!!errors.account}*/}
+                {/*            value={dhlAccount}*/}
+                {/*            autoWidth*/}
+                {/*            {...register('account', { required: true })}*/}
+                {/*            onChange={(e) => setDhlAccount(e.target.value)}>*/}
+                {/*            {DHL_ACCOUNTS[alignment].map((acc) => (*/}
+                {/*                <MenuItem value={acc}>{acc}</MenuItem>*/}
+                {/*            ))}*/}
+                {/*        </Select>*/}
+                {/*    </FormControl>*/}
+                {/*</Grid>*/}
                 <Grid item xs={4}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker

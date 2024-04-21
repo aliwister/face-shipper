@@ -1,15 +1,15 @@
 export const COUNTRIES = [
     { value: 'OM', label: 'Oman' },
     { value: 'AE', label: 'UAE' },
-    { value: 'US', label: 'USA' },
-    { value: 'CN', label: 'China' },
-    { value: 'SW', label: 'Switzerland' },
-    { value: 'UK', label: 'UK' },
-    { value: 'SP', label: 'Spain' },
-    { value: 'GR', label: 'Germany' },
-    { value: 'AU', label: 'Australia' },
+    // { value: 'US', label: 'USA' },
+    // { value: 'CN', label: 'China' },
+    // { value: 'SW', label: 'Switzerland' },
+    // { value: 'UK', label: 'UK' },
+    // { value: 'SP', label: 'Spain' },
+    // { value: 'GR', label: 'Germany' },
+    // { value: 'AU', label: 'Australia' },
     { value: 'SA', label: 'Saudi Arabia' },
-    { value: 'SI', label: 'Slovenia' },
+    // { value: 'SI', label: 'Slovenia' },
 
 ]
 
