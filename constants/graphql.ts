@@ -1,5 +1,5 @@
-export const API_URL = process.env.API_URL || 'https://api.badals.uk/graphql';
-
+export const API_URL = process.env.API_URL || 'https://api.profile.shop/graphql';
+export const C_API_URL = process.env.API_URL || 'https://checkout.profile.shop/graphql';
 export const ADDRESS_DESCRIPTION =`query addressDescription ($isoCode: String, $lang: String) {
     addressDescription(isoCode:$isoCode, lang:$lang) {
         inputFormat

@@ -64,7 +64,7 @@ async function getRateRoute(req, res) {
 
     try {
         const { data } = await axios(config)
-
+        console.log(data)
         const { mePlus } = await shopFetcher(ME_PLUS, {}, 'en', {
             Authorization: `${req.session['user'].tokenType} ${req.session['user'].id_token}`,
         }).catch((e) => ({}))
@@ -84,6 +84,7 @@ async function getRateRoute(req, res) {
                     .estimatedDeliveryDateAndTime,
             totalTransitDays:
                 data.products?.[0]?.deliveryCapabilities.totalTransitDays,
+               // data
         })
     } catch (error) {
         const { response } = error
