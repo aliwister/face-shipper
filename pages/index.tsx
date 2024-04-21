@@ -17,7 +17,6 @@ export default Home
 
 export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
     const user = req.session['user']
-
     if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
         return {
             redirect: {
