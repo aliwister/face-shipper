@@ -5,12 +5,12 @@ export default withSessionRoute(loginRoute)
 
 async function loginRoute(req, res) {
     if (req.method !== 'POST') return res.send(req.session['user'] || { isLoggedIn: false })
-    const url = process.env.REST_URL + `api/authenticate`
+    const url = `https://api.profile.shop/api/authenticate`
 
     try {
         const user = await fetchJson(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-TenantId': 'badals' },
             body: req.body,
         })
         req.session['user'] = { ...user, isLoggedIn: true }
@@ -18,7 +18,6 @@ async function loginRoute(req, res) {
         await req.session.save()
         res.send(req.session['user'])
     } catch (error) {
-        console.log(error)
         const { response } = error
         res.status(response?.status || 500).json(error.data)
     }
