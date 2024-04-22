@@ -18,6 +18,7 @@ import { LocalizationProvider, DesktopDatePicker } from '@mui/lab'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { COUNTRIES } from '../../constants'
+import RatesBox from "../Rates/RatesBox";
 
 function QuoteForm() {
     const [unit, setUnit] = useState('metric')
@@ -54,12 +55,12 @@ function QuoteForm() {
             weight,
             width,
             height,
-            date,
+            date:date?.toISOString().slice(0, 10),
         }
         console.log(body)
         setLoading(true)
         try {
-            const {data}  = await axios.post('/api/rates_fedex', body)
+            const data  = await axios.post('/api/rates_fedex', body)
             setResults(data)
         } catch (err: any) {
             setResults(err.response.data)
@@ -89,7 +90,6 @@ function QuoteForm() {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Shipping date"
-
                             inputFormat="MM/DD/yyyy"
                             value={date}
                             onChange={(newValue) => {
@@ -272,9 +272,7 @@ function QuoteForm() {
                     Get Estimate
                 </Button>
             </Box>
-            {results && <Box>
-                Results are {results}
-            </Box>}
+            {results && <RatesBox results={results.data} handleClick={()=>true}/>}
             {/*<Box>*/}
             {/*    {results && results.status && (*/}
             {/*        <Typography*/}
