@@ -42,12 +42,9 @@ async function getRate(shipmentInfo){
         },
         data: shipmentInfo
     }
-    try {
-        const { data } = await axios(config)
-        return data
-    } catch (error) {
-        console.log(error)
-    }
+
+    const { data } = await axios(config)
+    return data
 }
 
 async function getRateRoute(req, res) {
@@ -120,7 +117,7 @@ async function getRateRoute(req, res) {
         res.json(data)
     } catch (error) {
         const { response } = error
-        res.status(response?.status || 500).json(response?.data)
+        res.status(response?.status || 500).json(response?.statusText)
     }
 }
 
