@@ -11,19 +11,17 @@ import {
     Select,
     MenuItem,
     InputAdornment,
-    Typography,
 } from '@mui/material'
 import AdapterDateFns from '@mui/lab/AdapterMoment'
 import { LocalizationProvider, DesktopDatePicker } from '@mui/lab'
 
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
-import { COUNTRIES, DHL_ACCOUNTS, CURRENCY_TYPES } from '../../constants'
+import { COUNTRIES } from '../../constants'
 
 function QuoteForm() {
-    const [alignment, setAlignment] = useState('exp')
     const [unit, setUnit] = useState('metric')
-    const [dhlAccount, setDhlAccount] = useState(DHL_ACCOUNTS[alignment][0])
+    const [loading,setLoading] = useState(false)
     const [results, setResults]: [any, any] = useState(null)
     const [date, setDate] = useState<Date | null>(
         new Date(new Date().setDate(new Date().getDate() + 1))
@@ -36,34 +34,38 @@ function QuoteForm() {
         formState: { errors },
     } = useForm()
 
-    useEffect(() => {
-        setDhlAccount(DHL_ACCOUNTS[alignment][0])
-    }, [alignment])
-
-    useEffect(() => {
-        resetField('account', { defaultValue: dhlAccount })
-    }, [dhlAccount])
-
     const onSubmit = async (data: any) => {
-        const { city, country, weight, width, height, account } = data
+        const { weight, width, height,length,
+            sender_city,sender_postalCode,
+            receiver_city,receiver_countryCode,receiver_postalCode} = data
+        const sender_countryCode = 'US'
+        const weight_units = unit === 'metric' ? "KG" : "LB"
+        const length_units = unit === 'metric' ? "CM" : "IN"
         const body = {
-            alignment,
-            city,
-            country,
+            sender_city,
+            sender_countryCode,
+            sender_postalCode,
+            receiver_city,
+            receiver_countryCode,
+            receiver_postalCode,
+            weight_units,
+            length_units,
+            length,
             weight,
             width,
             height,
-            unit,
-            account,
             date,
         }
+        console.log(body)
+        setLoading(true)
         try {
-            const { data } = await axios.post('/api/rate', body)
+            const {data}  = await axios.post('/api/rates_fedex', body)
             setResults(data)
         } catch (err: any) {
             setResults(err.response.data)
+        } finally {
+            setLoading(false)
         }
-        return false
     }
 
     return (
@@ -83,42 +85,11 @@ function QuoteForm() {
             borderRadius="0.5rem"
             mx="auto">
             <Grid container spacing={2}>
-                {/*<Grid item xs={4}>*/}
-                {/*    <ToggleButtonGroup*/}
-                {/*        color="primary"*/}
-                {/*        value={alignment}*/}
-                {/*        exclusive*/}
-                {/*        onChange={(e, newAlignment) =>*/}
-                {/*            setAlignment(newAlignment || alignment)*/}
-                {/*        }>*/}
-                {/*        <ToggleButton value="imp">From (Import)</ToggleButton>*/}
-                {/*        <ToggleButton value="exp">To (Export)</ToggleButton>*/}
-                {/*    </ToggleButtonGroup>*/}
-                {/*</Grid>*/}
-                {/*<Grid item xs={4}>*/}
-                {/*    <FormControl fullWidth>*/}
-                {/*        <InputLabel id="select-account-label">*/}
-                {/*            Account**/}
-                {/*        </InputLabel>*/}
-                {/*        <Select*/}
-                {/*            labelId="select-account-label"*/}
-                {/*            label="Account"*/}
-                {/*            required*/}
-                {/*            error={!!errors.account}*/}
-                {/*            value={dhlAccount}*/}
-                {/*            autoWidth*/}
-                {/*            {...register('account', { required: true })}*/}
-                {/*            onChange={(e) => setDhlAccount(e.target.value)}>*/}
-                {/*            {DHL_ACCOUNTS[alignment].map((acc) => (*/}
-                {/*                <MenuItem value={acc}>{acc}</MenuItem>*/}
-                {/*            ))}*/}
-                {/*        </Select>*/}
-                {/*    </FormControl>*/}
-                {/*</Grid>*/}
                 <Grid item xs={4}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="Shipping date"
+
                             inputFormat="MM/DD/yyyy"
                             value={date}
                             onChange={(newValue) => {
@@ -126,6 +97,7 @@ function QuoteForm() {
                             }}
                             renderInput={(params) => (
                                 <TextField
+                                    fullWidth
                                     {...params}
                                     {...register('date', { required: true })}
                                 />
@@ -134,17 +106,39 @@ function QuoteForm() {
                     </LocalizationProvider>
                 </Grid>
                 <Grid item xs={4}>
+                    <TextField
+                        fullWidth
+                        label="Sender City"
+                        variant="outlined"
+                        required
+                        helperText={errors.sender_city?.type}
+                        error={!!errors.sender_city}
+                        {...register('sender_city', { required: true, maxLength: 50 })}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <TextField
+                        fullWidth
+                        label="Sender Postal Code"
+                        variant="outlined"
+                        required
+                        helperText={errors.sender_postalCode?.type}
+                        error={!!errors.sender_postalCode}
+                        {...register('sender_postalCode', { required: true, maxLength: 50 })}
+                    />
+                </Grid>
+                <Grid item xs={4}>
                     <FormControl fullWidth>
                         <InputLabel id="select-country-label">
-                            Country*
+                            Receiver Country Code
                         </InputLabel>
                         <Select
                             labelId="select-country-label"
-                            label="Country*"
+                            label="Receiver Country Code"
                             defaultValue=""
                             required
-                            error={!!errors.country}
-                            {...register('country', { required: true })}>
+                            error={!!errors.receiver_countryCode}
+                            {...register('receiver_countryCode', { required: true })}>
                             {COUNTRIES.map((country) => (
                                 <MenuItem value={country.value}>
                                     {country.label}
@@ -156,17 +150,46 @@ function QuoteForm() {
                 <Grid item xs={4}>
                     <TextField
                         fullWidth
-                        label="City"
+                        label="Receiver City"
                         variant="outlined"
                         required
-                        helperText={errors.city?.type}
-                        error={!!errors.city}
-                        {...register('city', { required: true, maxLength: 50 })}
+                        helperText={errors.receiver_city?.type}
+                        error={!!errors.receiver_city}
+                        {...register('receiver_city', { required: true, maxLength: 50 })}
                     />
                 </Grid>
+
+                <Grid item xs={4}>
+                    <TextField
+                        fullWidth
+                        label="Receiver Postal Code"
+                        variant="outlined"
+                        required
+                        helperText={errors.receiver_postalCode?.type}
+                        error={!!errors.receiver_postalCode}
+                        {...register('receiver_postalCode', { required: true, maxLength: 50 })}
+                    />
+                </Grid>
+
             </Grid>
             <Grid container marginTop="1rem" columnSpacing={2}>
+                <Grid item xs={4}/>
                 <Grid item xs={4}>
+                    <ToggleButtonGroup
+                        fullWidth
+                        color="primary"
+                        value={unit}
+                        exclusive
+                        onChange={(e, newUnit) => setUnit(newUnit)}>
+                        <ToggleButton value="metric">Metric</ToggleButton>
+                        <ToggleButton value="imperial">Imperial</ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={4}/>
+
+            </Grid>
+            <Grid container marginTop="1rem" columnSpacing={1}>
+                <Grid item xs={3}>
                     <TextField
                         fullWidth
                         label="Weight"
@@ -189,25 +212,14 @@ function QuoteForm() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={4}>
-                    <ToggleButtonGroup
-                        color="primary"
-                        value={unit}
-                        exclusive
-                        onChange={(e, newUnit) => setUnit(newUnit)}>
-                        <ToggleButton value="metric">Metric</ToggleButton>
-                        <ToggleButton value="imperial">Imperial</ToggleButton>
-                    </ToggleButtonGroup>
-                </Grid>
-            </Grid>
-            <Grid container marginTop="1rem" columnSpacing={1}>
                 <Grid item xs={3}>
                     <TextField
                         fullWidth
                         label="Height"
+                        required
                         helperText={errors.height?.type}
                         error={!!errors.height}
-                        {...register('height', { max: 9999, min: 0 })}
+                        {...register('height', {required: true, max: 9999, min: 0 })}
                         variant="outlined"
                         InputProps={{
                             endAdornment: (
@@ -217,24 +229,16 @@ function QuoteForm() {
                             ),
                         }}
                     />
-                </Grid>
-                <Grid item xs={1}>
-                    <Typography
-                        variant="h3"
-                        component="h3"
-                        color="text.secondary"
-                        textAlign="center">
-                        X
-                    </Typography>
                 </Grid>
                 <Grid item xs={3}>
                     <TextField
                         fullWidth
                         label="Width"
+                        required
                         variant="outlined"
                         helperText={errors.width?.type}
                         error={!!errors.width}
-                        {...register('width', { max: 9999, min: 0 })}
+                        {...register('width', {required: true, max: 9999, min: 0 })}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -244,23 +248,15 @@ function QuoteForm() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={1}>
-                    <Typography
-                        variant="h3"
-                        component="h3"
-                        color="text.secondary"
-                        textAlign="center">
-                        X
-                    </Typography>
-                </Grid>
                 <Grid item xs={3}>
                     <TextField
                         fullWidth
                         label="Length"
+                        required
                         variant="outlined"
                         helperText={errors.length?.type}
                         error={!!errors.length}
-                        {...register('length', { max: 9999, min: 0 })}
+                        {...register('length', {required: true, max: 9999, min: 0 })}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -272,106 +268,109 @@ function QuoteForm() {
                 </Grid>
             </Grid>
             <Box marginY="1rem">
-                <Button type="submit" variant="contained">
+                <Button disabled={loading} fullWidth type="submit" variant="contained">
                     Get Estimate
                 </Button>
             </Box>
-            <Box>
-                {results && results.status && (
-                    <Typography
-                        variant="h6"
-                        component="span"
-                        color="error.main">
-                        {results.detail}
-                    </Typography>
-                )}
-                {results && !results.status && (
-                    <>
-                        {results.products.map((product) => (
-                            <>
-                                <Box
-                                    bgcolor="darkgray"
-                                    color="white"
-                                    fontSize="large"
-                                    padding="1rem"
-                                    fontWeight="bold"
-                                    >
-                                    {product.name}
-                                </Box>
-                                {product.prices.map((price) => (
-                                    <>
-                                        <Typography
-                                            variant="h6"
-                                            fontWeight="bold"
-                                            color="text.secondary">
-                                            ESTIMATED COST:
-                                            <Typography
-                                                variant="h6"
-                                                fontWeight="bold"
-                                                ml="1rem"
-                                                component="span"
-                                                color="text.primary">
-                                                {price.price}{' '}
-                                                {price.priceCurrency}
-                                                <Typography
-                                                    fontWeight="light"
-                                                    fontSize="medium"
-                                                    component="small"
-                                                    color="text.secondary">
-                                                    {' '}
-                                                    {
-                                                        CURRENCY_TYPES[
-                                                            price.currencyType
-                                                        ]
-                                                    }
-                                                </Typography>
-                                            </Typography>
-                                        </Typography>
-                                        {price.breakdown && (
-                                            <Typography
-                                                variant="caption"
-                                                fontWeight="light"
-                                                color="text.secondary">
-                                                COST BREAKDOWN:
-                                            </Typography>
-                                        )}
-                                        <ul style={{ margin: 0 }}>
-                                            {price.breakdown?.breakdown.map(
-                                                (breakdown) => (
-                                                    <li>
-                                                        <b>
-                                                            {breakdown.name.toLowerCase()}
-                                                            :
-                                                        </b>{' '}
-                                                        {breakdown.price}{' '}
-                                                        {price.priceCurrency}
-                                                    </li>
-                                                )
-                                            )}
-                                        </ul>
-                                    </>
-                                ))}
-                                <Typography
-                                    variant="h6"
-                                    fontWeight="bold"
-                                    color="text.secondary">
-                                    ESTIMATED DELIVERY DATE AND TIME:
-                                    <Typography
-                                        variant="h6"
-                                        fontWeight="bold"
-                                        ml="1rem"
-                                        component="span"
-                                        color="text.primary">
-                                        {product.estimatedDeliveryDateAndTime} (
-                                        {product.totalTransitDays} days in
-                                        transit)
-                                    </Typography>
-                                </Typography>
-                            </>
-                        ))}
-                    </>
-                )}
-            </Box>
+            {results && <Box>
+                Results are {results}
+            </Box>}
+            {/*<Box>*/}
+            {/*    {results && results.status && (*/}
+            {/*        <Typography*/}
+            {/*            variant="h6"*/}
+            {/*            component="span"*/}
+            {/*            color="error.main">*/}
+            {/*            {results.detail}*/}
+            {/*        </Typography>*/}
+            {/*    )}*/}
+            {/*    {results && !results.status && (*/}
+            {/*        <>*/}
+            {/*            {results.products.map((product) => (*/}
+            {/*                <>*/}
+            {/*                    <Box*/}
+            {/*                        bgcolor="darkgray"*/}
+            {/*                        color="white"*/}
+            {/*                        fontSize="large"*/}
+            {/*                        padding="1rem"*/}
+            {/*                        fontWeight="bold"*/}
+            {/*                        >*/}
+            {/*                        {product.name}*/}
+            {/*                    </Box>*/}
+            {/*                    {product.prices.map((price) => (*/}
+            {/*                        <>*/}
+            {/*                            <Typography*/}
+            {/*                                variant="h6"*/}
+            {/*                                fontWeight="bold"*/}
+            {/*                                color="text.secondary">*/}
+            {/*                                ESTIMATED COST:*/}
+            {/*                                <Typography*/}
+            {/*                                    variant="h6"*/}
+            {/*                                    fontWeight="bold"*/}
+            {/*                                    ml="1rem"*/}
+            {/*                                    component="span"*/}
+            {/*                                    color="text.primary">*/}
+            {/*                                    {price.price}{' '}*/}
+            {/*                                    {price.priceCurrency}*/}
+            {/*                                    <Typography*/}
+            {/*                                        fontWeight="light"*/}
+            {/*                                        fontSize="medium"*/}
+            {/*                                        component="small"*/}
+            {/*                                        color="text.secondary">*/}
+            {/*                                        {' '}*/}
+            {/*                                        {*/}
+            {/*                                            CURRENCY_TYPES[*/}
+            {/*                                                price.currencyType*/}
+            {/*                                            ]*/}
+            {/*                                        }*/}
+            {/*                                    </Typography>*/}
+            {/*                                </Typography>*/}
+            {/*                            </Typography>*/}
+            {/*                            {price.breakdown && (*/}
+            {/*                                <Typography*/}
+            {/*                                    variant="caption"*/}
+            {/*                                    fontWeight="light"*/}
+            {/*                                    color="text.secondary">*/}
+            {/*                                    COST BREAKDOWN:*/}
+            {/*                                </Typography>*/}
+            {/*                            )}*/}
+            {/*                            <ul style={{ margin: 0 }}>*/}
+            {/*                                {price.breakdown?.breakdown.map(*/}
+            {/*                                    (breakdown) => (*/}
+            {/*                                        <li>*/}
+            {/*                                            <b>*/}
+            {/*                                                {breakdown.name.toLowerCase()}*/}
+            {/*                                                :*/}
+            {/*                                            </b>{' '}*/}
+            {/*                                            {breakdown.price}{' '}*/}
+            {/*                                            {price.priceCurrency}*/}
+            {/*                                        </li>*/}
+            {/*                                    )*/}
+            {/*                                )}*/}
+            {/*                            </ul>*/}
+            {/*                        </>*/}
+            {/*                    ))}*/}
+            {/*                    <Typography*/}
+            {/*                        variant="h6"*/}
+            {/*                        fontWeight="bold"*/}
+            {/*                        color="text.secondary">*/}
+            {/*                        ESTIMATED DELIVERY DATE AND TIME:*/}
+            {/*                        <Typography*/}
+            {/*                            variant="h6"*/}
+            {/*                            fontWeight="bold"*/}
+            {/*                            ml="1rem"*/}
+            {/*                            component="span"*/}
+            {/*                            color="text.primary">*/}
+            {/*                            {product.estimatedDeliveryDateAndTime} (*/}
+            {/*                            {product.totalTransitDays} days in*/}
+            {/*                            transit)*/}
+            {/*                        </Typography>*/}
+            {/*                    </Typography>*/}
+            {/*                </>*/}
+            {/*            ))}*/}
+            {/*        </>*/}
+            {/*    )}*/}
+            {/*</Box>*/}
         </Box>
     )
 }

@@ -17,7 +17,15 @@ export default Home
 
 export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
     const user = req.session['user']
-    if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
+    // if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
+    //     return {
+    //         redirect: {
+    //             destination: '/login',
+    //             permanent: false,
+    //         },
+    //     }
+    // }
+    if (!user) {
         return {
             redirect: {
                 destination: '/login',
@@ -25,7 +33,6 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
             },
         }
     }
-
     const addressDescription = await checkoutFetcher(
         ADDRESS_DESCRIPTION,
         {
