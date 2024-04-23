@@ -1,5 +1,7 @@
 import { withSessionRoute } from 'lib/withSession'
 import axios from 'axios'
+import getConfig from "next/config";
+
 const qs = require('qs');
 
  

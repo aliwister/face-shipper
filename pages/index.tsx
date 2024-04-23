@@ -25,14 +25,14 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
     //         },
     //     }
     // }
-    if (!user) {
+/*    if (!user) {
         return {
             redirect: {
                 destination: '/login',
                 permanent: false,
             },
         }
-    }
+    }*/
     const addressDescription = await checkoutFetcher(
         ADDRESS_DESCRIPTION,
         {
