@@ -4,11 +4,8 @@ import getConfig from "next/config";
 
 const qs = require('qs');
 
- 
-const { serverRuntimeConfig } = getConfig();
-
 async function getAccessToken(){
-    const url = `${serverRuntimeConfig.FEDEX_URL}/oauth/token`
+    const url = `${process.env.FEDEX_URL}/oauth/token`
     const config = {
         method: 'POST',
         url: url,
@@ -17,8 +14,8 @@ async function getAccessToken(){
         },
         data: qs.stringify({
             grant_type: 'client_credentials',
-            client_id: serverRuntimeConfig.FEDEX_CLIENT_ID,
-            client_secret: serverRuntimeConfig.FEDEX_CLIENT_SECRET,
+            client_id: process.env.FEDEX_CLIENT_ID,
+            client_secret: process.env.FEDEX_CLIENT_SECRET,
         })
     }
     try {
@@ -30,7 +27,7 @@ async function getAccessToken(){
 }
 
 async function getRate(shipmentInfo){
-    const url = `${serverRuntimeConfig.FEDEX_URL}/rate/v1/rates/quotes`
+    const url = `${process.env.FEDEX_URL}/rate/v1/rates/quotes`
     const token = await getAccessToken()
     const config = {
         method: 'POST',
@@ -70,7 +67,7 @@ async function getRateRoute(req, res) {
     try {
         const shipmentInfo = {
             "accountNumber": {
-                "value": serverRuntimeConfig.FEDEX_ACCOUNT_NUMBER
+                "value": process.env.FEDEX_ACCOUNT_NUMBER
             },
             "requestedShipment": {
                 "shipper": {
