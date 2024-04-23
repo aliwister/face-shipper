@@ -2,13 +2,11 @@ import { withSessionRoute } from 'lib/withSession'
 import axios from 'axios'
 const qs = require('qs');
 
-const FEDEX_URL = "https://apis-sandbox.fedex.com"
-const CLIENT_ID = "l72e9ba4546fd6424f8204195729225ba9"
-const CLIENT_SECRET = "f502317014eb45368c07e730eb40d8e2"
-const ACCOUNT_NUMBER = "740561073"
+ 
+const { serverRuntimeConfig } = getConfig();
 
 async function getAccessToken(){
-    const url = `${FEDEX_URL}/oauth/token`
+    const url = `${serverRuntimeConfig.FEDEX_URL}/oauth/token`
     const config = {
         method: 'POST',
         url: url,
@@ -17,8 +15,8 @@ async function getAccessToken(){
         },
         data: qs.stringify({
             grant_type: 'client_credentials',
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
+            client_id: serverRuntimeConfig.FEDEX_CLIENT_ID,
+            client_secret: serverRuntimeConfig.FEDEX_CLIENT_SECRET,
         })
     }
     try {
@@ -30,7 +28,7 @@ async function getAccessToken(){
 }
 
 async function getRate(shipmentInfo){
-    const url = `${FEDEX_URL}/rate/v1/rates/quotes`
+    const url = `${serverRuntimeConfig.FEDEX_URL}/rate/v1/rates/quotes`
     const token = await getAccessToken()
     const config = {
         method: 'POST',
@@ -70,7 +68,7 @@ async function getRateRoute(req, res) {
     try {
         const shipmentInfo = {
             "accountNumber": {
-                "value": ACCOUNT_NUMBER
+                "value": serverRuntimeConfig.FEDEX_ACCOUNT_NUMBER
             },
             "requestedShipment": {
                 "shipper": {
