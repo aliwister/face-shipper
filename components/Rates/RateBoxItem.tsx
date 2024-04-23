@@ -25,7 +25,7 @@ export default function RateBoxItem({item, idx}) {
 
             <Button size={"large"} variant="contained" color="warning">
                 <Typography fontWeight={700} variant="h5" component="h5">
-                    {item.ratedShipmentDetails[0].totalNetFedExCharge*.4}$
+                    {item.ratedShipmentDetails[0].totalNetFedExCharge*1.4}$
                 </Typography>
 
             </Button>
