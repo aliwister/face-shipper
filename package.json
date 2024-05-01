@@ -9,9 +9,6 @@
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@loadable/component": "^5.15.0",
-    "@mui/lab": "^5.0.0-alpha.58",
-    "@mui/material": "^5.1.1",
-    "@mui/styled-engine-sc": "^5.1.0",
     "axios": "^0.24.0",
     "base64topdf": "^1.1.8",
     "graphql": "^16.0.1",
@@ -36,6 +33,9 @@
     "@types/react": "17.0.11",
     "@types/styled-components": "^5.1.11",
     "@types/styled-system": "^5.1.12",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
     "typescript": "^4.5.2"
   }
 }
