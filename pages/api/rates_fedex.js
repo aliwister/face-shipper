@@ -103,16 +103,19 @@ async function getRateRoute(req, res) {
                             "units": weight_units, // Enum: "KG" "LB"
                             "value": weight
                         },
-                        "dimensions": {
-                            "length": length,
-                            "width": width,
-                            "height": height,
-                            "units": length_units // Enum: "CM" "IN"
-                        }
+                        ...(length && {
+                            "dimensions": {
+                                "length": length,
+                                "width": width,
+                                "height": height,
+                                "units": length_units
+                            }
+                        })
                     }
                 ]
             }
         }
+        console.log(shipmentInfo)
         const data = await getRate(shipmentInfo)
         res.json(data)
     } catch (error) {
