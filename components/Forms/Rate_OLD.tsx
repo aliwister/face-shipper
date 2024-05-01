@@ -10,7 +10,7 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    InputAdornment, Typography, Autocomplete,
+    InputAdornment,
 } from '@mui/material'
 import AdapterDateFns from '@mui/lab/AdapterMoment'
 import { LocalizationProvider, DesktopDatePicker } from '@mui/lab'
@@ -22,10 +22,6 @@ import RatesBox from "../Rates/RatesBox";
 
 function QuoteForm() {
     const [unit, setUnit] = useState('metric')
-    const [addressFrom, setAddressFrom] = useState('')
-    const [addressFromOptions, setAddressFromOptions] = useState([])
-    const [addressTo, setAddressTo] = useState('')
-    const [addressToOptions, setAddressToOptions] = useState([])
     const [loading,setLoading] = useState(false)
     const [results, setResults]: [any, any] = useState(null)
     const [date, setDate] = useState<Date | null>(
@@ -35,25 +31,10 @@ function QuoteForm() {
     const {
         register,
         handleSubmit,
-        getValues,
+        resetField,
         formState: { errors },
     } = useForm()
-    const getAddress = (country,address,handleSet) =>{
-        const body = {
-            "location": {
-                "address": {
-                    "streetLines": [
-                        "10 FedEx Parkway",
-                        "Suite 302"
-                    ],
-                    "city": "Beverly Hills",
-                    "stateOrProvinceCode": "CA",
-                    "postalCode": "90210",
-                    "countryCode": country,
-                },
-            }
-        }
-    }
+
     const onSubmit = async (data: any) => {
         const { weight, width, height,length,
             sender_city,sender_postalCode,
@@ -100,20 +81,10 @@ function QuoteForm() {
             noValidate
             autoComplete="off"
             onSubmit={handleSubmit(onSubmit)}
-            //boxShadow="0px 0px 15px rgba(147, 162, 181, 0.2)"
+            boxShadow="0px 0px 15px rgba(147, 162, 181, 0.2)"
             maxWidth="65rem"
             borderRadius="0.5rem"
             mx="auto">
-            <Typography align={"center"} fontWeight={"bold"} variant="h2">Calculate Face-Shipper's Rates </Typography>
-            {/*<Box display={'flex'} marginTop="2rem" marginBottom="2rem">*/}
-            {/*    <Autocomplete*/}
-            {/*        fullWidth*/}
-
-            {/*        disablePortal*/}
-            {/*        options={[]}*/}
-            {/*        renderInput={(params) => <TextField {...params} label="From" />}*/}
-            {/*    />*/}
-            {/*</Box>*/}
             <Grid container spacing={2}>
                 <Grid item xs={4}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -210,8 +181,8 @@ function QuoteForm() {
                         value={unit}
                         exclusive
                         onChange={(e, newUnit) => setUnit(newUnit)}>
-                        <ToggleButton value="metric">Metric(kg,cm)</ToggleButton>
-                        <ToggleButton value="imperial">Imperial(lb,in)</ToggleButton>
+                        <ToggleButton value="metric">Metric</ToggleButton>
+                        <ToggleButton value="imperial">Imperial</ToggleButton>
                     </ToggleButtonGroup>
                 </Grid>
                 <Grid item xs={4}/>
@@ -224,6 +195,7 @@ function QuoteForm() {
                         label="Weight"
                         type="number"
                         variant="outlined"
+                        required
                         helperText={errors.weight?.type}
                         error={!!errors.weight}
                         {...register('weight', {
@@ -244,9 +216,10 @@ function QuoteForm() {
                     <TextField
                         fullWidth
                         label="Height"
+                        required
                         helperText={errors.height?.type}
                         error={!!errors.height}
-                        {...register('height', {required: !!getValues('length') || !!getValues('width'), max: 9999, min: 0 })}
+                        {...register('height', {required: true, max: 9999, min: 0 })}
                         variant="outlined"
                         InputProps={{
                             endAdornment: (
@@ -261,10 +234,11 @@ function QuoteForm() {
                     <TextField
                         fullWidth
                         label="Width"
+                        required
                         variant="outlined"
                         helperText={errors.width?.type}
                         error={!!errors.width}
-                        {...register('width', {required: !!getValues('length') || !!getValues('height'), max: 9999, min: 0 })}
+                        {...register('width', {required: true, max: 9999, min: 0 })}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -278,10 +252,11 @@ function QuoteForm() {
                     <TextField
                         fullWidth
                         label="Length"
+                        required
                         variant="outlined"
                         helperText={errors.length?.type}
                         error={!!errors.length}
-                        {...register('length', {required: !!getValues('width') || !!getValues('height'), max: 9999, min: 0 })}
+                        {...register('length', {required: true, max: 9999, min: 0 })}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -292,11 +267,9 @@ function QuoteForm() {
                     />
                 </Grid>
             </Grid>
-            <Box display="flex"
-                 justifyContent="center"
-                 alignItems="center" marginY="1rem">
-                <Button size={"large"} disabled={loading} type="submit" variant="contained">
-                    Get Rates
+            <Box marginY="1rem">
+                <Button disabled={loading} fullWidth type="submit" variant="contained">
+                    Get Estimate
                 </Button>
             </Box>
             {results && <RatesBox results={results.data} handleClick={()=>true}/>}

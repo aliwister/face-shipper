@@ -7,7 +7,6 @@ import { ADDRESS_DESCRIPTION } from '../constants/graphql'
 const Home = ({ addressDescription }) => {
     return (
         <Layout>
-            <h1>Ship with Badals.com</h1>
             <RateForm />
         </Layout>
     )
