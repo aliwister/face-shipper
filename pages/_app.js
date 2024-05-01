@@ -1,6 +1,6 @@
 import { SWRConfig } from 'swr'
 import fetch from '../lib/fetchJson'
-
+import './globals.css'
 function MyApp({ Component, pageProps }) {
     return (
         <SWRConfig

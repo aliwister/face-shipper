@@ -8,6 +8,9 @@ const Layout = ({ children }) => {
             <Head>
                 <title>Face-Shipper</title>
             </Head>
+            <script async
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNLwgKASdfXKygFt61Anbz_3y4uHp1lQk&loading=async&libraries=places&callback=initMap">
+            </script>
             <style jsx global>{`
                 *,
                 *::before,
@@ -25,6 +28,9 @@ const Layout = ({ children }) => {
                 }
 
                 .container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
                     margin: 1.5rem auto;
                     padding-left: 1rem;
                     padding-right: 1rem;
