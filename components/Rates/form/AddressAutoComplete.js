@@ -1,8 +1,8 @@
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import {useState} from "react";
 
-export default () => {
-    const {
+export default ({setAddressFrom, setAddressTo}) => {
+    const {placesService,
         placesAutocompleteService,
     } = usePlacesService({
         apiKey: 'AIzaSyCNLwgKASdfXKygFt61Anbz_3y4uHp1lQk'
@@ -11,14 +11,38 @@ export default () => {
     const [selectedResult1, setSelectedResult1] = useState("");
     const [results2, setResults2] = useState([])
     const [selectedResult2, setSelectedResult2] = useState("");
-    const handleSelectChange1 = (evt) => {
+    const handleSelectChange1 = (evt,id) => {
         setSelectedResult1(evt);
+        placesService?.getDetails(
+            {
+                placeId: id,
+            },
+            (placeDetails) => handleAddress(setAddressFrom,placeDetails)
+        );
         setResults1([])
     };
-    const handleSelectChange2 = (evt) => {
+    const handleSelectChange2 = (evt,id) => {
         setSelectedResult2(evt);
+        placesService?.getDetails(
+            {
+                placeId: id,
+            },
+            (placeDetails) => handleAddress(setAddressTo,placeDetails)
+        );
         setResults2([])
     };
+    const handleAddress = (setAddress,placeDetails)=>{
+        let country = '';
+        let postalCode = '';
+        placeDetails.address_components.forEach(component => {
+            if (component.types.includes('country')) {
+                country = component.short_name;
+            } else if (component.types.includes('postal_code')) {
+                postalCode = component.short_name;
+            }
+        });
+        setAddress({countryCode: country, postalCode: postalCode})
+    }
     return (
         <div className="w-full">
             <div className={"flex relative w-full justify-between items-center"}>
@@ -45,7 +69,7 @@ export default () => {
             </div>
             {results1&& <div className={"flex flex-col  divide-y pl-20"}>
                 {results1.map((item) => {
-                    return (<div className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "} onClick={()=>handleSelectChange1(item.description)} >
+                    return (<div className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "} onClick={()=>handleSelectChange1(item.description,item.place_id)} >
                         {item.description}
                     </div>)
                 })}
@@ -74,7 +98,7 @@ export default () => {
             </div>
             {results2&& <div className={"flex flex-col  divide-y pl-20"}>
                 {results2.map((item) => {
-                    return (<div className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "} onClick={()=>handleSelectChange2(item.description)} >
+                    return (<div className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "} onClick={()=>handleSelectChange2(item.description,item.place_id)} >
                         {item.description}
                     </div>)
                 })}

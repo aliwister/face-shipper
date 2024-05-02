@@ -1,7 +1,4 @@
-import React, {useEffect, useState} from 'react'
-
-import { usePlacesWidget } from "react-google-autocomplete";
-import Autocomplete from "react-google-autocomplete";
+import React, {useState} from 'react'
 
 import {useForm} from 'react-hook-form'
 import axios from 'axios'
@@ -9,14 +6,11 @@ import AddressAutoComplete from "../Rates/form/AddressAutoComplete";
 
 function QuoteForm() {
     const [unit, setUnit] = useState('metric')
-    const [addressFrom, setAddressFrom] = useState('')
-    const [addressFromOptions, setAddressFromOptions] = useState([])
-    const [addressTo, setAddressTo] = useState('')
-    const [addressToOptions, setAddressToOptions] = useState([])
+    const [addressFrom, setAddressFrom] = useState({countryCode: 'us', postalCode: ''})
+    const [addressTo, setAddressTo] = useState({countryCode: '', postalCode: ''})
     const [loading, setLoading] = useState(false)
     const [results, setResults] = useState(null)
-    const [date, setDate] = useState (new Date(new Date().setDate(new Date().getDate() + 1)))
-
+    const [date, setDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)))
 
 
     const {
@@ -41,22 +35,14 @@ function QuoteForm() {
             width,
             height,
             length,
-            sender_city,
-            sender_postalCode,
-            receiver_city,
-            receiver_countryCode,
-            receiver_postalCode
         } = data
-        const sender_countryCode = 'US'
         const weight_units = unit === 'metric' ? "KG" : "LB"
         const length_units = unit === 'metric' ? "CM" : "IN"
         const body = {
-            sender_city,
-            sender_countryCode,
-            sender_postalCode,
-            receiver_city,
-            receiver_countryCode,
-            receiver_postalCode,
+            sender_countryCode: addressFrom.countryCode,
+            sender_postalCode: addressFrom.postalCode,
+            receiver_countryCode: addressTo.countryCode,
+            receiver_postalCode: addressTo.postalCode,
             weight_units,
             length_units,
             length,
@@ -78,14 +64,18 @@ function QuoteForm() {
     }
 
     return (<div className={"w-3/4 items-center flex flex-col"}>
-            <h2 className={"text-center font-bold text-6xl"}>
-                Calculate Face-Shipper's Rates
-            </h2>
-            <div className={"mt-16 w-full"}>
-                <AddressAutoComplete/>
-            </div>
+        <h2 className={"text-center font-bold text-6xl"}>
+            Calculate Face-Shipper's Rates
+        </h2>
+        <div className={"mt-16 items-center flex flex-col w-full"}>
+            <AddressAutoComplete setAddressFrom={setAddressFrom} setAddressTo={setAddressTo}/>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <button className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"} disabled={loading} type="submit" >Get Rates
+                </button>
+            </form>
+        </div>
 
-        </div>)
+    </div>)
     // return (
     //     <Box
     //         padding="1rem"
