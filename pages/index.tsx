@@ -1,4 +1,8 @@
-import { withSessionSsr } from 'lib/withSession'
+import { getIronSession } from "iron-session";
+import {
+  SessionData,
+  sessionOptions,
+} from 'lib/session/lib'
 import { checkoutFetcher } from '../lib/utils'
 import Layout from '../components/Layout'
 import RateForm from '../components/Forms/Rate'
@@ -14,8 +18,8 @@ const Home = ({ addressDescription }) => {
 
 export default Home
 
-export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
-    const user = req.session['user']
+export const getServerSideProps = async function ({ req, res }) {
+
     // if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
     //     return {
     //         redirect: {
@@ -24,7 +28,12 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
     //         },
     //     }
     // }
-    if (!user) {
+    const session = await getIronSession<SessionData>(
+        req,
+        res,
+        sessionOptions,
+      );
+    if (!session.username) {
         return {
             redirect: {
                 destination: '/login',
@@ -43,6 +52,6 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
     )
 
     return {
-        props: { user: req.session['user'], addressDescription },
+        props: { user: session.username, addressDescription },
     }
-})
+}

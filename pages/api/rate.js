@@ -1,4 +1,4 @@
-import { withSessionRoute } from 'lib/withSession'
+import { getIronSession } from "iron-session";
 import axios from 'axios'
 import { shopFetcher } from 'lib/utils'
 import { ME_PLUS } from '../../constants/graphql.ts'
@@ -92,4 +92,4 @@ async function getRateRoute(req, res) {
     }
 }
 
-export default withSessionRoute(getRateRoute)
+export default getRateRoute
