@@ -1,39 +1,30 @@
-import React from 'react'
-import { Button, TextField, Typography, Box } from '@mui/material'
+import React from "react";
 
 const Form = ({ errorMessage, onSubmit }) => (
-    <form onSubmit={onSubmit}>
-        <Typography variant="h5">Login</Typography>
-        <Box my="1rem">
-            <TextField
-                fullWidth
-                type="text"
-                name="username"
-                required
-                label="Username"
-                variant="outlined"
-            />
-        </Box>
-        <Box mb="1rem">
-            <TextField
-                fullWidth
-                type="password"
-                name="password"
-                required
-                label="Password"
-                variant="outlined"
-            />
-        </Box>
-        <Button fullWidth variant="contained" type="submit">
-            Login
-        </Button>
+  <form onSubmit={onSubmit}>
+    <h5>Login</h5>
+    <div>
+      <input
+        type="text"
+        name="username"
+        required
+        label="Username"
+        variant="outlined"
+      />
+    </div>
+    <div>
+      <input
+        type="password"
+        name="password"
+        required
+        label="Password"
+        variant="outlined"
+      />
+    </div>
+    <button type="submit">Login</button>
 
-        {errorMessage && (
-            <Typography variant="h5" mt="1rem" color="error.main">
-                {errorMessage}
-            </Typography>
-        )}
-    </form>
-)
+    {errorMessage && <h5>{errorMessage}</h5>}
+  </form>
+);
 
-export default Form
+export default Form;
