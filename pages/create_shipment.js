@@ -161,7 +161,7 @@ const Home = ({}) => {
                          src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-lObuhsQAt6RRD6ZDUiZHH8Dg/user-ZfL16YVfqelAVfRFitZGeDiq/img-C9Dcj5kIDLQ6s1kQ5p2Yunxz.png?st=2024-05-01T17%3A17%3A16Z&amp;se=2024-05-01T19%3A17%3A16Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2024-04-30T19%3A38%3A39Z&amp;ske=2024-05-01T19%3A38%3A39Z&amp;sks=b&amp;skv=2021-08-06&amp;sig=y3ewnnl31WCC/WzVFr0vQz4oqG%2BAEjX6Mo0LYRhmPqg%3D"
                          width="100"/>
                     <button type={"button"} onClick={handleAddPackage}
-                            className={'font-bold bg-blue-600 hover:bg-blue-700 p-2 text-white rounded'}>ADD Package
+                            className={'font-semibold bg-blue-600 hover:bg-blue-700 p-2 text-white rounded'}>ADD Package
                     </button>
                 </div>
                 {packages.map((item, idx) => {
