@@ -26,6 +26,7 @@
     "react-hook-form": "^7.51.3",
     "react-phone-input-2": "^2.15.1",
     "styled-components": "^6.1.9",
+    "react-google-autocomplete": "^2.7.3",
     "styled-system": "^5.1.5",
     "swr": "2.2.5"
   },
