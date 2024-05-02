@@ -8,9 +8,7 @@ const Layout = ({ children }) => {
             <Head>
                 <title>Face-Shipper</title>
             </Head>
-            <script async
-                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNLwgKASdfXKygFt61Anbz_3y4uHp1lQk&loading=async&libraries=places&callback=initMap">
-            </script>
+
             <style jsx global>{`
                 *,
                 *::before,
