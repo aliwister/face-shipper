@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react'
 
+import { usePlacesWidget } from "react-google-autocomplete";
+import Autocomplete from "react-google-autocomplete";
 
 import {useForm} from 'react-hook-form'
 import axios from 'axios'
+import AddressAutoComplete from "../Rates/form/AddressAutoComplete";
 
 function QuoteForm() {
     const [unit, setUnit] = useState('metric')
@@ -11,37 +14,19 @@ function QuoteForm() {
     const [addressTo, setAddressTo] = useState('')
     const [addressToOptions, setAddressToOptions] = useState([])
     const [loading, setLoading] = useState(false)
-    const [results, setResults]: [any, any] = useState(null)
-    const [date, setDate] = useState<Date | null>(
-        new Date(new Date().setDate(new Date().getDate() + 1))
-    )
-    useEffect(() => {
+    const [results, setResults] = useState(null)
+    const [date, setDate] = useState (new Date(new Date().setDate(new Date().getDate() + 1)))
 
-        const input1 = document.getElementById("from-input");
-        const options1 = {
-            componentRestrictions: {country: "us"},
-        };
-        const autocomplete1 = new google.maps.places.Autocomplete(input1, options1);
-        const input2 = document.getElementById("to-input");
-        const options2 = {
-            componentRestrictions: {country: ['om', 'ae', 'sa']},
-        };
-        const autocomplete2 = new google.maps.places.Autocomplete(input2, options2);
-    }, []);
+
+
     const {
-        register,
-        handleSubmit,
-        getValues,
-        formState: {errors},
+        register, handleSubmit, getValues, formState: {errors},
     } = useForm()
     const getAddress = (country, address, handleSet) => {
         const body = {
             "location": {
                 "address": {
-                    "streetLines": [
-                        "10 FedEx Parkway",
-                        "Suite 302"
-                    ],
+                    "streetLines": ["10 FedEx Parkway", "Suite 302"],
                     "city": "Beverly Hills",
                     "stateOrProvinceCode": "CA",
                     "postalCode": "90210",
@@ -50,11 +35,17 @@ function QuoteForm() {
             }
         }
     }
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data) => {
         const {
-            weight, width, height, length,
-            sender_city, sender_postalCode,
-            receiver_city, receiver_countryCode, receiver_postalCode
+            weight,
+            width,
+            height,
+            length,
+            sender_city,
+            sender_postalCode,
+            receiver_city,
+            receiver_countryCode,
+            receiver_postalCode
         } = data
         const sender_countryCode = 'US'
         const weight_units = unit === 'metric' ? "KG" : "LB"
@@ -79,49 +70,22 @@ function QuoteForm() {
         try {
             const data = await axios.post('/api/rates_fedex', body)
             setResults(data)
-        } catch (err: any) {
+        } catch (err) {
             setResults(err.response.data)
         } finally {
             setLoading(false)
         }
     }
 
-    return (
-        <div className={"w-3/4 items-center flex flex-col"}>
+    return (<div className={"w-3/4 items-center flex flex-col"}>
             <h2 className={"text-center font-bold text-6xl"}>
                 Calculate Face-Shipper's Rates
             </h2>
             <div className={"mt-16 w-full"}>
-                <div className="w-full">
-                    <div className={"flex relative w-full justify-between items-center"}>
-                        <div className={"font-bold text-xl absolute left-4"}>From</div>
-                        <input
-                            className=" font-semibold text-xl appearance-none border-2 h-16 border-white bg-gray-200 rounded w-full py-2 px-4 pl-20 text-gray-700 leading-tight focus:outline-none focus:border-l-blue-600"
-                            type="text"
-                            id={"from-input"}
-                            placeholder=""
-                            value={addressFrom}
-                            onChange={(e) => setAddressFrom(e.target.value)}
-                        />
-                    </div>
-                    <div className={"flex relative w-full justify-between items-center"}>
-                        <div className={"font-bold text-xl absolute left-4"}>To</div>
-                        <input
-                            className="placeholder-black placeholder:font-bold placeholder:text-xl font-semibold text-xl  appearance-none border-2 h-16 border-white bg-gray-200 rounded w-full py-2 px-4 pl-20 text-gray-700 leading-tight focus:outline-none focus:border-l-blue-600"
-                            type="text"
-                            id={"to-input"}
-                            placeholder=""
-                            value={addressTo}
-                            onChange={(e) => setAddressTo(e.target.value)}
-                        />
-                    </div>
-
-
-                </div>
+                <AddressAutoComplete/>
             </div>
 
-        </div>
-    )
+        </div>)
     // return (
     //     <Box
     //         padding="1rem"
