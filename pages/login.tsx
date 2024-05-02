@@ -4,7 +4,8 @@ import Layout from '../components/Layout'
 import LoginForm from '../components/Login/Form'
 import fetchJson from '../lib/fetchJson'
 import Box from '@mui/material/Box'
-import { withSessionSsr } from 'lib/withSession'
+import { getIronSession } from "iron-session";
+import { SessionData, sessionOptions } from 'lib/session'
 
 const Login = () => {
     const { mutateUser } = useUser({
@@ -45,10 +46,14 @@ const Login = () => {
 
 export default Login
 
-export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
-    const user = req.session['user'];
+export const getServerSideProps = async function ({ req, res }) {
+    const session = await getIronSession<SessionData>(
+        req,
+        res,
+        sessionOptions,
+      );
 
-    if (user) {
+    if (session.username) {
         return {
             redirect: {
                 destination: '/profile',
@@ -57,4 +62,4 @@ export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
         }
     }
     return { props: {}}
-})
+}
