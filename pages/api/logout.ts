@@ -12,6 +12,6 @@ export default async function handler(
     const session = await getIronSession<SessionData>(req, res, sessionOptions);
 
     session.destroy();
-    res.redirect("/pages-router-redirect-api-route-fetch");
+    res.redirect("/login");
     return;
 }
