@@ -7,14 +7,18 @@ import { checkoutFetcher } from '../lib/utils'
 import Layout from '../components/Layout'
 import RateForm from '../components/Forms/Rate'
 import { ADDRESS_DESCRIPTION } from '../constants/graphql'
+import {useForm} from 'react-hook-form'
 
 const Home = ({}) => {
-    const handleSubmit = (e)=>{
+    const {
+        register, handleSubmit, getValues, formState: {errors},
+    } = useForm()
+    const onSubmit = (e)=>{
         
     }
     return (
         <Layout>
-            <form onSubmit={handleSubmit} className="container mx-auto p-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="container mx-auto p-4">
    <h1 className="text-2xl font-bold mb-4">
     Create a Shipping Label
    </h1>
