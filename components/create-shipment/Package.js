@@ -16,8 +16,8 @@ export default function Package({package_item,index,setPackages}) {
     };
 
     return(
-        <div className={"flex flex-col border p-4 w-full"}>
-            <div className={"flex justify-between"}>
+        <div className={"flex flex-col items-start border p-4 w-full"}>
+            <div className={"flex justify-between w-full"}>
                 <h3 className="text-lg  font-bold mb-4">
                     Package {index+1}
                 </h3>
@@ -28,28 +28,28 @@ export default function Package({package_item,index,setPackages}) {
             <h3 className="text-md  font-bold mb-4">
                 Package Details (Inches/pounds)
             </h3>
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-4 w-full">
                 <input
-                    className="border border-gray-400 p-2 rounded" value={package_item.weight} onChange={(e)=>handleChange(index,'weight',e.target.value)}  placeholder="Weight" type="text"/>
+                    className="border w-full border-gray-400 p-2 rounded" value={package_item.weight} onChange={(e)=>handleChange(index,'weight',e.target.value)}  placeholder="Weight" type="text"/>
                 <span className="flex items-center justify-center">|</span>
                 <input
-                    className="border border-gray-400 p-2 rounded" value={package_item.length} onChange={(e)=>handleChange(index,'length',e.target.value)}  placeholder="Length" type="text"/>
+                    className="border w-full border-gray-400 p-2 rounded" value={package_item.length} onChange={(e)=>handleChange(index,'length',e.target.value)}  placeholder="Length" type="text"/>
                 <span className="flex items-center justify-center">x</span>
                 <input
-                    className="border border-gray-400 p-2 rounded" value={package_item.width} onChange={(e)=>handleChange(index,'width',e.target.value)} placeholder="Width" type="text"/>
+                    className="border w-full border-gray-400 p-2 rounded" value={package_item.width} onChange={(e)=>handleChange(index,'width',e.target.value)} placeholder="Width" type="text"/>
                 <span className="flex items-center justify-center">x</span>
                 <input
-                    className="border border-gray-400 p-2 rounded" value={package_item.height} onChange={(e)=>handleChange(index,'height',e.target.value)} placeholder="Height" type="text"/>
+                    className="border w-full border-gray-400 p-2 rounded" value={package_item.height} onChange={(e)=>handleChange(index,'height',e.target.value)} placeholder="Height" type="text"/>
             </div>
-            <h2 className="text-lg font-bold mb-4">
+            <h2 className="text-lg font-bold mb-4 w-full">
                 Package contents
             </h2>
             <input
-                className="border border-gray-400 p-2 rounded mb-4" value={package_item.description} onChange={(e)=>handleChange(index,'description',e.target.value)} placeholder="ITEM DESCRIPTION (IN ENGLISH)"
+                className="border w-full border-gray-400 p-2 rounded mb-4" value={package_item.description} onChange={(e)=>handleChange(index,'description',e.target.value)} placeholder="ITEM DESCRIPTION (IN ENGLISH)"
                 type="text"/>
             <input
-                className="border border-gray-400 p-2 rounded mb-4" value={package_item.hc} onChange={(e)=>handleChange(index,'hc',e.target.value)} placeholder="HARMONIZED CODE" type="text"/>
-            <div className="grid grid-cols-3 gap-4 mb-4">
+                className="border w-full border-gray-400 p-2 rounded mb-4" value={package_item.hc} onChange={(e)=>handleChange(index,'hc',e.target.value)} placeholder="HARMONIZED CODE" type="text"/>
+            <div className="grid grid-cols-3 gap-4 mb-4 w-full">
                 <select
                     className="border border-gray-400 p-2 rounded">
                     <option>
@@ -72,7 +72,7 @@ export default function Package({package_item,index,setPackages}) {
                         Enter as totals
                     </option>
                 </select>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-4 gap-4">
                             <span className="flex items-center justify-center">
                                 NET WEIGHT
                             </span>
@@ -82,19 +82,18 @@ export default function Package({package_item,index,setPackages}) {
                             lb
                         </option>
                     </select>
-                </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-                        <span className="flex items-center justify-center">
+                    <span className="flex items-center justify-center">
                         CUSTOMS VALUE
                             </span>
-                <select
-                    className="border border-gray-400 p-2 rounded">
-                    <option>
-                        USD
-                    </option>
-                </select>
+                    <select
+                        className="border border-gray-400 p-2 rounded">
+                        <option>
+                            USD
+                        </option>
+                    </select>
+                </div>
             </div>
+
         </div>
     )
 }
