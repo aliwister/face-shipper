@@ -12,20 +12,20 @@ const Header = () => {
             <nav>
                 <ul>
                     <li>
-                        <Link href="/">
+                        <Link href="/" legacyBehavior>
                             <a>Home</a>
                         </Link>
                     </li>
                     {!user?.isLoggedIn ? (
                         <li>
-                            <Link href="/login">
+                            <Link href="/login" legacyBehavior>
                                 <a>Login</a>
                             </Link>
                         </li>
                     ) : (
                         <>
                             <li>
-                                <Link href="/profile">
+                                <Link href="/profile" legacyBehavior>
                                     <a>Profile</a>
                                 </Link>
                             </li>
@@ -80,7 +80,7 @@ const Header = () => {
                 }
             `}</style>
         </header>
-    )
+    );
 }
 
 export default Header

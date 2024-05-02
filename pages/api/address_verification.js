@@ -1,4 +1,4 @@
-import { withSessionRoute } from 'lib/withSession'
+import { getIronSession } from "iron-session";
 import axios from 'axios'
 const qs = require('qs');
 
@@ -65,4 +65,4 @@ async function getAddressVerificationRoute(req, res) {
     }
 }
 
-export default withSessionRoute(getAddressVerificationRoute)
+export default getAddressVerificationRoute

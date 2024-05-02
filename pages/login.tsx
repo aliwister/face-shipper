@@ -5,7 +5,7 @@ import LoginForm from '../components/Login/Form'
 import fetchJson from '../lib/fetchJson'
 import Box from '@mui/material/Box'
 import { getIronSession } from "iron-session";
-import { SessionData, sessionOptions } from 'lib/session'
+import { SessionData, sessionOptions } from 'lib/session/lib'
 
 const Login = () => {
     const { mutateUser } = useUser({
