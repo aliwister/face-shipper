@@ -4,14 +4,48 @@ import {checkoutFetcher} from '../lib/utils'
 import Layout from '../components/Layout'
 import {ADDRESS_DESCRIPTION} from '../constants/graphql'
 import {useForm} from 'react-hook-form'
+import {useState} from "react";
+import Package from "../components/create-shipment/Package";
 
 const Home = ({}) => {
     const {
         register, handleSubmit, getValues, formState: {errors},
     } = useForm()
+    const [packages, setPackages] = useState([{
+        length: '',
+        width: '',
+        height: '',
+        weight: '',
+        description: '',
+        hc: '',
+        quantity: '',
+    }])
     const onSubmit = (data) => {
         console.log(data)
     }
+    const handleAddPackage = () => {
+        const temp = [...packages]
+        temp.push({
+            length: '',
+            width: '',
+            height: '',
+            weight: '',
+            description: '',
+            hc: '',
+            quantity: '',
+        })
+        setPackages(temp)
+    }
+    const checkInputs = () => {
+        for (const packageItem of packages) {
+            for (const key in packageItem) {
+                if (packageItem[key] === '') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
     return (
         <Layout>
             <form onSubmit={handleSubmit(onSubmit)} className="container mx-auto p-4">
@@ -109,104 +143,37 @@ const Home = ({}) => {
                            className="border border-gray-400 p-2 rounded ml-2"
                            placeholder="Nickname this Ship From Address" type="text"/>
                 </div>
-                <h2 className="text-xl font-bold mb-4">
-                    Type of Packaging
-                </h2>
-                <select {...register('packaging_type', {required: true, maxLength: 50})}
-                        className="border border-gray-400 p-2 rounded mb-4">
-                    <option>
-                        Box or Rigid Packaging
-                    </option>
-                </select>
-                <img alt="A brown cardboard box" className="mb-4" height="100"
-                     src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-lObuhsQAt6RRD6ZDUiZHH8Dg/user-ZfL16YVfqelAVfRFitZGeDiq/img-C9Dcj5kIDLQ6s1kQ5p2Yunxz.png?st=2024-05-01T17%3A17%3A16Z&amp;se=2024-05-01T19%3A17%3A16Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2024-04-30T19%3A38%3A39Z&amp;ske=2024-05-01T19%3A38%3A39Z&amp;sks=b&amp;skv=2021-08-06&amp;sig=y3ewnnl31WCC/WzVFr0vQz4oqG%2BAEjX6Mo0LYRhmPqg%3D"
-                     width="100"/>
-                <h2 className="text-xl font-bold mb-4">
-                    Package Dimensions (Inches)
-                </h2>
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                    <input {...register('length', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Length" type="text"/>
-                    <span className="flex items-center justify-center">
-     x
-    </span>
-                    <input {...register('width', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Width" type="text"/>
-                    <span className="flex items-center justify-center">
-     x
-    </span>
-                    <input {...register('height', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Height" type="text"/>
-                </div>
-                <h2 className="text-xl font-bold mb-4">
-                    Package Weight
-                </h2>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('weight_pound', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Pounds" type="text"/>
-                    <input {...register('weight_ounce', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Ounces" type="text"/>
-                </div>
-                <h2 className="text-xl font-bold mb-4">
-                    Package contents
-                </h2>
-                <input {...register('description', {required: true, maxLength: 500})}
-                       className="border border-gray-400 p-2 rounded mb-4" placeholder="ITEM DESCRIPTION (IN ENGLISH)"
-                       type="text"/>
-                <input {...register('hc', {required: true, maxLength: 50})}
-                       className="border border-gray-400 p-2 rounded mb-4" placeholder="HARMONIZED CODE" type="text"/>
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                    <select {...register('c_m', {required: true, maxLength: 50})}
-                            className="border border-gray-400 p-2 rounded">
-                        <option>
-                            COUNTRY/TERRITORY OF MANUFACTURE
-                        </option>
-                    </select>
-                    <input {...register('quantity', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="QUANTITY" type="text"/>
-                    <select {...register('unit', {required: true, maxLength: 50})}
-                            className="border border-gray-400 p-2 rounded">
-                        <option>
-                            UNIT
-                        </option>
-                    </select>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <select {...register('totals', { required: true, maxLength: 50 })} className="border border-gray-400 p-2 rounded">
-                        <option>
-                            Enter as totals
-                        </option>
-                    </select>
-                    <div className="grid grid-cols-2 gap-4">
-     <span className="flex items-center justify-center">
-      NET WEIGHT
-     </span>
-                        <select {...register('net_weight', { required: true, maxLength: 50 })} className="border border-gray-400 p-2 rounded">
+
+                <div className={"flex justify-between border-t pt-4 items-start w-full"}>
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">
+                            Type of Packaging
+                        </h2>
+                        <select {...register('packaging_type', {required: true, maxLength: 50})}
+                                className="border border-gray-400 p-2 rounded mb-4">
                             <option>
-                                lb
+                                Box or Rigid Packaging
                             </option>
                         </select>
+
                     </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-    <span className="flex items-center justify-center">
-     CUSTOMS VALUE
-    </span>
-                    <select {...register('value', { required: true, maxLength: 50 })} className="border border-gray-400 p-2 rounded">
-                        <option>
-                            USD
-                        </option>
-                    </select>
-                </div>
-                <div className="mb-4">
-                    <input {...register('save_new', { required:false })} className="mr-2" type="checkbox"/>
-                    Save as new item
-                </div>
-                <div className="flex justify-end">
-                    <button type="button" className="bg-gray-400 text-white px-4 py-2 rounded mr-2">
-                        CANCEL
+                    <img alt="A brown cardboard box" className="mb-4" height="100"
+                         src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-lObuhsQAt6RRD6ZDUiZHH8Dg/user-ZfL16YVfqelAVfRFitZGeDiq/img-C9Dcj5kIDLQ6s1kQ5p2Yunxz.png?st=2024-05-01T17%3A17%3A16Z&amp;se=2024-05-01T19%3A17%3A16Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2024-04-30T19%3A38%3A39Z&amp;ske=2024-05-01T19%3A38%3A39Z&amp;sks=b&amp;skv=2021-08-06&amp;sig=y3ewnnl31WCC/WzVFr0vQz4oqG%2BAEjX6Mo0LYRhmPqg%3D"
+                         width="100"/>
+                    <button type={"button"} onClick={handleAddPackage}
+                            className={'font-bold bg-blue-600 hover:bg-blue-700 p-2 text-white rounded'}>ADD Package
                     </button>
-                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                </div>
+                {packages.map((item, idx) => {
+                    return (<Package setPackages={setPackages} index={idx} key={idx} package_item={item}/>)
+                })}
+
+
+                <div className="flex w-full mt-4 items-end justify-end">
+                    {/*<button type="button" className="bg-gray-400 text-white px-4 py-2 rounded mr-2">*/}
+                    {/*    CANCEL*/}
+                    {/*</button>*/}
+                    <button disabled={checkInputs()} type="submit" className="bg-blue-500 disabled:bg-gray-400 text-white px-4 py-2 rounded">
                         SAVE
                     </button>
                 </div>
