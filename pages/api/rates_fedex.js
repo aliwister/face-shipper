@@ -1,5 +1,7 @@
 import { getIronSession } from "iron-session";
 import axios from 'axios'
+import {shopFetcher} from "../../lib/utils";
+import {ME} from "../../constants/graphql";
 const qs = require('qs');
 
 const FEDEX_URL = "https://apis-sandbox.fedex.com"
@@ -120,13 +122,35 @@ async function getRateRoute(req, res) {
                 ]
             }
         }
-        console.log(shipmentInfo)
-        const data = await getRate(shipmentInfo)
+        let data = await getRate(shipmentInfo)
+        data = await addMarkup(data, req.session["user"])
         res.json(data)
     } catch (error) {
         const { response } = error
         res.status(response?.status || 500).json(response?.statusText)
     }
+}
+
+async function addMarkup(shipmentInfo, user) {
+    let markup = 0.4;
+    if(user) {
+        const { me } = await shopFetcher(ME, {}, 'en', {
+            Authorization: `${user.tokenType} ${user.id_token}`,
+            "X-TenantId" : "face_shipper"
+        })
+        if (me && me.shipperMarkup)
+            markup = +me.shipperMarkup / 100;
+    }
+    let rates = shipmentInfo.output.rateReplyDetails;
+    for (let i = 0; i < rates.length; i++) {
+        for  (let j = 0; j  < rates[i].ratedShipmentDetails.length; j++) { //todo ask ali about "rateType": "ACCOUNT" ...
+            rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes =
+                +rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes *
+                (1 + markup);
+        }
+    }
+    shipmentInfo.output.rateReplyDetails = rates;
+    return shipmentInfo;
 }
 
 export default getRateRoute
