@@ -16,6 +16,11 @@ const Header = () => {
                             <a>Home</a>
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/create_shipment" legacyBehavior>
+                            <a>Create Shipment</a>
+                        </Link>
+                    </li>
                     {!user?.isLoggedIn ? (
                         <li>
                             <Link href="/login" legacyBehavior>
