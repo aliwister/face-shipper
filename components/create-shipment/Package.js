@@ -1,4 +1,4 @@
-export default function Package({package_item, index, setPackages,unit}) {
+export default function Package({package_item, index, setPackages,unit,len}) {
 
     const handleChange = (index, fieldName, newValue) => {
         setPackages(prevPackages => {
@@ -17,10 +17,10 @@ export default function Package({package_item, index, setPackages,unit}) {
     return (
         <div className={"flex flex-col items-start border-t-2  border-black p-4 w-full"}>
             <div className={"flex justify-between w-full"}>
-                <h3 className="text-lg  font-bold mb-4">
+                <h3 className="text-lg  font-semibold mb-4">
                     Package {index + 1}
                 </h3>
-                {index > 0 && <button onClick={() => handleDelete(index)} type="button"
+                {len > 1 && <button onClick={() => handleDelete(index)} type="button"
                                       className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>}
 
             </div>
