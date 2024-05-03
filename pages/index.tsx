@@ -33,14 +33,14 @@ export const getServerSideProps = async function ({ req, res }) {
         res,
         sessionOptions,
       );
-    if (!session.username) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false,
-            },
-        }
-    }
+    // if (!session.username) {
+    //     return {
+    //         redirect: {
+    //             destination: '/login',
+    //             permanent: false,
+    //         },
+    //     }
+    // }
     const addressDescription = await checkoutFetcher(
         ADDRESS_DESCRIPTION,
         {
@@ -52,6 +52,7 @@ export const getServerSideProps = async function ({ req, res }) {
     )
 
     return {
-        props: { user: session.username, addressDescription },
+        props:{}
+        //props: { user: session.username, addressDescription },
     }
 }
