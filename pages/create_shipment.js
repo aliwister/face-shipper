@@ -6,19 +6,20 @@ import {ADDRESS_DESCRIPTION} from '../constants/graphql'
 import {useForm} from 'react-hook-form'
 import {useState} from "react";
 import Package from "../components/create-shipment/Package";
+import Toggle from "../components/create-shipment/Toggle";
 
 const Home = ({}) => {
     const {
         register, handleSubmit, getValues, formState: {errors},
     } = useForm()
+    const [unit, setUnit] = useState('metric')
+
     const [packages, setPackages] = useState([{
         length: '',
         width: '',
         height: '',
         weight: '',
-        description: '',
-        hc: '',
-        quantity: '',
+        type:'box_rigid'
     }])
     const onSubmit = (data) => {
         console.log(data)
@@ -30,9 +31,7 @@ const Home = ({}) => {
             width: '',
             height: '',
             weight: '',
-            description: '',
-            hc: '',
-            quantity: '',
+            type:'box_rigid'
         })
         setPackages(temp)
     }
@@ -145,29 +144,66 @@ const Home = ({}) => {
                 </div>
 
                 <div className={"flex justify-between border-t pt-4 items-start w-full"}>
-                    <div>
-                        <h2 className="text-xl font-bold mb-4">
-                            Type of Packaging
-                        </h2>
-                        <select {...register('packaging_type', {required: true, maxLength: 50})}
-                                className="border border-gray-400 p-2 rounded mb-4">
-                            <option>
-                                Box or Rigid Packaging
-                            </option>
-                        </select>
-
-                    </div>
-                    <img alt="A brown cardboard box" className="mb-4" height="100"
-                         src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-lObuhsQAt6RRD6ZDUiZHH8Dg/user-ZfL16YVfqelAVfRFitZGeDiq/img-C9Dcj5kIDLQ6s1kQ5p2Yunxz.png?st=2024-05-01T17%3A17%3A16Z&amp;se=2024-05-01T19%3A17%3A16Z&amp;sp=r&amp;sv=2021-08-06&amp;sr=b&amp;rscd=inline&amp;rsct=image/png&amp;skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2024-04-30T19%3A38%3A39Z&amp;ske=2024-05-01T19%3A38%3A39Z&amp;sks=b&amp;skv=2021-08-06&amp;sig=y3ewnnl31WCC/WzVFr0vQz4oqG%2BAEjX6Mo0LYRhmPqg%3D"
-                         width="100"/>
+                    <Toggle unit={unit} setUnit={setUnit}/>
                     <button type={"button"} onClick={handleAddPackage}
                             className={'font-semibold bg-blue-600 hover:bg-blue-700 p-2 text-white rounded'}>ADD Package
                     </button>
                 </div>
                 {packages.map((item, idx) => {
-                    return (<Package setPackages={setPackages} index={idx} key={idx} package_item={item}/>)
+                    return (<Package unit={unit} setPackages={setPackages} index={idx} key={idx} package_item={item}/>)
                 })}
-
+                <h2 className="text-lg font-bold mb-4 w-full">
+                    Package contents
+                </h2>
+                <input
+                    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="ITEM DESCRIPTION (IN ENGLISH)"
+                    type="text"/>
+                <input
+                    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="HARMONIZED CODE" type="text"/>
+                <div className="grid grid-cols-3 gap-4 mb-4 w-full">
+                    <select
+                        className="border border-gray-400 p-2 rounded">
+                        <option>
+                            COUNTRY/TERRITORY OF MANUFACTURE
+                        </option>
+                    </select>
+                    <input
+                        className="border border-gray-400 p-2 rounded"  placeholder="QUANTITY" type="text"/>
+                    <select
+                        className="border border-gray-400 p-2 rounded">
+                        <option>
+                            UNIT
+                        </option>
+                    </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <select
+                        className="border border-gray-400 p-2 rounded">
+                        <option>
+                            Enter as totals
+                        </option>
+                    </select>
+                    <div className="grid grid-cols-4 gap-4">
+                            <span className="flex items-center justify-center">
+                                NET WEIGHT
+                            </span>
+                        <select
+                            className="border border-gray-400 p-2 rounded">
+                            <option>
+                                lb
+                            </option>
+                        </select>
+                        <span className="flex items-center justify-center">
+                        CUSTOMS VALUE
+                            </span>
+                        <select
+                            className="border border-gray-400 p-2 rounded">
+                            <option>
+                                USD
+                            </option>
+                        </select>
+                    </div>
+                </div>
 
                 <div className="flex w-full mt-4 items-end justify-end">
                     {/*<button type="button" className="bg-gray-400 text-white px-4 py-2 rounded mr-2">*/}

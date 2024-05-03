@@ -26,7 +26,7 @@ const Layout = ({ children }) => {
                 }
 
                 .container {
-                    display: flex;
+                    //display: flex;
                     flex-direction: column;
                     align-items: center;
                     margin: 1.5rem auto;

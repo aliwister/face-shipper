@@ -63,19 +63,21 @@ function QuoteForm() {
         }
     }
 
-    return (<div className={"w-3/4 items-center flex flex-col"}>
-        <h2 className={"text-center font-bold text-6xl"}>
-            Calculate Face-Shipper's Rates
-        </h2>
-        <div className={"mt-16 items-center flex flex-col w-full"}>
-            <AddressAutoComplete setAddressFrom={setAddressFrom} setAddressTo={setAddressTo}/>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <button className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"} disabled={loading} type="submit" >Get Rates
-                </button>
-            </form>
-        </div>
+    return (
+        <div className={"flex flex-col w-full justify-center items-center"}><div className={"w-3/4 items-center flex flex-col"}>
+            <h2 className={"text-center font-bold text-6xl"}>
+                Calculate Face-Shipper's Rates
+            </h2>
+            <div className={"mt-16 items-center flex flex-col w-full"}>
+                <AddressAutoComplete setAddressFrom={setAddressFrom} setAddressTo={setAddressTo}/>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <button className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"} disabled={loading} type="submit" >Get Rates
+                    </button>
+                </form>
+            </div>
 
-    </div>)
+        </div></div>
+        )
     // return (
     //     <Box
     //         padding="1rem"
