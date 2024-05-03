@@ -153,57 +153,66 @@ const Home = ({}) => {
                     return (<Package unit={unit} setPackages={setPackages} index={idx} key={idx} package_item={item}/>)
                 })}
                 <h2 className="text-lg font-bold mb-4 w-full">
-                    Package contents
+                    Commercial Invoice
                 </h2>
-                <input
-                    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="ITEM DESCRIPTION (IN ENGLISH)"
-                    type="text"/>
-                <input
-                    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="HARMONIZED CODE" type="text"/>
-                <div className="grid grid-cols-3 gap-4 mb-4 w-full">
-                    <select
-                        className="border border-gray-400 p-2 rounded">
-                        <option>
-                            COUNTRY/TERRITORY OF MANUFACTURE
-                        </option>
-                    </select>
-                    <input
-                        className="border border-gray-400 p-2 rounded"  placeholder="QUANTITY" type="text"/>
-                    <select
-                        className="border border-gray-400 p-2 rounded">
-                        <option>
-                            UNIT
-                        </option>
-                    </select>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <select
-                        className="border border-gray-400 p-2 rounded">
-                        <option>
-                            Enter as totals
-                        </option>
-                    </select>
-                    <div className="grid grid-cols-4 gap-4">
-                            <span className="flex items-center justify-center">
-                                NET WEIGHT
-                            </span>
-                        <select
-                            className="border border-gray-400 p-2 rounded">
-                            <option>
-                                lb
-                            </option>
-                        </select>
-                        <span className="flex items-center justify-center">
-                        CUSTOMS VALUE
-                            </span>
-                        <select
-                            className="border border-gray-400 p-2 rounded">
-                            <option>
-                                USD
-                            </option>
-                        </select>
+                <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">ITEM DESCRIPTION (IN ENGLISH)</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                        </svg>
                     </div>
+                    <input type="search" id="search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="ITEM DESCRIPTION (IN ENGLISH)" required />
                 </div>
+                {/*<input*/}
+                {/*    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="ITEM DESCRIPTION (IN ENGLISH)"*/}
+                {/*    type="text"/>*/}
+                {/*<input*/}
+                {/*    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="HARMONIZED CODE" type="text"/>*/}
+                {/*<div className="grid grid-cols-3 gap-4 mb-4 w-full">*/}
+                {/*    <select*/}
+                {/*        className="border border-gray-400 p-2 rounded">*/}
+                {/*        <option>*/}
+                {/*            COUNTRY/TERRITORY OF MANUFACTURE*/}
+                {/*        </option>*/}
+                {/*    </select>*/}
+                {/*    <input*/}
+                {/*        className="border border-gray-400 p-2 rounded"  placeholder="QUANTITY" type="text"/>*/}
+                {/*    <select*/}
+                {/*        className="border border-gray-400 p-2 rounded">*/}
+                {/*        <option>*/}
+                {/*            UNIT*/}
+                {/*        </option>*/}
+                {/*    </select>*/}
+                {/*</div>*/}
+                {/*<div className="grid grid-cols-2 gap-4 mb-4">*/}
+                {/*    <select*/}
+                {/*        className="border border-gray-400 p-2 rounded">*/}
+                {/*        <option>*/}
+                {/*            Enter as totals*/}
+                {/*        </option>*/}
+                {/*    </select>*/}
+                {/*    <div className="grid grid-cols-4 gap-4">*/}
+                {/*            <span className="flex items-center justify-center">*/}
+                {/*                NET WEIGHT*/}
+                {/*            </span>*/}
+                {/*        <select*/}
+                {/*            className="border border-gray-400 p-2 rounded">*/}
+                {/*            <option>*/}
+                {/*                lb*/}
+                {/*            </option>*/}
+                {/*        </select>*/}
+                {/*        <span className="flex items-center justify-center">*/}
+                {/*        CUSTOMS VALUE*/}
+                {/*            </span>*/}
+                {/*        <select*/}
+                {/*            className="border border-gray-400 p-2 rounded">*/}
+                {/*            <option>*/}
+                {/*                USD*/}
+                {/*            </option>*/}
+                {/*        </select>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 <div className="flex w-full mt-4 items-end justify-end">
                     {/*<button type="button" className="bg-gray-400 text-white px-4 py-2 rounded mr-2">*/}
