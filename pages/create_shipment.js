@@ -7,13 +7,20 @@ import {useForm} from 'react-hook-form'
 import {useState} from "react";
 import Package from "../components/create-shipment/Package";
 import Toggle from "../components/create-shipment/Toggle";
-import {COUNTRIES} from "../constants";
-
+import {COUNTRIES, ITEMS} from "../constants";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+import {log} from "util";
+import Item from "../components/create-shipment/Item";
+import Link from "next/link";
 const Home = ({}) => {
     const {
         register, handleSubmit, getValues, formState: {errors},
     } = useForm()
     const [unit, setUnit] = useState('metric')
+    const [country, setCountry] = useState('om')
+    const [phoneTo, setPhoneTo] = useState('')
+    const [searchResults, setSearchResults] = useState([])
     const [addressType, setAddressType] = useState('new_Address')
 
     const [packages, setPackages] = useState([{
@@ -23,9 +30,6 @@ const Home = ({}) => {
         weight: '',
         type: 'box_rigid'
     }])
-    const onSubmit = (data) => {
-        console.log(data)
-    }
     const handleAddPackage = () => {
         const temp = [...packages]
         temp.push({
@@ -37,6 +41,12 @@ const Home = ({}) => {
         })
         setPackages(temp)
     }
+    const [items, setItems] = useState([])
+
+    const onSubmit = (data) => {
+        console.log(data)
+    }
+
     const checkInputs = () => {
         for (const packageItem of packages) {
             for (const key in packageItem) {
@@ -47,6 +57,14 @@ const Home = ({}) => {
         }
         return false;
     };
+    function searchItems(query) {
+        if (query.length > 2)
+        setSearchResults(ITEMS.filter(item =>
+            item.description.toLowerCase().includes(query.toLowerCase())).slice(0, 3))
+        else
+            setSearchResults([])
+
+    }
     return (
         <Layout>
             <form onSubmit={handleSubmit(onSubmit)} className="container mx-auto p-4">
@@ -56,35 +74,27 @@ const Home = ({}) => {
                 <h2 className="text-xl font-bold mb-4">
                     Ship To
                 </h2>
-                <div className="grid grid-cols-4 gap-4 mb-4">
-                    <select {...register('country', {required: true, maxLength: 50})}
-                            className="border border-gray-400 p-2 rounded">
+                <div className="w-full gap-4 mb-4">
+                    <select onChange={(e)=>setCountry(e.target.value)}
+                            className="border border-gray-400 p-2 rounded w-full">
                         {COUNTRIES.map((country,idx)=>{
-                            return(<option key={idx} value={country.value}>
+                            return(<option key={idx} value={country.value.toLowerCase()}>
                                 {country.label}
                             </option>)
                         })}
                     </select>
-                    <input {...register('city', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
-                    <input {...register('state', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="State" type="text"/>
-                    <input {...register('zipcode', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
-
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('address', {required: true, maxLength: 500})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
-                    <input {...register('address_opt', {required: false, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded"
-                           placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <input {...register('email', {required: false, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Email (optional)" type="email"/>
-                    <input {...register('phone', {required: false, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Phone (optional)" type="tel"/>
+                    <PhoneInput
+                        inputStyle={{height:"100%",width:"100%"}}
+                        disableDropdown
+                        country={country.toLowerCase()}
+                        value={phoneTo}
+                        onChange={phone => setPhoneTo(phone)}
+                    />
+
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <input {...register('name', {required: true, maxLength: 50})}
@@ -92,6 +102,21 @@ const Home = ({}) => {
                     <input {...register('company', {required: false, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Company (optional)" type="text"/>
                 </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <input {...register('city', {required: true, maxLength: 50})}
+                           className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
+                    <input {...register('state', {required: true, maxLength: 50})}
+                           className="border border-gray-400 p-2 rounded" placeholder="State" type="text"/>
+
+                    <input {...register('address', {required: true, maxLength: 500})}
+                           className="border col-span-2 border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
+                    <input {...register('zipcode', {required: true, maxLength: 50})}
+                           className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
+                    <input {...register('address_opt', {required: false, maxLength: 50})}
+                           className="border border-gray-400 p-2 rounded"
+                           placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
+                </div>
+
 
 
                 <h2 className="text-xl font-bold mb-4">
@@ -175,7 +200,7 @@ const Home = ({}) => {
                 </h2>
                 <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">ITEM
                     DESCRIPTION (IN ENGLISH)</label>
-                <div className="relative">
+                <div className="relative mb-4">
                     <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                         <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -183,64 +208,28 @@ const Home = ({}) => {
                                   d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                         </svg>
                     </div>
-                    <input type="search" id="search"
+                    <input onChange={(e)=>searchItems(e.target.value)} type="search" id="search"
                            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                            placeholder="ITEM DESCRIPTION (IN ENGLISH)" required/>
                 </div>
-                {/*<input*/}
-                {/*    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="ITEM DESCRIPTION (IN ENGLISH)"*/}
-                {/*    type="text"/>*/}
-                {/*<input*/}
-                {/*    className="border w-full border-gray-400 p-2 rounded mb-4"  placeholder="HARMONIZED CODE" type="text"/>*/}
-                {/*<div className="grid grid-cols-3 gap-4 mb-4 w-full">*/}
-                {/*    <select*/}
-                {/*        className="border border-gray-400 p-2 rounded">*/}
-                {/*        <option>*/}
-                {/*            COUNTRY/TERRITORY OF MANUFACTURE*/}
-                {/*        </option>*/}
-                {/*    </select>*/}
-                {/*    <input*/}
-                {/*        className="border border-gray-400 p-2 rounded"  placeholder="QUANTITY" type="text"/>*/}
-                {/*    <select*/}
-                {/*        className="border border-gray-400 p-2 rounded">*/}
-                {/*        <option>*/}
-                {/*            UNIT*/}
-                {/*        </option>*/}
-                {/*    </select>*/}
-                {/*</div>*/}
-                {/*<div className="grid grid-cols-2 gap-4 mb-4">*/}
-                {/*    <select*/}
-                {/*        className="border border-gray-400 p-2 rounded">*/}
-                {/*        <option>*/}
-                {/*            Enter as totals*/}
-                {/*        </option>*/}
-                {/*    </select>*/}
-                {/*    <div className="grid grid-cols-4 gap-4">*/}
-                {/*            <span className="flex items-center justify-center">*/}
-                {/*                NET WEIGHT*/}
-                {/*            </span>*/}
-                {/*        <select*/}
-                {/*            className="border border-gray-400 p-2 rounded">*/}
-                {/*            <option>*/}
-                {/*                lb*/}
-                {/*            </option>*/}
-                {/*        </select>*/}
-                {/*        <span className="flex items-center justify-center">*/}
-                {/*        CUSTOMS VALUE*/}
-                {/*            </span>*/}
-                {/*        <select*/}
-                {/*            className="border border-gray-400 p-2 rounded">*/}
-                {/*            <option>*/}
-                {/*                USD*/}
-                {/*            </option>*/}
-                {/*        </select>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                {searchResults&& <div className={"flex flex-col  divide-y "}>
+                    {searchResults.map((item,idx) => {
+                        return (<div key={idx} onClick={()=>{
+                            setSearchResults([])
+                            setItems([...items,item])}} className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "}  >
+                            {item.description}
+                        </div>)
+                    })}
+                </div>}
+                {items.map((item, idx) => {
+                    return (<Item item={item} setItems={setItems}  index={idx} key={idx}
+                                     />)
+                })}
 
                 <div className="flex w-full mt-4 items-end justify-end">
-                    {/*<button type="button" className="bg-gray-400 text-white px-4 py-2 rounded mr-2">*/}
-                    {/*    CANCEL*/}
-                    {/*</button>*/}
+                    <Link  className="bg-gray-400 text-white px-4 py-2 rounded mr-2" href={'/'}>
+                        CANCEL
+                    </Link>
                     <button disabled={checkInputs()} type="submit"
                             className="bg-blue-500 disabled:bg-gray-400 text-white px-4 py-2 rounded">
                         SAVE
