@@ -1,3 +1,70 @@
+export const ITEMS = [
+    {
+        name: 'suitcase',
+        description: "suitcase - Attache cases, briefcases and similar containers",
+        harmonizedCode : "4202.12.291000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnit : "pcs",
+        weight: {
+            value: 1,
+            unit: "kg"
+        },
+        customsValue: {
+            amount: 100,
+            currency: "USD"
+        }
+    },
+    {
+        name: 'hand bag - small',
+        description: "HAND BAG - Of reptile leather",
+        harmonizedCode : "4202.31.300000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnit : "pcs",
+        weight: {
+            value: 1,
+            unit: "kg"
+        },
+        customsValue: {
+            amount: 100,
+            currency: "USD"
+        }
+    },
+    {
+        name: 'hand bag - big',
+        description: "HAND BAG - Of reptile leather",
+        harmonizedCode : "4202.31.300000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnit : "pcs",
+        weight: {
+            value: 10,
+            unit: "kg"
+        },
+        customsValue: {
+            amount: 100,
+            currency: "USD"
+        }
+    },
+    {
+        name: 'cereal',
+        description: "Prepared foods obtained from unroasted cereal flakes or from mixtures of unroasted cereal flakes and roasted cereal flakes or swelled cereals - In airtight containers and not containing apricots, citrus fruits, peaches or pears",
+        harmonizedCode : "1904.20.100000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnit : "pcs",
+        weight: {
+            value: 1,
+            unit: "kg"
+        },
+        customsValue: {
+            amount: 1,
+            currency: "USD"
+        }
+    }
+]
+
 export const COUNTRIES = [
     { value: 'OM', label: 'Oman' },
     { value: 'AE', label: 'UAE' },
