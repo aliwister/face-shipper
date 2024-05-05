@@ -10,9 +10,9 @@ import Toggle from "../components/create-shipment/Toggle";
 import {COUNTRIES, ITEMS} from "../constants";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import {log} from "util";
 import Item from "../components/create-shipment/Item";
 import Link from "next/link";
+
 const Home = ({}) => {
     const {
         register, handleSubmit, getValues, formState: {errors},
@@ -57,14 +57,16 @@ const Home = ({}) => {
         }
         return false;
     };
+
     function searchItems(query) {
         if (query.length > 2)
-        setSearchResults(ITEMS.filter(item =>
-            item.description.toLowerCase().includes(query.toLowerCase())).slice(0, 3))
+            setSearchResults(ITEMS.filter(item =>
+                item.description.toLowerCase().includes(query.toLowerCase())).slice(0, 3))
         else
             setSearchResults([])
 
     }
+
     return (
         <Layout>
             <form onSubmit={handleSubmit(onSubmit)} className="container mx-auto p-4">
@@ -75,10 +77,10 @@ const Home = ({}) => {
                     Ship To
                 </h2>
                 <div className="w-full gap-4 mb-4">
-                    <select onChange={(e)=>setCountry(e.target.value)}
+                    <select onChange={(e) => setCountry(e.target.value)}
                             className="border border-gray-400 p-2 rounded w-full">
-                        {COUNTRIES.map((country,idx)=>{
-                            return(<option key={idx} value={country.value.toLowerCase()}>
+                        {COUNTRIES.map((country, idx) => {
+                            return (<option key={idx} value={country.value.toLowerCase()}>
                                 {country.label}
                             </option>)
                         })}
@@ -88,7 +90,7 @@ const Home = ({}) => {
                     <input {...register('email', {required: false, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Email (optional)" type="email"/>
                     <PhoneInput
-                        inputStyle={{height:"100%",width:"100%"}}
+                        inputStyle={{height: "100%", width: "100%"}}
                         disableDropdown
                         country={country.toLowerCase()}
                         value={phoneTo}
@@ -118,11 +120,10 @@ const Home = ({}) => {
                 </div>
 
 
-
                 <h2 className="text-xl font-bold mb-4">
                     Ship From
                 </h2>
-                <select onChange={(e)=>setAddressType(e.target.value)}
+                <select onChange={(e) => setAddressType(e.target.value)}
                         className="border border-gray-400 p-2 rounded mb-4">
                     <option value={'saved_Address'}>
                         Don't use saved Ship From Address
@@ -134,9 +135,9 @@ const Home = ({}) => {
                 {addressType !== 'new_Address' && <div className={"w-full"}>
                     <h3 className="text-lg font-semibold mb-2">
                         Physical Address
-                    {/*    <span className="text-blue-500">*/}
-                    {/*    Learn more*/}
-                    {/*</span>*/}
+                        {/*    <span className="text-blue-500">*/}
+                        {/*    Learn more*/}
+                        {/*</span>*/}
                     </h3>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <input {...register('phy_name', {required: false, maxLength: 50})}
@@ -208,26 +209,27 @@ const Home = ({}) => {
                                   d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                         </svg>
                     </div>
-                    <input onChange={(e)=>searchItems(e.target.value)} type="search" id="search"
+                    <input onChange={(e) => searchItems(e.target.value)} type="search" id="search"
                            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                            placeholder="ITEM DESCRIPTION (IN ENGLISH)" required/>
                 </div>
-                {searchResults&& <div className={"flex flex-col  divide-y "}>
-                    {searchResults.map((item,idx) => {
-                        return (<div key={idx} onClick={()=>{
+                {searchResults && <div className={"flex flex-col  divide-y "}>
+                    {searchResults.map((item, idx) => {
+                        return (<div key={idx} onClick={() => {
                             setSearchResults([])
-                            setItems([...items,item])}} className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "}  >
+                            setItems([...items, item])
+                        }} className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "}>
                             {item.description}
                         </div>)
                     })}
                 </div>}
                 {items.map((item, idx) => {
-                    return (<Item item={item} setItems={setItems}  index={idx} key={idx}
-                                     />)
+                    return (<Item item={item} setItems={setItems} index={idx} key={idx}
+                    />)
                 })}
 
                 <div className="flex w-full mt-4 items-end justify-end">
-                    <Link  className="bg-gray-400 text-white px-4 py-2 rounded mr-2" href={'/'}>
+                    <Link className="bg-gray-400 text-white px-4 py-2 rounded mr-2" href={'/'}>
                         CANCEL
                     </Link>
                     <button disabled={checkInputs()} type="submit"
@@ -244,27 +246,27 @@ export default Home
 
 export const getServerSideProps = async function ({req, res}) {
 
-    // if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
-    //     return {
-    //         redirect: {
-    //             destination: '/login',
-    //             permanent: false,
-    //         },
-    //     }
-    // }
+// if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
+//     return {
+//         redirect: {
+//             destination: '/login',
+//             permanent: false,
+//         },
+//     }
+// }
     const session = await getIronSession < SessionData > (
         req,
             res,
             sessionOptions
     );
-    // if (!session.username) {
-    //     return {
-    //         redirect: {s
-    //             destination: '/login',
-    //             permanent: false,
-    //         },
-    //     }
-    // }
+// if (!session.username) {
+//     return {
+//         redirect: {s
+//             destination: '/login',
+//             permanent: false,
+//         },
+//     }
+// }
     const addressDescription = await checkoutFetcher(
         ADDRESS_DESCRIPTION,
         {
@@ -277,6 +279,6 @@ export const getServerSideProps = async function ({req, res}) {
 
     return {
         props: {}
-        //props: { user: session.username, addressDescription },
+//props: { user: session.username, addressDescription },
     }
 }
