@@ -17,6 +17,11 @@ const Header = () => {
                         </Link>
                     </li>
                     <li>
+                        <Link href="/shipments" legacyBehavior>
+                            <a>Shipments</a>
+                        </Link>
+                    </li>
+                    <li>
                         <Link href="/create_shipment" legacyBehavior>
                             <a>Create Shipment</a>
                         </Link>
