@@ -12,6 +12,7 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import Item from "../components/create-shipment/Item";
 import Link from "next/link";
+import axios from "axios";
 
 const Home = ({}) => {
     const {
@@ -20,8 +21,10 @@ const Home = ({}) => {
     const [unit, setUnit] = useState('metric')
     const [country, setCountry] = useState('om')
     const [phoneTo, setPhoneTo] = useState('')
+    const [loading, setLoading] = useState(false)
+
     const [searchResults, setSearchResults] = useState([])
-    const [addressType, setAddressType] = useState('new_Address')
+    const [addressType, setAddressType] = useState('saved_Address')
 
     const [packages, setPackages] = useState([{
         length: '',
@@ -43,10 +46,53 @@ const Home = ({}) => {
     }
     const [items, setItems] = useState([])
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
+        const {
+            city, zipcode,
+            phy_city, phy_zipcode, date
+        } = data
+        console.log(date)
+        const weight_units = unit === 'metric' ? "KG" : "LB"
+        const length_units = unit === 'metric' ? "CM" : "IN"
+        const body = {
+            sender_countryCode: 'us',
+            sender_postalCode: phy_zipcode,
+            sender_city: phy_city,
+            receiver_countryCode: country,
+            receiver_postalCode: zipcode,
+            receiver_city: city,
+            weight_units,
+            length_units,
+            length: packages[0].length,
+            weight: packages[0].weight,
+            width: packages[0].width,
+            height: packages[0].height,
+            date: date
+        }
+        const price = await handleGetPrice(body)
     }
 
+    const handleAddCart = ()=>{
+
+    }
+    const handleGetPrice = async (body) => {
+        console.log(body)
+        setLoading(true)
+        try {
+            const data = await axios.post('/api/rates_fedex', body)
+            console.log(data)
+            console.log(data.data.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge)
+            return data.data.output.rateReplyDetails[0].ratedShipmentDetails[0].totalNetFedExCharge
+        } catch (err) {
+            console.log(err)
+        } finally {
+            setLoading(false)
+        }
+    }
+    const handleMakeCheckOut = ()=>{
+
+    }
     const checkInputs = () => {
         for (const packageItem of packages) {
             for (const key in packageItem) {
@@ -86,32 +132,32 @@ const Home = ({}) => {
                         })}
                     </select>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('email', {required: false, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Email (optional)" type="email"/>
-                    <PhoneInput
-                        inputStyle={{height: "100%", width: "100%"}}
-                        disableDropdown
-                        country={country.toLowerCase()}
-                        value={phoneTo}
-                        onChange={phone => setPhoneTo(phone)}
-                    />
+                {/*<div className="grid grid-cols-2 gap-4 mb-4">*/}
+                {/*    <input {...register('email', {required: false, maxLength: 50})}*/}
+                {/*           className="border border-gray-400 p-2 rounded" placeholder="Email (optional)" type="email"/>*/}
+                {/*    <PhoneInput*/}
+                {/*        inputStyle={{height: "100%", width: "100%"}}*/}
+                {/*        disableDropdown*/}
+                {/*        country={country.toLowerCase()}*/}
+                {/*        value={phoneTo}*/}
+                {/*        onChange={phone => setPhoneTo(phone)}*/}
+                {/*    />*/}
 
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('name', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Name" type="text"/>
-                    <input {...register('company', {required: false, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Company (optional)" type="text"/>
-                </div>
+                {/*</div>*/}
+                {/*<div className="grid grid-cols-2 gap-4 mb-4">*/}
+                {/*    <input {...register('name', {required: true, maxLength: 50})}*/}
+                {/*           className="border border-gray-400 p-2 rounded" placeholder="Name" type="text"/>*/}
+                {/*    <input {...register('company', {required: false, maxLength: 50})}*/}
+                {/*           className="border border-gray-400 p-2 rounded" placeholder="Company (optional)" type="text"/>*/}
+                {/*</div>*/}
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <input {...register('city', {required: true, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
-                    <input {...register('state', {required: true, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="State" type="text"/>
+                    {/*<input {...register('state', {required: true, maxLength: 50})}*/}
+                    {/*       className="border border-gray-400 p-2 rounded" placeholder="State" type="text"/>*/}
 
-                    <input {...register('address', {required: true, maxLength: 500})}
-                           className="border col-span-2 border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
+                    {/*<input {...register('address', {required: true, maxLength: 500})}*/}
+                    {/*       className="border col-span-2 border-gray-400 p-2 rounded" placeholder="Address" type="text"/>*/}
                     <input {...register('zipcode', {required: true, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
                     <input {...register('address_opt', {required: false, maxLength: 50})}
@@ -123,12 +169,12 @@ const Home = ({}) => {
                 <h2 className="text-xl font-bold mb-4">
                     Ship From
                 </h2>
-                <select onChange={(e) => setAddressType(e.target.value)}
+                <select disabled onChange={(e) => setAddressType(e.target.value)}
                         className="border border-gray-400 p-2 rounded mb-4">
-                    <option value={'saved_Address'}>
+                    <option selected value={'saved_Address'}>
                         Don't use saved Ship From Address
                     </option>
-                    <option selected value={'new_Address'}>
+                    <option value={'new_Address'}>
                         Create New Ship From Address
                     </option>
                 </select>
@@ -139,54 +185,57 @@ const Home = ({}) => {
                         {/*    Learn more*/}
                         {/*</span>*/}
                     </h3>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                        <input {...register('phy_name', {required: false, maxLength: 50})}
-                               className="border border-gray-400 p-2 rounded" placeholder="Name (optional)"
-                               type="text"/>
-                        <input {...register('phy_company', {required: false, maxLength: 50})}
-                               className="border border-gray-400 p-2 rounded" placeholder="Company (optional)"
-                               type="text"/>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                        <input {...register('phy_address', {required: true, maxLength: 500})}
-                               className="border border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
-                        <input {...register('phy_address_opt', {required: false, maxLength: 50})}
-                               className="border border-gray-400 p-2 rounded"
-                               placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
-                    </div>
+                    {/*<div className="grid grid-cols-2 gap-4 mb-4">*/}
+                    {/*    <input {...register('phy_name', {required: false, maxLength: 50})}*/}
+                    {/*           className="border border-gray-400 p-2 rounded" placeholder="Name (optional)"*/}
+                    {/*           type="text"/>*/}
+                    {/*    <input {...register('phy_company', {required: false, maxLength: 50})}*/}
+                    {/*           className="border border-gray-400 p-2 rounded" placeholder="Company (optional)"*/}
+                    {/*           type="text"/>*/}
+                    {/*</div>*/}
+                    {/*<div className="grid grid-cols-2 gap-4 mb-4">*/}
+                    {/*    <input {...register('phy_address', {required: true, maxLength: 500})}*/}
+                    {/*           className="border border-gray-400 p-2 rounded" placeholder="Address" type="text"/>*/}
+                    {/*    <input {...register('phy_address_opt', {required: false, maxLength: 50})}*/}
+                    {/*           className="border border-gray-400 p-2 rounded"*/}
+                    {/*           placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>*/}
+                    {/*</div>*/}
                     <div className="grid grid-cols-4 gap-4 mb-4">
                         <input {...register('phy_city', {required: true, maxLength: 50})}
                                className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
-                        <select {...register('phy_city1', {required: true, maxLength: 50})}
-                                className="border border-gray-400 p-2 rounded">
-                            <option>
-                                Alabama
-                            </option>
-                        </select>
+                        {/*<select {...register('phy_city1', {required: true, maxLength: 50})}*/}
+                        {/*        className="border border-gray-400 p-2 rounded">*/}
+                        {/*    <option>*/}
+                        {/*        Alabama*/}
+                        {/*    </option>*/}
+                        {/*</select>*/}
                         <input {...register('phy_zipcode', {required: true, maxLength: 50})}
                                className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
-                        <input {...register('phy_phone', {required: true, maxLength: 50})}
-                               className="border border-gray-400 p-2 rounded" placeholder="Phone" type="text"/>
+                        {/*<input {...register('phy_phone', {required: true, maxLength: 50})}*/}
+                        {/*       className="border border-gray-400 p-2 rounded" placeholder="Phone" type="text"/>*/}
                     </div>
-                    <div className="mb-4">
-                        <input {...register('save_ship', {required: false})} className="mr-2"
-                               type="checkbox"/>
-                        Save Ship From Address
-                        <input {...register('ship_nickname', {required: true, maxLength: 50})}
-                               className="border border-gray-400 p-2 rounded ml-2"
-                               placeholder="Nickname this Ship From Address" type="text"/>
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*    <input {...register('save_ship', {required: false})} className="mr-2"*/}
+                    {/*           type="checkbox"/>*/}
+                    {/*    Save Ship From Address*/}
+                    {/*    <input {...register('ship_nickname', {required: true, maxLength: 50})}*/}
+                    {/*           className="border border-gray-400 p-2 rounded ml-2"*/}
+                    {/*           placeholder="Nickname this Ship From Address" type="text"/>*/}
+                    {/*</div>*/}
                 </div>}
-
-
+                <h2 className="text-xl font-bold mb-4">
+                    Date
+                </h2>
+                <input {...register('date', {required: true, maxLength: 50})}
+                       className="border border-gray-400 p-2 rounded" placeholder="Date" type="date"/>
                 <div className={"flex justify-between border-t pt-4 items-start w-full"}>
                     <h2 className="text-2xl font-bold mb-4 ">
                         Packages
                     </h2>
                     <div className={"flex items-center justify-center"}>
                         <Toggle unit={unit} setUnit={setUnit}/>
-                        <button type={"button"} onClick={handleAddPackage}
-                                className={'ml-4 font-semibold bg-blue-600 hover:bg-blue-700 p-2 text-white rounded'}>ADD
+                        <button type={"button"} disabled onClick={handleAddPackage}
+                                className={'ml-4 disabled:bg-gray-500 font-semibold bg-blue-600 hover:bg-blue-700 p-2 text-white rounded'}>ADD
                             Package
                         </button>
                     </div>
@@ -211,7 +260,7 @@ const Home = ({}) => {
                     </div>
                     <input onChange={(e) => searchItems(e.target.value)} type="search" id="search"
                            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                           placeholder="ITEM DESCRIPTION (IN ENGLISH)" required/>
+                           placeholder="ITEM DESCRIPTION (IN ENGLISH)"/>
                 </div>
                 {searchResults && <div className={"flex flex-col  divide-y "}>
                     {searchResults.map((item, idx) => {
@@ -244,41 +293,43 @@ const Home = ({}) => {
 
 export default Home
 
-export const getServerSideProps = async function ({req, res}) {
+export const getServerSideProps = async function ({ req, res }) {
 
-// if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
-//     return {
-//         redirect: {
-//             destination: '/login',
-//             permanent: false,
-//         },
-//     }
-// }
-    const session = await getIronSession < SessionData > (
+    // if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
+    //     return {
+    //         redirect: {
+    //             destination: '/login',
+    //             permanent: false,
+    //         },
+    //     }
+    // }
+    const session = await getIronSession(
         req,
             res,
-            sessionOptions
+            sessionOptions,
     );
-// if (!session.username) {
-//     return {
-//         redirect: {s
-//             destination: '/login',
-//             permanent: false,
-//         },
-//     }
-// }
-    const addressDescription = await checkoutFetcher(
-        ADDRESS_DESCRIPTION,
-        {
-            isoCode: 'om',
-            lang: 'en',
-        },
-        'en',
-        {}
-    )
+    if (!session.username) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        }
+    }
+    // const addressDescription = await checkoutFetcher(
+    //     ADDRESS_DESCRIPTION,
+    //     {
+    //         isoCode: 'om',
+    //         lang: 'en',
+    //     },
+    //     'en',
+    //     {}
+    // )
 
     return {
-        props: {}
-//props: { user: session.username, addressDescription },
+        //props:{}
+        props: { user: session.username,
+            //addressDescription
+            },
     }
 }

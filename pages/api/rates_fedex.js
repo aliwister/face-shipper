@@ -44,18 +44,18 @@ async function getRate(shipmentInfo){
         },
         data: shipmentInfo
     }
-
+    console.log("here")
     const { data } = await axios(config)
     return data
 }
 
 async function getRateRoute(req, res) {
-    const session = await getIronSession(
-        req,
-        res,
-        sessionOptions,
-      )
-    if (!session.username) return res.status(401).json('Unauthorized!')
+    // const session = await getIronSession(
+    //     req,
+    //     res,
+    //     sessionOptions,
+    //   )
+    // if (!session.username) return res.status(401).json('Unauthorized!')
 
     const {
         sender_city,
@@ -82,14 +82,14 @@ async function getRateRoute(req, res) {
             "requestedShipment": {
                 "shipper": {
                     "address": {
-                        //...(sender_city && {city: sender_city}),
+                        ...(sender_city && {city: sender_city}),
                         countryCode: sender_countryCode, //This is the two-letter country code
                         postalCode: sender_postalCode,
                     },
                 },
                 "recipient": {
                     "address": {
-                        //...(receiver_city && {city: receiver_city}),
+                        ...(receiver_city && {city: receiver_city}),
                         countryCode: receiver_countryCode, //This is the two-letter country code
                         postalCode: receiver_postalCode,
                     },
