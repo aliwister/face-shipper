@@ -23,12 +23,10 @@ async function getAccessToken(){
             client_secret: CLIENT_SECRET,
         })
     }
-    try {
-        const { data } = await axios(config)
-        return data.access_token
-    } catch (error) {
-        console.log(error)
-    }
+
+    const { data } = await axios(config)
+    return data.access_token
+
 }
 
 async function getRate(shipmentInfo){
@@ -44,7 +42,6 @@ async function getRate(shipmentInfo){
         },
         data: shipmentInfo
     }
-    console.log("here")
     const { data } = await axios(config)
     return data
 }
@@ -53,7 +50,6 @@ async function getRateRoute(req, res) {
     // const session = await getIronSession(
     //     req,
     //     res,
-    //     sessionOptions,
     //   )
     // if (!session.username) return res.status(401).json('Unauthorized!')
 
@@ -123,10 +119,11 @@ async function getRateRoute(req, res) {
             }
         }
         let data = await getRate(shipmentInfo)
-        data = await addMarkup(data, req.session["user"])
+        data = await addMarkup(data, req.headers.Authorization)
         res.json(data)
     } catch (error) {
         const { response } = error
+        console.log(error)
         res.status(response?.status || 500).json(response?.statusText)
     }
 }
@@ -135,7 +132,7 @@ async function addMarkup(shipmentInfo, user) {
     let markup = 0.4;
     if(user) {
         const { me } = await shopFetcher(ME, {}, 'en', {
-            Authorization: `${user.tokenType} ${user.id_token}`,
+            Authorization: user,
             "X-TenantId" : "face_shipper"
         })
         if (me && me.shipperMarkup)
