@@ -1,6 +1,6 @@
 const nextConfig = {
     env: {
-        API_URL: process.env.API_URL,
+        API_URL: `${process.env.API_URL}/graphql`,
         REST_URL: process.env.REST_URL,
     },
     i18n: {
