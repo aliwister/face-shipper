@@ -122,18 +122,20 @@ export const getServerSideProps = async function ({ req, res }) {
             },
         }
     }
-    const addressDescription = await checkoutFetcher(
-        ADDRESS_DESCRIPTION,
-        {
-            isoCode: 'om',
-            lang: 'en',
-        },
-        'en',
-        {}
-    )
+    // const addressDescription = await checkoutFetcher(
+    //     ADDRESS_DESCRIPTION,
+    //     {
+    //         isoCode: 'om',
+    //         lang: 'en',
+    //     },
+    //     'en',
+    //     {}
+    // )
 
     return {
         //props:{}
-        props: { user: session.username, addressDescription },
+        props: { user: session.username,
+            //addressDescription
+        },
     }
 }
