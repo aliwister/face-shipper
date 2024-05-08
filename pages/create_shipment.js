@@ -69,7 +69,7 @@ const Home = ({}) => {
         const price = await handleGetPrice(body)
         await handleUpdateCart(sk, {price: price})
         await handleMakeCheckOut(sk)
-        await router.push('/shipments')
+        await router.push('/payment/'+sk)
         setLoading(false)
     }
     const handleAddCart = async () => {

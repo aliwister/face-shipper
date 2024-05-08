@@ -3,7 +3,8 @@ import React, {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import axios from 'axios'
 import AddressAutoComplete from "../Rates/form/AddressAutoComplete";
-import {useRouter} from "next/router";
+import Toggle from "../create-shipment/Toggle";
+import RatesBox from "../Rates/RatesBox";
 
 function QuoteForm() {
     const [unit, setUnit] = useState('metric')
@@ -65,20 +66,88 @@ function QuoteForm() {
     }
 
     return (
-        <div className={"flex flex-col w-full justify-center items-center"}><div className={"w-3/4 items-center flex flex-col"}>
-            <h2 className={"text-center font-bold text-6xl"}>
-                Calculate Face-Shipper's Rates
-            </h2>
-            <div className={"mt-16 items-center flex flex-col w-full"}>
-                <AddressAutoComplete setAddressFrom={setAddressFrom} setAddressTo={setAddressTo}/>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <button className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"} disabled={loading} type="submit" >Get Rates
-                    </button>
-                </form>
-            </div>
+        <div className={"flex flex-col w-full justify-center items-center"}>
+            <div className={"w-3/4 items-center flex flex-col"}>
+                <h2 className={"text-center font-bold text-6xl"}>
+                    Calculate Face-Shipper's Rates
+                </h2>
+                <div className={"mt-16 items-center flex flex-col w-full"}>
+                    <AddressAutoComplete setAddressFrom={setAddressFrom} setAddressTo={setAddressTo}/>
+                    <form className={'w-full mt-16'} onSubmit={handleSubmit(onSubmit)}>
+                        <h2 className="text-xl text-left font-bold mb-4">
+                            Shipping Date
+                        </h2>
+                        <input {...register('date', {required: true, maxLength: 50})}
+                               className="border border-gray-400 p-2 rounded w-full" placeholder="Date" type="date"/>
+                        <div className={'flex justify-between mt-16'}>
+                            <h2 className="text-xl text-left font-bold mb-4">
+                                Tell us more about your package
+                            </h2>
+                            <Toggle unit={unit} setUnit={setUnit}/>
+                        </div>
 
-        </div></div>
-        )
+                        <div className={"flex gap-2 mb-4 w-full mt-8"}>
+                            <div className={'w-full relative'}>
+                                <h2 className="text-sm  mb-1">
+                                    Weight
+                                </h2>
+                                <input
+                                    className="border w-full border-gray-400 p-2 rounded"
+                                    {...register('weight', {required: true, maxLength: 50})} placeholder="Weight"
+                                    type="text"/>
+                                <div className={"absolute top-8 right-3 "}>{unit === 'metric' ? 'kg' : 'lb'}</div>
+                            </div>
+
+                            <div className={'w-full relative'}>
+                                <h2 className="text-sm  mb-1">
+                                    Length
+                                </h2>
+                                <input
+                                    className="border w-full border-gray-400 p-2 rounded"
+                                    {...register('length', {required: true, maxLength: 50})} placeholder="Length"
+                                    type="text"/>
+                                <div className={"absolute top-8 right-3 "}>{unit === 'metric' ? 'cm' : 'in'}</div>
+
+                            </div>
+
+                            <div className={'w-full relative'}>
+                                <h2 className="text-sm  mb-1">
+                                    Width
+                                </h2>
+                                <input
+                                    className="border w-full border-gray-400 p-2 rounded"
+                                    {...register('width', {required: true, maxLength: 50})} placeholder="Width"
+                                    type="text"/>
+                                <div className={"absolute top-8 right-3 "}>{unit === 'metric' ? 'cm' : 'in'}</div>
+
+                            </div>
+                            <div className={'w-full relative'}>
+                                <h2 className="text-sm  mb-1">
+                                    Height
+                                </h2>
+                                <input
+                                    className="border w-full border-gray-400 p-2 rounded"
+                                    {...register('height', {required: true, maxLength: 50})} placeholder="Height"
+                                    type="text"/>
+                                <div className={"absolute top-8 right-3 "}>{unit === 'metric' ? 'cm' : 'in'}</div>
+
+                            </div>
+                        </div>
+                        <div className={"w-full flex items-center justify-center"}>
+                            <button
+                                className={"bg-blue-500 w-full mt-16 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"}
+                                disabled={loading} type="submit">Get Rates
+                            </button>
+                        </div>
+
+                    </form>
+                    {results && <RatesBox results={results.data} handleClick={() => true}/>}
+
+                </div>
+
+            </div>
+        </div>
+    )
     // return (
     //     <Box
     //         padding="1rem"
