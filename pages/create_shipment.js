@@ -92,7 +92,7 @@ const Home = ({}) => {
         const price = await handleGetPrice(body)
         await handleUpdateCart(sk, {price,...full_data})
         await handleMakeCheckOut(sk)
-        window.location.assign(process.env.CHECKOUT_URL)
+        //window.location.assign(process.env.CHECKOUT_URL)
         setLoading(false)
     }
     const handleAddCart = async () => {
