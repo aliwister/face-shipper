@@ -40,17 +40,28 @@ function QuoteForm() {
         } = data
         const weight_units = unit === 'metric' ? "KG" : "LB"
         const length_units = unit === 'metric' ? "CM" : "IN"
+        const requestedPackageLineItems = [
+            {
+                "weight": {
+                    "units": weight_units, // Enum: "KG" "LB"
+                    "value": weight
+                },
+                ...(length && {
+                    "dimensions": {
+                        "length": length,
+                        "width": width,
+                        "height": height,
+                        "units": length_units
+                    }
+                })
+            }
+        ]
         const body = {
             sender_countryCode: addressFrom.countryCode,
             sender_postalCode: addressFrom.postalCode,
             receiver_countryCode: addressTo.countryCode,
             receiver_postalCode: addressTo.postalCode,
-            weight_units,
-            length_units,
-            length,
-            weight,
-            width,
-            height,
+            requestedPackageLineItems,
             date: date?.toISOString().slice(0, 10),
         }
         console.log(body)

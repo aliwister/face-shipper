@@ -1,19 +1,39 @@
 export const ITEMS = [
     {
+        "description": "DOCUMENTS",
+        "weight": {
+            "units": "LB",
+            "value": 22
+        },
+        "quantity": 1,
+        "customsValue": {
+            "amount": "100",
+            "currency": "USD"
+        },
+        "unitPrice": {},
+        "numberOfPieces": 1,
+        "countryOfManufacture": "US",
+        "quantityUnits": "PCS",
+        "name": "DOCUMENTS",
+        "harmonizedCode": "080211",
+        "partNumber": "P11"
+    },{
         name: 'suitcase',
         description: "suitcase - Attache cases, briefcases and similar containers",
         harmonizedCode : "4202.12.291000",
         countryOfManufacture : "US",
         quantity : 1,
-        quantityUnit : "pcs",
+        quantityUnits : "PCS",
         weight: {
             value: 1,
-            unit: "kg"
+            units: "KG"
         },
         customsValue: {
             amount: 100,
             currency: "USD"
-        }
+        },partNumber:'p1',"numberOfPieces": 1,
+        "unitPrice": {}
+
     },
     {
         name: 'hand bag - small',
@@ -21,15 +41,16 @@ export const ITEMS = [
         harmonizedCode : "4202.31.300000",
         countryOfManufacture : "US",
         quantity : 1,
-        quantityUnit : "pcs",
+        quantityUnits : "PCS",
         weight: {
             value: 1,
-            unit: "kg"
+            units: "KG"
         },
         customsValue: {
             amount: 100,
             currency: "USD"
-        }
+        },partNumber:'p2',"numberOfPieces": 1,
+        "unitPrice": {}
     },
     {
         name: 'hand bag - big',
@@ -37,15 +58,16 @@ export const ITEMS = [
         harmonizedCode : "4202.31.300000",
         countryOfManufacture : "US",
         quantity : 1,
-        quantityUnit : "pcs",
+        quantityUnits : "PCS",
         weight: {
             value: 10,
-            unit: "kg"
+            units: "KG"
         },
         customsValue: {
             amount: 100,
             currency: "USD"
-        }
+        },partNumber:'p3',"numberOfPieces": 1,
+        "unitPrice": {}
     },
     {
         name: 'cereal',
@@ -53,15 +75,16 @@ export const ITEMS = [
         harmonizedCode : "1904.20.100000",
         countryOfManufacture : "US",
         quantity : 1,
-        quantityUnit : "pcs",
+        quantityUnits : "PCS",
         weight: {
             value: 1,
-            unit: "kg"
+            units: "KG"
         },
         customsValue: {
             amount: 1,
             currency: "USD"
-        }
+        },partNumber:'p4',"numberOfPieces": 1,
+        "unitPrice": {}
     }
 ]
 
