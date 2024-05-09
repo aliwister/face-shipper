@@ -3,6 +3,7 @@ export const CART = /* GraphQL */ `query cart($secureKey: String) {
         secureKey
         currency
         gift
+        additionalInfo
         cartItems {
             id
             api

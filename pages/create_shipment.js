@@ -34,9 +34,8 @@ const Home = ({}) => {
         watch,
         setValue,
     });
-    console.log(data)
     const [unit, setUnit] = useState(data?.unit ?? 'metric')
-    const [country, setCountry] = useState(data?.receiver_countryCode.toLowerCase() ??'om')
+    const [country, setCountry] = useState(data?.receiver_countryCode?.toLowerCase() ??'om')
     const [receiver_phone, setReceiver_phone] = useState('')
     const [sender_phone, setSender_phone] = useState('')
 
@@ -106,7 +105,7 @@ const Home = ({}) => {
         const price = await handleGetPrice(body)
         await handleUpdateCart(sk, {price,...full_data})
         await handleMakeCheckOut(sk)
-        //window.location.assign(process.env.CHECKOUT_URL)
+        //window.location.assign(process.env.CHECKOUT_URL+'?token='+sk)
         setLoading(false)
     }
     const handleAddCart = async () => {
@@ -126,7 +125,7 @@ const Home = ({}) => {
 
     async function handleUpdateCart(secureKey, additionalInfo) {
         const endpoint = process.env.API_URL + `/instanna`;
-        const variables = {secureKey, items: [], isMerge: true, additional_info: additionalInfo};
+        const variables = {secureKey, items: [], isMerge: true, additional_info: JSON.stringify(additionalInfo)};
 
         try {
             const data = await request(endpoint, UPDATE_TENANT_CART_MUTATION, variables, {
