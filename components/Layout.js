@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
     return (
         <>
             <Head>
-                <title>Face-Shipper</title>
+                <title>Instanna</title>
             </Head>
 
             <style jsx global>{`

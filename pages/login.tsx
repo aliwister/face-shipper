@@ -23,11 +23,11 @@ const Login = () => {
     };
 
     try {
-      mutateUser(
-        await fetchJson("/api/login", {
-          method: "POST",
-          body: JSON.stringify(body),
-        }),
+      await mutateUser(
+          await fetchJson("/api/login", {
+            method: "POST",
+            body: JSON.stringify(body),
+          }),
       );
     } catch (error: any) {
       setErrorMsg(error.data.detail);
