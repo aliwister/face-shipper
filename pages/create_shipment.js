@@ -15,13 +15,28 @@ import {request} from "graphql-request";
 import useUser from "../lib/useUser";
 import {useRouter} from "next/router";
 import PhoneInput from "react-phone-input-2";
+import useFormPersist from "react-hook-form-persist";
 
 const Home = ({}) => {
+    const router = useRouter()
+    const data = router.query;
     const {
-        register, handleSubmit, getValues, formState: {errors},
-    } = useForm()
-    const [unit, setUnit] = useState('metric')
-    const [country, setCountry] = useState('om')
+        register,watch,
+        setValue, handleSubmit, getValues, formState: {errors},
+    } = useForm({
+        defaultValues: {
+            date: data?.date ?? '',
+            zipcode : data?.receiver_postalCode ?? '',
+            sender_zipcode: data?.sender_postalCode ?? '',
+        }
+    })
+    useFormPersist("form2", {
+        watch,
+        setValue,
+    });
+    console.log(data)
+    const [unit, setUnit] = useState(data?.unit ?? 'metric')
+    const [country, setCountry] = useState(data?.receiver_countryCode.toLowerCase() ??'om')
     const [receiver_phone, setReceiver_phone] = useState('')
     const [sender_phone, setSender_phone] = useState('')
 
@@ -42,12 +57,11 @@ const Home = ({}) => {
     }
     const [items, setItems] = useState([])
     const {user} = useUser()
-    const router = useRouter()
 
     const onSubmit = async (data) => {
         setLoading(true)
         const {
-            city, zipcode, receiver_city, receiver_zipcode, date
+            city, zipcode, sender_city, sender_zipcode, date
         } = data
         const weight_units = unit === 'metric' ? "KG" : "LB"
         const length_units = unit === 'metric' ? "CM" : "IN"
@@ -70,8 +84,8 @@ const Home = ({}) => {
         }
         const body = {
             sender_countryCode: 'us',
-            sender_postalCode: receiver_zipcode,
-            sender_city: receiver_city,
+            sender_postalCode: sender_zipcode,
+            sender_city: sender_city,
             receiver_countryCode: country,
             receiver_postalCode: zipcode,
             receiver_city: city,
@@ -96,7 +110,7 @@ const Home = ({}) => {
         setLoading(false)
     }
     const handleAddCart = async () => {
-        const endpoint = process.env.API_URL + `/face_shipper`;
+        const endpoint = process.env.API_URL + `/instanna`;
         const variables = {secureKey: null};
 
         try {
@@ -111,7 +125,7 @@ const Home = ({}) => {
     }
 
     async function handleUpdateCart(secureKey, additionalInfo) {
-        const endpoint = process.env.API_URL + `/face_shipper`;
+        const endpoint = process.env.API_URL + `/instanna`;
         const variables = {secureKey, items: [], isMerge: true, additional_info: additionalInfo};
 
         try {
@@ -147,7 +161,7 @@ const Home = ({}) => {
     }
 
     async function handleMakeCheckOut(secureKey) {
-        const endpoint = process.env.API_URL + `/face_shipper`;
+        const endpoint = process.env.API_URL + `/instanna`;
         const variables = {secureKey, items: []};
 
         try {
@@ -162,6 +176,8 @@ const Home = ({}) => {
     }
 
     const checkInputs = () => {
+        if(receiver_phone.length < 6 || sender_phone.length < 6)
+            return true
         for (const packageItem of packages) {
             for (const key in packageItem) {
                 if (packageItem[key] === '') {
@@ -188,7 +204,7 @@ const Home = ({}) => {
                 Ship To
             </h2>
             <div className="w-full gap-4 mb-4">
-                <select onChange={(e) => setCountry(e.target.value)}
+                <select value={country} onChange={(e) => setCountry(e.target.value)}
                         className="border border-gray-400 p-2 rounded w-full">
                     {COUNTRIES.map((country, idx) => {
                         return (<option key={idx} value={country.value.toLowerCase()}>
@@ -251,30 +267,30 @@ const Home = ({}) => {
                 {/*    /!*</span>*!/*/}
                 {/*</h3>*/}
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('receiver_name', {required: false, maxLength: 50})}
+                    <input {...register('sender_name', {required: false, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Name (optional)"
                            type="text"/>
-                    <input {...register('receiver_company', {required: false, maxLength: 50})}
+                    <input {...register('sender_company', {required: false, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Company (optional)"
                            type="text"/>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('receiver_address', {required: true, maxLength: 500})}
+                    <input {...register('sender_address', {required: true, maxLength: 500})}
                            className="border border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
-                    <input {...register('receiver_address_opt', {required: false, maxLength: 50})}
+                    <input {...register('sender_address_opt', {required: false, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded"
                            placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
                 </div>
                 <div className="grid grid-cols-3 gap-4 mb-4">
-                    <input {...register('receiver_city', {required: true, maxLength: 50})}
+                    <input {...register('sender_city', {required: true, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
-                    {/*<select {...register('receiver_city1', {required: true, maxLength: 50})}*/}
+                    {/*<select {...register('sender_city1', {required: true, maxLength: 50})}*/}
                     {/*        className="border border-gray-400 p-2 rounded">*/}
                     {/*    <option>*/}
                     {/*        Alabama*/}
                     {/*    </option>*/}
                     {/*</select>*/}
-                    <input {...register('receiver_zipcode', {required: true, maxLength: 50})}
+                    <input {...register('sender_zipcode', {required: true, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
                     <PhoneInput
                         inputStyle={{height: "100%", width: "100%"}}
@@ -295,7 +311,7 @@ const Home = ({}) => {
                 Date
             </h2>
             <input {...register('date', {required: true, maxLength: 50})}
-                   className="border border-gray-400 p-2 rounded" placeholder="Date" type="date"/>
+                   className="border border-gray-400 p-2 rounded w-full" placeholder="Date" type="date"/>
             <div className={"flex justify-between border-t pt-4 items-start w-full"}>
                 <h2 className="text-2xl font-bold mb-4 ">
                     Packages
@@ -351,7 +367,7 @@ const Home = ({}) => {
                 </Link>
                 <button disabled={checkInputs() || loading} type="submit"
                         className="bg-blue-500 disabled:bg-gray-400 text-white px-4 py-2 rounded">
-                    {loading ? 'Loading' : 'SAVE'}
+                    {loading ? 'Loading...' : 'SAVE'}
                 </button>
             </div>
         </form>

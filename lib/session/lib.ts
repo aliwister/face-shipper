@@ -14,7 +14,7 @@ export const defaultSession: SessionData = {
 
 export const sessionOptions: SessionOptions = {
     password: process.env.SECRET_COOKIE_PASSWORD || "SuperSecurePassWrodFallBackShouldNotbeInProd",
-    cookieName: 'face_shipper_user',
+    cookieName: 'faceshipper_user',
     cookieOptions: {
         // secure only works in `https` environments
         // if your localhost is not on `https`, then use: `secure: process.env.NODE_ENV === "production"`

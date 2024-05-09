@@ -1,10 +1,8 @@
 import {useRouter} from "next/router";
 
-export default function RateBoxItem({item, idx}) {
+export default function RateBoxItem({item, idx,handleClick}) {
     const router  = useRouter()
-    const handleClick = (idx) =>{
-        router.push('/create_shipment')
-    }
+
     return (
         <div className={'py-4 flex justify-between items-center'} >
             <div>
@@ -20,7 +18,8 @@ export default function RateBoxItem({item, idx}) {
                 {item.serviceName}
             </h5>
 
-            <button onClick={()=>handleClick(idx)} className={"font-bold text-white text-xl bg-yellow-500 py-2 px-4 rounded"}>
+            <button onClick={()=>handleClick()} className={"font-bold text-white text-xl bg-yellow-500 py-2 px-4 rounded"}>
+                Create Shipment
                 <h5>
                     {item.ratedShipmentDetails[0].totalNetChargeWithDutiesAndTaxes.toFixed(2)}$
                 </h5>
