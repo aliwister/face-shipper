@@ -6,8 +6,9 @@ const Layout = ({ children }) => {
     return (
         <>
             <Head>
-                <title>Face-Shipper</title>
+                <title>Instanna</title>
             </Head>
+
             <style jsx global>{`
                 *,
                 *::before,
@@ -25,6 +26,9 @@ const Layout = ({ children }) => {
                 }
 
                 .container {
+                    //display: flex;
+                    flex-direction: column;
+                    align-items: center;
                     margin: 1.5rem auto;
                     padding-left: 1rem;
                     padding-right: 1rem;

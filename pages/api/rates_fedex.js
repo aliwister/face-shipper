@@ -1,6 +1,6 @@
-import { withSessionRoute } from 'lib/withSession'
 import axios from 'axios'
-import getConfig from "next/config";
+import {shopFetcher} from "../../lib/utils";
+import {ME} from "../../constants/graphql";
 
 const qs = require('qs');
 
@@ -18,12 +18,10 @@ async function getAccessToken(){
             client_secret: process.env.FEDEX_CLIENT_SECRET,
         })
     }
-    try {
-        const { data } = await axios(config)
-        return data.access_token
-    } catch (error) {
-        console.log(error)
-    }
+
+    const {data} = await axios(config)
+    return data.access_token
+
 }
 
 async function getRate(shipmentInfo){
@@ -39,13 +37,16 @@ async function getRate(shipmentInfo){
         },
         data: shipmentInfo
     }
-
-    const { data } = await axios(config)
+    const {data} = await axios(config)
     return data
 }
 
 async function getRateRoute(req, res) {
-    if (!req.session['user']) return res.status(401).json('Unauthorized!')
+    // const session = await getIronSession(
+    //     req,
+    //     res,
+    //   )
+    // if (!session.username) return res.status(401).json('Unauthorized!')
 
     const {
         sender_city,
@@ -54,13 +55,8 @@ async function getRateRoute(req, res) {
         receiver_city,
         receiver_countryCode,
         receiver_postalCode,
-        weight_units,
-        length_units,
-        weight,
-        length,
-        width,
-        height,
-        date,
+        requestedPackageLineItems,
+        date, items
     } = req.body
 
 
@@ -72,14 +68,14 @@ async function getRateRoute(req, res) {
             "requestedShipment": {
                 "shipper": {
                     "address": {
-                        city: sender_city,
+                        ...(sender_city && {city: sender_city}),
                         countryCode: sender_countryCode, //This is the two-letter country code
                         postalCode: sender_postalCode,
                     },
                 },
                 "recipient": {
                     "address": {
-                        city: receiver_city,
+                        ...(receiver_city && {city: receiver_city}),
                         countryCode: receiver_countryCode, //This is the two-letter country code
                         postalCode: receiver_postalCode,
                     },
@@ -94,28 +90,44 @@ async function getRateRoute(req, res) {
                     "ACCOUNT",
                     "LIST"
                 ],// todo read up on this
-                "requestedPackageLineItems": [
-                    {
-                        "weight": {
-                            "units": weight_units, // Enum: "KG" "LB"
-                            "value": weight
-                        },
-                        "dimensions": {
-                            "length": length,
-                            "width": width,
-                            "height": height,
-                            "units": length_units // Enum: "CM" "IN"
-                        }
+                "requestedPackageLineItems": requestedPackageLineItems,
+                ...(items && {
+                    "customsClearanceDetail": {
+                        "commodities": items
                     }
-                ]
+                })
             }
         }
-        const data = await getRate(shipmentInfo)
+        let data = await getRate(shipmentInfo)
+        data = await addMarkup(data, req.headers.Authorization)
         res.json(data)
     } catch (error) {
-        const { response } = error
+        const {response} = error
+        console.log(error)
         res.status(response?.status || 500).json(response?.statusText)
     }
 }
 
-export default withSessionRoute(getRateRoute)
+async function addMarkup(shipmentInfo, user) {
+    let markup = 0.4;
+    if (user) {
+        const {me} = await shopFetcher(ME, {}, 'en', {
+            Authorization: user,
+            "X-TenantId": "instanna"
+        })
+        if (me && me.shipperMarkup)
+            markup = +me.shipperMarkup / 100;
+    }
+    let rates = shipmentInfo.output.rateReplyDetails;
+    for (let i = 0; i < rates.length; i++) {
+        for (let j = 0; j < rates[i].ratedShipmentDetails.length; j++) { //todo ask ali about "rateType": "ACCOUNT" ...
+            rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes =
+                +rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes *
+                (1 + markup);
+        }
+    }
+    shipmentInfo.output.rateReplyDetails = rates;
+    return shipmentInfo;
+}
+
+export default getRateRoute

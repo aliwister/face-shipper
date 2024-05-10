@@ -82,7 +82,7 @@ function populateInputs(line: string, descriptions: any | undefined, control: an
   if (placeholders == null)
     return <></>;
   const len = placeholders.length;
-  return (<>
+  return <>
     {wrap(<>
       {placeholders.map((p) => {
         let x = findDescription(p.replace(/[{}]/g, ""), descriptions);
@@ -102,8 +102,7 @@ function populateInputs(line: string, descriptions: any | undefined, control: an
         )
       })}
       </>, len)}
-    </>
-  )
+    </>;
 }
 
 export const FormattedForm = styled.div<any>(

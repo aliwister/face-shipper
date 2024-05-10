@@ -1,28 +1,18 @@
-import {Box} from "@mui/material";
 import RateBoxItem from "./RateBoxItem";
-import Alert from '@mui/material/Alert';
 
 export default function RatesBox({results, handleClick}) {
-    console.log(results)
+    //console.log(results)
     if (!results) {
 
-        return <Alert severity="error">Wrong Shipping Inputs,Try Again</Alert>
+        return <div >Wrong Shipping Inputs,Try Again</div>
     }
     return (
-        <Box sx={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            flexDirection: 'column',
-            p: 1,
-            m: 1,
-            bgcolor: 'background.paper',
-            borderRadius: 1,
-        }}>
+        <div className={'flex w-full flex-col border-t-2 border-t-black divide-y-2 mt-8 pt-8'} >
             {results.output.rateReplyDetails.map((item, idx) => {
                 return (
-                    <RateBoxItem key={idx} idx={idx} item={item}/>
+                    <RateBoxItem handleClick={handleClick} key={idx} idx={idx} item={item}/>
                 )
             })}
-        </Box>
+        </div>
     )
 }

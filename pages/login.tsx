@@ -1,60 +1,60 @@
-import { useState } from 'react'
-import useUser from '../lib/useUser'
-import Layout from '../components/Layout'
-import LoginForm from '../components/Login/Form'
-import fetchJson from '../lib/fetchJson'
-import Box from '@mui/material/Box'
-import { withSessionSsr } from 'lib/withSession'
+import { useState } from "react";
+import useUser from "../lib/useUser";
+import Layout from "../components/Layout";
+import LoginForm from "../components/Login/Form";
+import fetchJson from "../lib/fetchJson";
+import { getIronSession } from "iron-session";
+import { SessionData, sessionOptions } from "lib/session/lib";
 
 const Login = () => {
-    const { mutateUser } = useUser({
-        redirectTo: '/',
-        redirectIfFound: true,
-    })
+  const { mutateUser } = useUser({
+    redirectTo: "/",
+    redirectIfFound: true,
+  });
 
-    const [errorMsg, setErrorMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState("");
 
-    async function handleSubmit(e) {
-        e.preventDefault()
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-        const body = {
-            username: e.currentTarget.username.value,
-            password: e.currentTarget.password.value,
-        }
+    const body = {
+      username: e.currentTarget.username.value,
+      password: e.currentTarget.password.value,
+    };
 
-        try {
-            mutateUser(
-                await fetchJson('/api/login', {
-                    method: 'POST',
-                    body: JSON.stringify(body),
-                })
-            )
-        } catch (error: any) {
-            setErrorMsg(error.data.detail)
-        }
+    try {
+      await mutateUser(
+          await fetchJson("/api/login", {
+            method: "POST",
+            body: JSON.stringify(body),
+          }),
+      );
+    } catch (error: any) {
+      setErrorMsg(error.data.detail);
     }
+  }
 
-    return (
-        <Layout>
-            <Box maxWidth="24rem" mx="auto">
-                <LoginForm errorMessage={errorMsg} onSubmit={handleSubmit} />
-            </Box>
-        </Layout>
-    )
-}
+  return (
+    <Layout>
+      <div>
+        <LoginForm errorMessage={errorMsg} onSubmit={handleSubmit} />
+      </div>
+    </Layout>
+  );
+};
 
-export default Login
+export default Login;
 
-export const getServerSideProps = withSessionSsr(async function ({ req, res }) {
-    const user = req.session['user'];
+export const getServerSideProps = async function ({ req, res }) {
+  const session = await getIronSession<SessionData>(req, res, sessionOptions);
 
-    if (user) {
-        return {
-            redirect: {
-                destination: '/profile',
-                permanent: false,
-            },
-        }
-    }
-    return { props: {}}
-})
+  if (session.username) {
+    return {
+      redirect: {
+        destination: "/profile",
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} };
+};

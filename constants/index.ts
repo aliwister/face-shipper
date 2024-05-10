@@ -1,3 +1,93 @@
+export const ITEMS = [
+    {
+        "description": "DOCUMENTS",
+        "weight": {
+            "units": "LB",
+            "value": 22
+        },
+        "quantity": 1,
+        "customsValue": {
+            "amount": "100",
+            "currency": "USD"
+        },
+        "unitPrice": {},
+        "numberOfPieces": 1,
+        "countryOfManufacture": "US",
+        "quantityUnits": "PCS",
+        "name": "DOCUMENTS",
+        "harmonizedCode": "080211",
+        "partNumber": "P11"
+    },{
+        name: 'suitcase',
+        description: "suitcase - Attache cases, briefcases and similar containers",
+        harmonizedCode : "4202.12.291000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnits : "PCS",
+        weight: {
+            value: 1,
+            units: "KG"
+        },
+        customsValue: {
+            amount: 100,
+            currency: "USD"
+        },partNumber:'p1',"numberOfPieces": 1,
+        "unitPrice": {}
+
+    },
+    {
+        name: 'hand bag - small',
+        description: "HAND BAG - Of reptile leather",
+        harmonizedCode : "4202.31.300000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnits : "PCS",
+        weight: {
+            value: 1,
+            units: "KG"
+        },
+        customsValue: {
+            amount: 100,
+            currency: "USD"
+        },partNumber:'p2',"numberOfPieces": 1,
+        "unitPrice": {}
+    },
+    {
+        name: 'hand bag - big',
+        description: "HAND BAG - Of reptile leather",
+        harmonizedCode : "4202.31.300000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnits : "PCS",
+        weight: {
+            value: 10,
+            units: "KG"
+        },
+        customsValue: {
+            amount: 100,
+            currency: "USD"
+        },partNumber:'p3',"numberOfPieces": 1,
+        "unitPrice": {}
+    },
+    {
+        name: 'cereal',
+        description: "Prepared foods obtained from unroasted cereal flakes or from mixtures of unroasted cereal flakes and roasted cereal flakes or swelled cereals - In airtight containers and not containing apricots, citrus fruits, peaches or pears",
+        harmonizedCode : "1904.20.100000",
+        countryOfManufacture : "US",
+        quantity : 1,
+        quantityUnits : "PCS",
+        weight: {
+            value: 1,
+            units: "KG"
+        },
+        customsValue: {
+            amount: 1,
+            currency: "USD"
+        },partNumber:'p4',"numberOfPieces": 1,
+        "unitPrice": {}
+    }
+]
+
 export const COUNTRIES = [
     { value: 'OM', label: 'Oman' },
     { value: 'AE', label: 'UAE' },
