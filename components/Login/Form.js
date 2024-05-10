@@ -1,39 +1,35 @@
-import React from 'react'
-import { Button, TextField, Typography, Box } from '@mui/material'
+import React from "react";
 
 const Form = ({ errorMessage, onSubmit }) => (
-    <form onSubmit={onSubmit}>
-        <Typography variant="h5">Login</Typography>
-        <Box my="1rem">
-            <TextField
-                fullWidth
+    <form onSubmit={onSubmit} className="max-w-sm mx-auto mt-8">
+        <h5 className="text-lg font-semibold mb-4">Login</h5>
+        <div className="mb-4">
+            <input
                 type="text"
                 name="username"
                 required
-                label="Username"
-                variant="outlined"
+                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:border-blue-500"
+                placeholder="Username"
             />
-        </Box>
-        <Box mb="1rem">
-            <TextField
-                fullWidth
+        </div>
+        <div className="mb-4">
+            <input
                 type="password"
                 name="password"
                 required
-                label="Password"
-                variant="outlined"
+                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:border-blue-500"
+                placeholder="Password"
             />
-        </Box>
-        <Button fullWidth variant="contained" type="submit">
+        </div>
+        <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
             Login
-        </Button>
+        </button>
 
-        {errorMessage && (
-            <Typography variant="h5" mt="1rem" color="error.main">
-                {errorMessage}
-            </Typography>
-        )}
+        {errorMessage && <h5 className="text-red-500 mt-4">{errorMessage}</h5>}
     </form>
-)
+);
 
-export default Form
+export default Form;

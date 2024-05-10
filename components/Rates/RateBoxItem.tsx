@@ -1,34 +1,30 @@
-import {Box, Button, Typography} from "@mui/material";
+import {useRouter} from "next/router";
 
-export default function RateBoxItem({item, idx}) {
+export default function RateBoxItem({item, idx,handleClick}) {
+    const router  = useRouter()
+
     return (
-        <Box sx={{
-            width: "100%",
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: "space-between",
-            borderTop: idx === 0 ? "none" : "black solid 1px",
-            p: 5
-        }}>
+        <div className={'py-4 flex justify-between items-center'} >
             <div>
-                <Typography fontWeight={700} variant="h5" component="h5">
+                <h5 className={'font-bold text-xl'}>
                     ARRIVES ON
-                </Typography>
-                <Typography fontSize={16} color={"lightslategray"} variant="h6" component="h6">
+                </h5>
+                <h6>
                     {item.operationalDetail?.commitDate ?? "can not be calculated"}
-                </Typography>
+                </h6>
             </div>
 
-            <Typography variant="h5" component="h5">
+            <h5 className={'font-semibold text-xl'}>
                 {item.serviceName}
-            </Typography>
+            </h5>
 
-            <Button size={"large"} variant="contained" color="warning">
-                <Typography fontWeight={700} variant="h5" component="h5">
-                    {(item.ratedShipmentDetails[0].totalNetFedExCharge*1.4).toFixed(2)}$
-                </Typography>
+            <button onClick={()=>handleClick()} className={"font-bold text-white text-xl bg-yellow-500 py-2 px-4 rounded"}>
+                Create Shipment
+                <h5>
+                    {item.ratedShipmentDetails[0].totalNetChargeWithDutiesAndTaxes.toFixed(2)}$
+                </h5>
 
-            </Button>
-        </Box>
+            </button>
+        </div>
     )
 }

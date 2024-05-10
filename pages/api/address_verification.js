@@ -29,8 +29,8 @@ async function getAccessToken(){
     }
 }
 
-async function getLabel(shipmentInfo){
-    const url = `${FEDEX_URL}/ship/v1/shipments`
+async function getAddressVerification(shipmentInfo){
+    const url = `${FEDEX_URL}/address/v1/addresses/resolve`
     const token = await getAccessToken()
     const config = {
         method: 'POST',
@@ -42,28 +42,22 @@ async function getLabel(shipmentInfo){
         },
         data: shipmentInfo
     }
-    try {
-        const { data } = await axios(config)
-        return data
-    } catch (error) {
-        console.log(error)
-    }
+
+    const { data } = await axios(config)
+    return data
+
 }
 
-async function getLabelRoute(req, res) {
+async function getAddressVerificationRoute(req, res) {
     if (!req.session['user']) return res.status(401).json('Unauthorized!')
 
     const input_data = req.body
 
     try {
-        const shipmentInfo = {
-            "accountNumber": {
-                "value": ACCOUNT_NUMBER
-            },
+        const search_data = {
             ...input_data
-
         }
-        const data = await getLabel(shipmentInfo)
+        const data = await getAddressVerification(search_data)
         res.json(data)
     } catch (error) {
         const { response } = error
@@ -71,4 +65,4 @@ async function getLabelRoute(req, res) {
     }
 }
 
-export default getLabelRoute
+export default getAddressVerificationRoute
