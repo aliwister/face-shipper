@@ -1,3 +1,11 @@
+4-22
+Demo ready (2nd try)
+
+4-22-2024
+Resurrecting project
+
+
+
 # Example application using [`next-iron-session`](https://github.com/vvo/next-iron-session)
 
 ---

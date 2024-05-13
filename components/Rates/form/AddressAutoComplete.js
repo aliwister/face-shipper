@@ -68,8 +68,8 @@ export default ({setAddressFrom, setAddressTo}) => {
                 />
             </div>
             {results1&& <div className={"flex flex-col  divide-y pl-20"}>
-                {results1.map((item) => {
-                    return (<div className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "} onClick={()=>handleSelectChange1(item.description,item.place_id)} >
+                {results1.map((item,idx) => {
+                    return (<div key={idx} className={"cursor-pointer hover:bg-gray-200 py-2 px-1 "} onClick={()=>handleSelectChange1(item.description,item.place_id)} >
                         {item.description}
                     </div>)
                 })}

@@ -2,15 +2,11 @@ import { getIronSession } from "iron-session";
 import axios from 'axios'
 import {shopFetcher} from "../../lib/utils";
 import {ME} from "../../constants/graphql";
+
 const qs = require('qs');
 
-const FEDEX_URL = "https://apis-sandbox.fedex.com"
-const CLIENT_ID = "l72e9ba4546fd6424f8204195729225ba9"
-const CLIENT_SECRET = "f502317014eb45368c07e730eb40d8e2"
-const ACCOUNT_NUMBER = "740561073"
-
 async function getAccessToken(){
-    const url = `${FEDEX_URL}/oauth/token`
+    const url = `${process.env.FEDEX_URL}/oauth/token`
     const config = {
         method: 'POST',
         url: url,
@@ -19,18 +15,18 @@ async function getAccessToken(){
         },
         data: qs.stringify({
             grant_type: 'client_credentials',
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
+            client_id: process.env.FEDEX_CLIENT_ID,
+            client_secret: process.env.FEDEX_CLIENT_SECRET,
         })
     }
 
-    const { data } = await axios(config)
+    const {data} = await axios(config)
     return data.access_token
 
 }
 
 async function getRate(shipmentInfo){
-    const url = `${FEDEX_URL}/rate/v1/rates/quotes`
+    const url = `${process.env.FEDEX_URL}/rate/v1/rates/quotes`
     const token = await getAccessToken()
     const config = {
         method: 'POST',
@@ -42,7 +38,7 @@ async function getRate(shipmentInfo){
         },
         data: shipmentInfo
     }
-    const { data } = await axios(config)
+    const {data} = await axios(config)
     return data
 }
 
@@ -60,20 +56,15 @@ async function getRateRoute(req, res) {
         receiver_city,
         receiver_countryCode,
         receiver_postalCode,
-        weight_units,
-        length_units,
-        weight,
-        length,
-        width,
-        height,
-        date,
+        requestedPackageLineItems,
+        date, items
     } = req.body
 
 
     try {
         const shipmentInfo = {
             "accountNumber": {
-                "value": ACCOUNT_NUMBER
+                "value": process.env.FEDEX_ACCOUNT_NUMBER
             },
             "requestedShipment": {
                 "shipper": {
@@ -100,29 +91,19 @@ async function getRateRoute(req, res) {
                     "ACCOUNT",
                     "LIST"
                 ],// todo read up on this
-                "requestedPackageLineItems": [
-                    {
-                        "weight": {
-                            "units": weight_units, // Enum: "KG" "LB"
-                            "value": weight
-                        },
-                        ...(length && {
-                            "dimensions": {
-                                "length": length,
-                                "width": width,
-                                "height": height,
-                                "units": length_units
-                            }
-                        })
+                "requestedPackageLineItems": requestedPackageLineItems,
+                ...(items && {
+                    "customsClearanceDetail": {
+                        "commodities": items
                     }
-                ]
+                })
             }
         }
         let data = await getRate(shipmentInfo)
         data = await addMarkup(data, req.headers.Authorization)
         res.json(data)
     } catch (error) {
-        const { response } = error
+        const {response} = error
         console.log(error)
         res.status(response?.status || 500).json(response?.statusText)
     }
@@ -130,17 +111,17 @@ async function getRateRoute(req, res) {
 
 async function addMarkup(shipmentInfo, user) {
     let markup = 0.4;
-    if(user) {
-        const { me } = await shopFetcher(ME, {}, 'en', {
+    if (user) {
+        const {me} = await shopFetcher(ME, {}, 'en', {
             Authorization: user,
-            "X-TenantId" : "instanna"
+            "X-TenantId": "instanna"
         })
         if (me && me.shipperMarkup)
             markup = +me.shipperMarkup / 100;
     }
     let rates = shipmentInfo.output.rateReplyDetails;
     for (let i = 0; i < rates.length; i++) {
-        for  (let j = 0; j  < rates[i].ratedShipmentDetails.length; j++) { //todo ask ali about "rateType": "ACCOUNT" ...
+        for (let j = 0; j < rates[i].ratedShipmentDetails.length; j++) { //todo ask ali about "rateType": "ACCOUNT" ...
             rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes =
                 +rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes *
                 (1 + markup);
