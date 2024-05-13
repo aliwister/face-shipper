@@ -8,7 +8,8 @@ import {request} from "graphql-request";
 import {PROCESS_PAYMENT} from "../../framework/graphql";
 
 
-export const PaymentStep = ({payments, sk}) => {
+export const PaymentStep = ({payments, sk,price}) => {
+
     const {register, handleSubmit} = useForm();
     const [paymentMethod, setPaymentMethod] = useState();
     const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export const PaymentStep = ({payments, sk}) => {
         let { processPayment } = await processPaymentMutation({token, ref, secureKey});
         return processPayment;
     }
-    React.useEffect(async () => {
+    React.useEffect( () => {
         const processPaymentWrapper = async () => {
             const processPaymentResponse = await processPayment( paymentToken, paymentMethod, sk)
             if (processPaymentResponse.status === 'SUCCESS') {
@@ -53,7 +54,7 @@ export const PaymentStep = ({payments, sk}) => {
         if (!paymentToken)
             return;
 
-        await processPaymentWrapper();
+        processPaymentWrapper();
     }, [paymentToken]);
 
     const onSubmit = async () => {
@@ -76,12 +77,12 @@ export const PaymentStep = ({payments, sk}) => {
                                    value={x.ref}
                                    key={x.ref}
                                    name={x.label}
-                            />
+                            />{x.label}
                             &nbsp;&nbsp;
 
 
                             {(x.ref === 'stripe' && paymentMethod === x.ref) && (
-                                <StripePayment pk={x.pk} token={sk} setLoading={setLoading} formRef={formRef}/>
+                                <StripePayment price={price} pk={x.pk} token={sk} setLoading={setLoading} formRef={formRef}/>
                             )}
 
                         </div>
@@ -89,7 +90,7 @@ export const PaymentStep = ({payments, sk}) => {
                 ))}
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <button type={"submit"}>bb</button>
+                <button className="bg-blue-500 disabled:bg-gray-400 text-white px-4 py-2 rounded" type={"submit"}>Complete Order</button>
             </form>
 
         </div>
