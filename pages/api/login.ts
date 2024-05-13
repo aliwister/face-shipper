@@ -24,16 +24,18 @@ export default async function handler(
         try {
             const user = await fetchJson(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-TenantId': 'face_shipper' },
+                headers: { 'Content-Type': 'application/json', 'X-TenantId': 'instanna' },
                 body: req.body,
             })
+            console.log(user)
             session.isLoggedIn = true;
             session.username = user.username;
+            session.id_token = user.id_token;
             await session.save();
 
     
             // Redirect after creating session
-            res.status(303).redirect("/index");
+            res.redirect(303, '/')
             return;
         }
         catch(error) {
