@@ -133,7 +133,7 @@ async function addMarkup(shipmentInfo, user) {
     if(user) {
         const { me } = await shopFetcher(ME, {}, 'en', {
             Authorization: user,
-            "X-TenantId" : "face_shipper"
+            "X-TenantId" : "instanna"
         })
         if (me && me.shipperMarkup)
             markup = +me.shipperMarkup / 100;
