@@ -8,18 +8,18 @@ import useUser from "../../lib/useUser";
 
 
 let stripePromise = null;
-export const StripePayment = ({pk, token, setLoading, formRef}) => {
+export const StripePayment = ({pk, token, setLoading, formRef,price}) => {
   const [clientSecret, setClientSecret] = useState("");
   const {user} = useUser()
-  useEffect(async () => {
+  useEffect( () => {
     setLoading(true);
     stripePromise = loadStripe(pk);
 
     async function getSecret() {
 
-      const {data} = await axios.post(`${process.env.CHECKOUT_URL}/api/stripe-support/create-payment-intent-shipment`,
+      const {data} = await axios.post(`${process.env.CHECKOUT_URL}api/stripe-support/create-payment-intent-shipment`,
           {
-            amount: 10,
+            amount: price,
             secureKey: token
           },
           {
@@ -31,7 +31,7 @@ export const StripePayment = ({pk, token, setLoading, formRef}) => {
       setClientSecret(data.payload);
     }
 
-    await getSecret();
+    getSecret();
   }, [token]);
 
   const appearance = {
@@ -41,7 +41,7 @@ export const StripePayment = ({pk, token, setLoading, formRef}) => {
     clientSecret,
     appearance,
   };
-  if(clientSecret === "" || !stripePromise)
+  if(!clientSecret  || !stripePromise)
     return <></>
 
 
@@ -53,7 +53,7 @@ export const StripePayment = ({pk, token, setLoading, formRef}) => {
           /*
         // @ts-ignore */
           options={options}>
-        <StripeCheckoutForm formRef={formRef} return_url={`${process.env.PROTOCOL}://${tenant}.${process.env.ROOT_URL}/checkout/callbacks/stripe`} setLoading={setLoading}/>
+        <StripeCheckoutForm formRef={formRef} return_url={`/checkout/callbacks/stripe`} setLoading={setLoading}/>
       </Elements>
   );
 }

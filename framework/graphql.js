@@ -130,3 +130,10 @@ export const PROCESS_PAYMENT = `
     }
   }
 `;
+export const ORDER_CONFIRMATION= `query orderConfirmation($paymentKey: String) {
+  orderConfirmation(paymentKey: $paymentKey) {
+    id
+    reference
+    confirmationKey
+  }
+}`;

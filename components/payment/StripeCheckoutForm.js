@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
 import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
-import { SubmitButton } from '@components/checkout/checkoutFormButtons/submitButton';
-import Button from '@mui/material/Button';
 
 const StripeCheckoutForm = ({return_url, setLoading, formRef}) => {
   const stripe = useStripe();
