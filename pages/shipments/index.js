@@ -60,10 +60,10 @@ const Home = ({sk,additionalInfo}) => {
                             {additionalInfo.date}
                         </td>
                         <td className="px-6 py-4">
-                            {additionalInfo.price.toFixed(2)}$
+                            {additionalInfo.price?.toFixed(2)}$
                         </td>
                         <td className="px-6 py-4">
-                            <Link href={process.env.CHECKOUT_URL+'?token='+sk} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Pay</Link>
+                            <Link href={'/payment/'+sk} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Pay</Link>
                         </td>
                     </tr>}
                     {/*<tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">*/}
@@ -118,16 +118,8 @@ export const getServerSideProps = async function ({ req, res }) {
         }
     }
     const cart = await handleAddCart(session.id_token)
-    // const addressDescription = await checkoutFetcher(
-    //     ADDRESS_DESCRIPTION,
-    //     {
-    //         isoCode: 'om',
-    //         lang: 'en',
-    //     },
-    //     'en',
-    //     {}
-    // )
-    const additionalInfo = !!cart.additionalInfo ? JSON.parse(JSON.parse(cart.additionalInfo)) : {}
+    console.log(cart)
+    const additionalInfo = !!cart.additionalInfo ? JSON.parse(JSON.parse(cart.additionalInfo)) : null
     return {
         props: { user: session.username,sk:cart.secureKey,additionalInfo
             //addressDescription

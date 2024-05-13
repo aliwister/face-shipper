@@ -155,7 +155,7 @@ function QuoteForm() {
                         <div className={"w-full flex items-center justify-center"}>
                             <button
                                 className={"bg-blue-500 disabled:bg-gray-400 w-full mt-16 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"}
-                                disabled={loading || !addressFrom.postalCode || !addressTo.postalCode} type="submit">{loading? 'Loading...' : 'Get Rates'}
+                                disabled={loading} type="submit">{loading? 'Loading...' : 'Get Rates'}
                             </button>
                         </div>
 
