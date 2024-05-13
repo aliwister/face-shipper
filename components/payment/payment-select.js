@@ -67,18 +67,22 @@ export const PaymentStep = ({payments, sk,price}) => {
 
     return (
         <div>
+            <h1 className="text-6xl font-bold text-center mb-16">
+                Payment
+            </h1>
             <div>
                 {payments?.map((x, i) => (
                     <div key={i} onClick={() => setPaymentMethod(x.ref)}>
-                        <div style={{padding: '10px'}}>
-                            <input type={"checkbox"}
+                        <div className={"border p-4 rounded"}>
+                            <input className={"w-full h-full"}
+                                type={"checkbox"}
                                    checked={paymentMethod === x.ref}
                                    onChange={() => setPaymentMethod(x.ref)}
                                    value={x.ref}
                                    key={x.ref}
                                    name={x.label}
-                            />{x.label}
-                            &nbsp;&nbsp;
+                            />
+                            &nbsp;&nbsp;{x.label}
 
 
                             {(x.ref === 'stripe' && paymentMethod === x.ref) && (
@@ -90,7 +94,7 @@ export const PaymentStep = ({payments, sk,price}) => {
                 ))}
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <button className="bg-blue-500 disabled:bg-gray-400 text-white px-4 py-2 rounded" type={"submit"}>Complete Order</button>
+                <button className="bg-blue-500 mt-8 disabled:bg-gray-400 text-white px-4 py-2 rounded" type={"submit"}>Complete Order</button>
             </form>
 
         </div>

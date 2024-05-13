@@ -53,7 +53,7 @@ export const StripePayment = ({pk, token, setLoading, formRef,price}) => {
           /*
         // @ts-ignore */
           options={options}>
-        <StripeCheckoutForm formRef={formRef} return_url={`/checkout/callbacks/stripe`} setLoading={setLoading}/>
+        <StripeCheckoutForm formRef={formRef} return_url={`localhost:3000/payment/callbacks/stripe`} setLoading={setLoading}/>
       </Elements>
   );
 }
