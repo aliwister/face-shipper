@@ -102,3 +102,31 @@ export const CREATE_CHECKOUT_SESSION_MUTATION = `
     }
   }
 `;
+export const TENANT_INFO_PAYMENT = `query tenantInfo {
+    tenantInfo {
+        subdomain
+        description
+        logo
+        customDomain
+        name
+        maxProducts
+        discountRate
+        active
+        publicPaymentProfile {
+            name
+            pk
+            code
+            html
+        }
+    }
+}`
+export const PROCESS_PAYMENT = `
+  mutation processPayment($token: String, $ref: String, $secureKey: String) {
+    processPayment(token: $token, ref: $ref, secureKey: $secureKey ) {
+      message
+      payload
+      status
+      ref
+    }
+  }
+`;

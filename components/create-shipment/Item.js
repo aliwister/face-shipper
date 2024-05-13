@@ -25,23 +25,32 @@ export default function Item({item, index, setItems}) {
 
             </div>
 
-            <h2 className="text-sm  mb-1">
-                ITEM DESCRIPTION
-            </h2>
-            <input disabled
-                   className="border w-full border-gray-400 p-2 rounded mb-2" value={item.description}
-                   placeholder="ITEM DESCRIPTION "
-                   type="text"/>
-            <h2 className="text-sm  mb-1">
-                HARMONIZED CODE
-            </h2>
-            <input disabled
-                   className="border w-full border-gray-400 p-2 rounded mb-2" value={item.harmonizedCode}
-                   placeholder="HARMONIZED CODE" type="text"/>
+            {/*<h2 className="text-sm  mb-1">*/}
+            {/*    ITEM DESCRIPTION*/}
+            {/*</h2>*/}
+            {/*<input disabled*/}
+            {/*       className="border w-full border-gray-400 p-2 rounded mb-2" value={item.description}*/}
+            {/*       placeholder="ITEM DESCRIPTION "*/}
+            {/*       type="text"/>*/}
+            {/*<h2 className="text-sm  mb-1">*/}
+            {/*    HARMONIZED CODE*/}
+            {/*</h2>*/}
+            {/*<input disabled*/}
+            {/*       className="border w-full border-gray-400 p-2 rounded mb-2" value={item.harmonizedCode}*/}
+            {/*       placeholder="HARMONIZED CODE" type="text"/>*/}
             <div className="flex gap-2 mb-2 w-full">
 
 
-                <div className="grid grid-cols-2 gap-1 mb-2 w-full">
+                <div className="grid grid-cols-5 gap-1 mb-2 w-full">
+                    <div className={'w-full'}>
+                        <h2 className="text-sm  mb-1">
+                            Name
+                        </h2>
+                        <input disabled
+                               className="border w-full border-gray-400 p-2 rounded mb-2"
+                               value={item.name} placeholder="COUNTRY/TERRITORY OF MANUFACTURE"
+                               type="text"/>
+                    </div>
                     <div className={'w-full'}>
                         <h2 className="text-sm  mb-1">
                             COUNTRY/TERRITORY OF MANUFACTURE
@@ -62,7 +71,7 @@ export default function Item({item, index, setItems}) {
                             <select disabled
                                     className="border  border-gray-400 p-2 rounded">
                                 <option>
-                                    {item.quantityUnit}
+                                    {item.quantityUnits}
                                 </option>
                             </select>
                         </div>
@@ -79,7 +88,7 @@ export default function Item({item, index, setItems}) {
                             <select disabled
                                     className="border border-gray-400 p-2 rounded">
                                 <option>
-                                    {item.weight.unit}
+                                    {item.weight.units}
                                 </option>
                             </select>
                         </div>

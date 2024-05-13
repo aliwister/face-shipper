@@ -7,6 +7,8 @@
   },
   "dependencies": {
     "@loadable/component": "^5.16.4",
+    "@stripe/react-stripe-js": "^2.7.1",
+    "@stripe/stripe-js": "^3.4.0",
     "axios": "^1.6.8",
     "base64topdf": "^1.1.8",
     "graphql": "^16.8.1",
