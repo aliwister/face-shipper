@@ -47,7 +47,7 @@ const StripeCheckoutForm = ({return_url, setLoading, formRef}) => {
   return (
     <form onSubmit={handleSubmit} ref={formRef}>
       <PaymentElement />
-      <button disabled={!stripe} style={{ display: 'none'}}/>
+      {/*<button disabled={!stripe} >سسس</button>*/}
       {/* Show error message to your customers */}
       {errorMessage && <div>{errorMessage}</div>}
     </form>

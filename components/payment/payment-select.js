@@ -94,7 +94,7 @@ export const PaymentStep = ({payments, sk,price}) => {
                 ))}
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <button className="bg-blue-500 mt-8 disabled:bg-gray-400 text-white px-4 py-2 rounded" type={"submit"}>Complete Order</button>
+                <button disabled={once} className="bg-blue-500 mt-8 disabled:bg-gray-400 text-white px-4 py-2 rounded" type={"submit"}>Complete Order</button>
             </form>
 
         </div>
