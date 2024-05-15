@@ -10,12 +10,14 @@ const ConfirmPage= ({ fallback }) => {
   );
 }
 
-export async function getServerSideProps({ query, params: { site }, locale}) {
+export async function getServerSideProps({ query}) {
 
   const { payment_intent_client_secret } = query;
+  console.log("1 "+payment_intent_client_secret)
   const {orderConfirmation} = await checkoutTenantFetcher(ORDER_CONFIRMATION, {
     paymentKey: payment_intent_client_secret
   });
+  console.log("2 "+orderConfirmation)
   if(orderConfirmation) {
     return {
       redirect: {
