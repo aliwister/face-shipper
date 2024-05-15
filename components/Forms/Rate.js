@@ -88,7 +88,7 @@ function QuoteForm() {
         <div className={"flex flex-col w-full justify-center items-center"}>
             <div className={"w-3/4 items-center flex flex-col"}>
                 <h2 className={"text-center font-bold text-6xl"}>
-                    Calculate Instanna's Rates
+                    Calculate Rates
                 </h2>
                 <div className={"mt-16 items-center flex flex-col w-full"}>
                     <AddressAutoComplete setAddressFrom={setAddressFrom} setAddressTo={setAddressTo}/>
