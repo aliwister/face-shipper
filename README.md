@@ -1,5 +1,6 @@
 5-15
 Let's Check that payment is working using stripe
+Fix build errors
 
 4-22
 Demo ready (2nd try)
