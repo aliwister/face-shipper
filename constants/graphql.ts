@@ -44,3 +44,26 @@ export const ME_PLUS = `query mePlus {
       }
     }
   }`
+export const ME = `query me {
+    me {
+      id
+      firstname
+      lastname
+      email
+      mobile
+      allowPickup
+      plusDiscount
+      shipperMarkup
+      addresses {
+        id
+        alias
+        line1
+        line2
+        city
+        mobile
+        lng
+        lat
+        plusCode
+      }
+    }
+  }`
