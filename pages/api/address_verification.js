@@ -2,13 +2,9 @@ import { getIronSession } from "iron-session";
 import axios from 'axios'
 const qs = require('qs');
 
-const FEDEX_URL = "https://apis-sandbox.fedex.com"
-const CLIENT_ID = "l72e9ba4546fd6424f8204195729225ba9"
-const CLIENT_SECRET = "f502317014eb45368c07e730eb40d8e2"
-const ACCOUNT_NUMBER = "740561073"
 
 async function getAccessToken(){
-    const url = `${FEDEX_URL}/oauth/token`
+    const url = `${process.env.FEDEX_URL}/oauth/token`
     const config = {
         method: 'POST',
         url: url,
@@ -17,8 +13,8 @@ async function getAccessToken(){
         },
         data: qs.stringify({
             grant_type: 'client_credentials',
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
+            client_id: process.env.FEDEX_CLIENT_ID,
+            client_secret: process.env.FEDEX_CLIENT_SECRET,
         })
     }
     try {
@@ -30,7 +26,7 @@ async function getAccessToken(){
 }
 
 async function getAddressVerification(shipmentInfo){
-    const url = `${FEDEX_URL}/address/v1/addresses/resolve`
+    const url = `${process.env.FEDEX_URL}/address/v1/addresses/resolve`
     const token = await getAccessToken()
     const config = {
         method: 'POST',
