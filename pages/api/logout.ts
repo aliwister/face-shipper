@@ -1,6 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import {getIronSession} from "iron-session";
-import {SessionData, sessionOptions,} from 'lib/session/lib'
+import {SessionData, sessionOptions} from 'lib/session/lib'
 
 export default async function handler(
     req: NextApiRequest,
@@ -8,6 +8,7 @@ export default async function handler(
 ) {
     const session = await getIronSession<SessionData>(req, res, sessionOptions);
     session.destroy();
-    res.redirect("/login");
-    return;
+    //res.redirect("/login");
+    res.status(200).json({ ok: true })
+
 }

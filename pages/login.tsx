@@ -5,6 +5,8 @@ import LoginForm from "../components/Login/Form";
 import fetchJson from "../lib/fetchJson";
 import { getIronSession } from "iron-session";
 import { SessionData, sessionOptions } from "lib/session/lib";
+import {router} from "next/client";
+import {useRouter} from "next/router";
 
 const Login = () => {
   const { mutateUser } = useUser({
@@ -13,6 +15,7 @@ const Login = () => {
   });
 
   const [errorMsg, setErrorMsg] = useState("");
+  const router = useRouter()
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -29,6 +32,7 @@ const Login = () => {
             body: JSON.stringify(body),
           }),
       );
+      await router.push('/')
     } catch (error: any) {
       setErrorMsg(error.data.detail);
     }
@@ -47,7 +51,6 @@ export default Login;
 
 export const getServerSideProps = async function ({ req, res }) {
   const session = await getIronSession<SessionData>(req, res, sessionOptions);
-
   if (session.username) {
     return {
       redirect: {

@@ -40,20 +40,20 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <a
+                                <Link
                                     href="/api/logout"
                                     onClick={async (e) => {
                                         e.preventDefault()
-                                        mutateUser(
+                                        await mutateUser(
                                             await fetchJson('/api/logout', {
                                                 method: 'POST',
                                             }),
                                             false
                                         )
-                                        router.push('/login')
+                                        await router.push('/login')
                                     }}>
                                     Logout
-                                </a>
+                                </Link>
                             </li>
                         </>
                     )}
