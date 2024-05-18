@@ -35,6 +35,7 @@ const Login = () => {
           }),
       );
       if (!!redirect){
+        // @ts-ignore
         const redirectUrl = `${redirect}?${new URLSearchParams(query).toString()}`;
         await router.push(redirectUrl);
         return
