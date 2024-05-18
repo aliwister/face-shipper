@@ -35,8 +35,8 @@ export default async function handler(
 
     
             // Redirect after creating session
-            res.redirect(303, '/')
-            return;
+            // res.redirect(303, '/')
+            return res.json(session);
         }
         catch(error) {
             console.log(error)
@@ -58,7 +58,7 @@ export default async function handler(
         }
 
 
-        if (session.isLoggedIn !== true) {
+        if (!session.isLoggedIn) {
         res.status(200).json(defaultSession);
         } else {
         res.status(200).json(session);
