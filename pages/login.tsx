@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import useUser from "../lib/useUser";
 import Layout from "../components/Layout";
 import LoginForm from "../components/Login/Form";
@@ -9,6 +9,7 @@ import {router} from "next/client";
 import {useRouter} from "next/router";
 
 const Login = () => {
+  const [loading, setLoading] = useState(false)
   const { mutateUser } = useUser({
     redirectTo: "/",
     redirectIfFound: true,
@@ -20,6 +21,7 @@ const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true)
     const body = {
       username: e.currentTarget.username.value,
       password: e.currentTarget.password.value,
@@ -40,14 +42,24 @@ const Login = () => {
       await router.push('/');
 
     } catch (error: any) {
-      setErrorMsg(error.data.detail);
+      console.log(error)
+      setErrorMsg('Bad Credentials');
+    } finally {
+      setLoading(false)
     }
   }
+
 
   return (
     <Layout>
       <div>
-        <LoginForm errorMessage={errorMsg} onSubmit={handleSubmit} />
+        {errorMsg && (
+            <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+              {errorMsg}
+            </div>
+        )}
+        <LoginForm// @ts-ignore
+            loading={loading} setErrorMsg={setErrorMsg} onSubmit={handleSubmit} />
       </div>
     </Layout>
   );

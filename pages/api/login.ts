@@ -33,13 +33,10 @@ export default async function handler(
             session.id_token = user.id_token;
             await session.save();
 
-    
-            // Redirect after creating session
-            // res.redirect(303, '/')
             return res.json(session);
         }
         catch(error) {
-            console.log(error)
+            return res.status(400).json(error)
         }
 
 

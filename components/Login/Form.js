@@ -1,6 +1,6 @@
 import React from "react";
 
-const Form = ({ errorMessage, onSubmit }) => (
+const Form = ({ setErrorMsg, onSubmit,loading }) => (
     <form onSubmit={onSubmit} className="max-w-sm mx-auto mt-32 p-6 bg-white shadow-md rounded-lg">
         <h5 className="text-2xl font-bold mb-6 text-center">Login</h5>
         <div className="mb-4">
@@ -8,6 +8,7 @@ const Form = ({ errorMessage, onSubmit }) => (
                 Username
             </label>
             <input
+                onFocus={()=>setErrorMsg('')}
                 type="text"
                 name="username"
                 id="username"
@@ -21,6 +22,7 @@ const Form = ({ errorMessage, onSubmit }) => (
                 Password
             </label>
             <input
+                onFocus={()=>setErrorMsg('')}
                 type="password"
                 name="password"
                 id="password"
@@ -30,17 +32,14 @@ const Form = ({ errorMessage, onSubmit }) => (
             />
         </div>
         <button
+            disabled={loading}
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-blue-600 disabled:bg-gray-400 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
-            Login
+            {loading? 'Loading...' : 'Login'}
         </button>
 
-        {errorMessage && (
-            <p className="mt-4 text-center text-red-600 bg-red-100 border border-red-400 rounded p-2">
-                {errorMessage}
-            </p>
-        )}
+
     </form>
 );
 
