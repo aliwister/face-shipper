@@ -375,38 +375,24 @@ const Home = ({}) => {
 
 export default Home
 
-export const getServerSideProps = async function ({req, res}) {
+export const getServerSideProps = async ({ req, res, query }) => {
+    const session = await getIronSession(req, res, sessionOptions);
 
-    // if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
-    //     return {
-    //         redirect: {
-    //             destination: '/login',
-    //             permanent: false,
-    //         },
-    //     }
-    // }
-    const session = await getIronSession(req, res, sessionOptions,);
     if (!session.username) {
+        const destination = `/login?redirect=/create_shipment&${new URLSearchParams(query).toString()}`;
         return {
             redirect: {
-                destination: '/login', permanent: false,
+                destination,
+                permanent: false,
             },
-        }
+        };
     }
-    // const addressDescription = await checkoutFetcher(
-    //     ADDRESS_DESCRIPTION,
-    //     {
-    //         isoCode: 'om',
-    //         lang: 'en',
-    //     },
-    //     'en',
-    //     {}
-    // )
 
     return {
-        //props:{}
         props: {
-            user: session.username, //addressDescription
+            user: session.username,
+            query,
         },
-    }
-}
+    };
+};
+

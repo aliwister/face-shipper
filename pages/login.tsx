@@ -16,10 +16,10 @@ const Login = () => {
 
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter()
+  const { redirect, ...query } = router.query;
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     const body = {
       username: e.currentTarget.username.value,
       password: e.currentTarget.password.value,
@@ -32,7 +32,13 @@ const Login = () => {
             body: JSON.stringify(body),
           }),
       );
-      await router.push('/')
+      if (!!redirect){
+        const redirectUrl = `${redirect}?${new URLSearchParams(query).toString()}`;
+        await router.push(redirectUrl);
+        return
+      }
+      await router.push('/');
+
     } catch (error: any) {
       setErrorMsg(error.data.detail);
     }
