@@ -10,10 +10,13 @@ const Profile = () => {
 
     return (
         <Layout>
-            <h1>Your User profile</h1>
-            <pre>{JSON.stringify(user, null, 2)}</pre>
+            <div className="flex flex-col mt-32 items-center justify-center  ">
+                <h1 className="text-4xl font-bold text-gray-900">Welcome, {user.username}!</h1>
+                <p className="mt-16 text-lg text-gray-700">We're glad to have you back.</p>
+            </div>
         </Layout>
     )
 }
 
 export default Profile
+
