@@ -2,28 +2,7 @@ import { getIronSession } from "iron-session";
 import axios from 'axios'
 import {shopFetcher} from "../../lib/utils";
 import {ME} from "../../constants/graphql";
-
-const qs = require('qs');
-
-async function getAccessToken(){
-    const url = `${process.env.FEDEX_URL}/oauth/token`
-    const config = {
-        method: 'POST',
-        url: url,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        data: qs.stringify({
-            grant_type: 'client_credentials',
-            client_id: process.env.FEDEX_CLIENT_ID,
-            client_secret: process.env.FEDEX_CLIENT_SECRET,
-        })
-    }
-
-    const {data} = await axios(config)
-    return data.access_token
-
-}
+import {getAccessToken} from "./fedex_util";
 
 async function getRate(shipmentInfo){
     const url = `${process.env.FEDEX_URL}/rate/v1/rates/quotes`
@@ -100,7 +79,7 @@ async function getRateRoute(req, res) {
             }
         }
         let data = await getRate(shipmentInfo)
-        data = await addMarkup(data, req.headers.Authorization)
+        data = await addMarkup(data, req.headers.authorization)
         res.json(data)
     } catch (error) {
         const {response} = error
@@ -123,8 +102,13 @@ async function addMarkup(shipmentInfo, user) {
     for (let i = 0; i < rates.length; i++) {
         for (let j = 0; j < rates[i].ratedShipmentDetails.length; j++) { //todo ask ali about "rateType": "ACCOUNT" ...
             rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes =
-                +rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes *
-                (1 + markup);
+                +rates[i].ratedShipmentDetails[j].totalNetChargeWithDutiesAndTaxes * (1 + markup);
+            rates[i].ratedShipmentDetails[j].totalBaseCharge =
+                +rates[i].ratedShipmentDetails[j].totalBaseCharge * (1 + markup);
+            rates[i].ratedShipmentDetails[j].totalNetCharge =
+                +rates[i].ratedShipmentDetails[j].totalNetCharge * (1 + markup);
+            rates[i].ratedShipmentDetails[j].totalNetFedExCharge =
+                +rates[i].ratedShipmentDetails[j].totalNetFedExCharge * (1 + markup);
         }
     }
     shipmentInfo.output.rateReplyDetails = rates;
