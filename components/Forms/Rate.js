@@ -62,7 +62,10 @@ function QuoteForm() {
             sender_postalCode: addressFrom.postalCode,
             receiver_countryCode: addressTo.countryCode,
             receiver_postalCode: addressTo.postalCode,
-            requestedPackageLineItems,
+            weight,
+            width,
+            height,
+            length,
             date: date?.toISOString().slice(0, 10),
         }
         setFinalData({...body,unit})

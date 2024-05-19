@@ -20,6 +20,7 @@ import useFormPersist from "react-hook-form-persist";
 const Home = ({}) => {
     const router = useRouter()
     const data = router.query;
+    console.log(data)
     const {
         register,watch,
         setValue, handleSubmit, getValues, formState: {errors},
@@ -45,7 +46,7 @@ const Home = ({}) => {
     const [addressType, setAddressType] = useState('saved_Address')
 
     const [packages, setPackages] = useState([{
-        length: '', width: '', height: '', weight: '', type: 'box_rigid'
+        length: data?.length ?? '', width: data?.width ?? '', height: data?.height ?? '', weight: data?.weight ?? '', type: 'box_rigid'
     }])
     const handleAddPackage = () => {
         const temp = [...packages]
