@@ -137,3 +137,12 @@ export const ORDER_CONFIRMATION= `query orderConfirmation($paymentKey: String) {
     confirmationKey
   }
 }`;
+export const ORDER_HISTORY= `query orderHistory($state: [OrderState], $offset: Int, $limit: Int) {
+  orderHistory(state: $state, offset: $offset, limit: $limit) {
+    items{
+        additionalInfo
+    }    
+    total
+    hasMore
+  }
+}`;
