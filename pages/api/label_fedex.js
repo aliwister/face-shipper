@@ -17,12 +17,9 @@ async function getLabel(shipmentInfo){
         },
         data: shipmentInfo
     }
-    try {
-        const { data } = await axios(config)
-        return data
-    } catch (error) {
-        console.log(error)
-    }
+    const { data } = await axios(config)
+    return data
+
 }
 
 async function getLabelRoute(req, res) {
