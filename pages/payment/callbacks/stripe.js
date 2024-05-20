@@ -50,7 +50,7 @@ else
   };
 
 }
-const checkoutTenantFetcher = (query, variables,token) => request(`${process.env.CHECKOUT_URL}instanna`, query, {
+const checkoutTenantFetcher = (query, variables,token) => request(`${process.env.CHECKOUT_URL}graphql/instanna`, query, {
   ...variables
 },{
   Authorization: `Bearer ${token}`, 'Accept-Language': 'en-us',
