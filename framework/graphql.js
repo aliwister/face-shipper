@@ -146,3 +146,59 @@ export const ORDER_HISTORY= `query orderHistory($state: [OrderState], $offset: I
     hasMore
   }
 }`;
+export const CREATE_SHIPMENT= `mutation CreateShipment($shipment: ShipmentInput!, $shipmentItems: [ShipmentItemInput]) {
+  createShipment(shipment: $shipment, shipmentItems: $shipmentItems) {
+    id
+    estimatedShipDate
+    estimatedReadyDate
+    estimatedArrivalDate
+    estimatedShipCost
+    actualShipCost
+    latestCancelDate
+    handlingInstructions
+    reference
+    trackingNum
+    trackingLink
+    shipmentMethod
+    shipmentType
+    shipmentStatus
+    customerId
+    merchantId
+    pkgs {
+      id
+      length
+      width
+      height
+      weight
+      packageType
+    }
+    shipmentItems {
+      id
+      sequence
+      quantity
+      description
+      shipmentId
+      productId
+      image
+      from
+      price
+      purchaseShipments {
+        shipmentItemId
+        purchaseItemId
+        purchaseId
+        quantity
+      }
+    }
+    customerFirstName
+    customerLastName
+    merchantName
+    partyId
+    partyName
+  }
+}`;
+
+export const ADD_SHIPMENT_DOC= `mutation AddShipmentDoc($id:Long, $filename: String) {
+  addShipmentDoc(id:$id, filename: $filename) {
+    value
+  }
+}`;
