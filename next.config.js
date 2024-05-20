@@ -7,7 +7,8 @@ const nextConfig = {
         FEDEX_URL: process.env.FEDEX_URL,
         FEDEX_ACCOUNT_NUMBER: process.env.FEDEX_ACCOUNT_NUMBER,
         CHECKOUT_URL:process.env.CHECKOUT_URL,
-        HOST_URL:process.env.HOST_URL
+        HOST_URL:process.env.HOST_URL,
+        FACE_TRUST:process.env.FACE_TRUST
     },
     i18n: {
         locales: ['en', 'ar'],

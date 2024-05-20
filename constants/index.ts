@@ -10,7 +10,8 @@ export const ITEMS = [
             "amount": "100",
             "currency": "USD"
         },
-        "unitPrice": {},
+        "unitPrice": {amount: 100,//todo
+            currency: "USD"},
         "numberOfPieces": 1,
         "countryOfManufacture": "US",
         "quantityUnits": "PCS",
@@ -32,7 +33,8 @@ export const ITEMS = [
             amount: 100,
             currency: "USD"
         },partNumber:'p1',"numberOfPieces": 1,
-        "unitPrice": {}
+        "unitPrice": {amount: 100,//todo
+            currency: "USD"}
 
     },
     {
@@ -50,7 +52,8 @@ export const ITEMS = [
             amount: 100,
             currency: "USD"
         },partNumber:'p2',"numberOfPieces": 1,
-        "unitPrice": {}
+        "unitPrice": {amount: 100,//todo
+            currency: "USD"}
     },
     {
         name: 'hand bag - big',
@@ -67,7 +70,8 @@ export const ITEMS = [
             amount: 100,
             currency: "USD"
         },partNumber:'p3',"numberOfPieces": 1,
-        "unitPrice": {}
+        "unitPrice": {amount: 100,//todo
+            currency: "USD"}
     },
     {
         name: 'cereal',
@@ -84,7 +88,8 @@ export const ITEMS = [
             amount: 1,
             currency: "USD"
         },partNumber:'p4',"numberOfPieces": 1,
-        "unitPrice": {}
+        "unitPrice": {amount: 100,//todo
+            currency: "USD"}
     }
 ]
 

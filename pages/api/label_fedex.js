@@ -23,7 +23,7 @@ async function getLabel(shipmentInfo){
 }
 
 async function getLabelRoute(req, res) {
-    if (!req.headers.authorization) return res.status(401).json('Unauthorized!')
+    //if (!req.headers.authorization) return res.status(401).json('Unauthorized!')
 
     const input_data = req.body
 

@@ -178,7 +178,7 @@ const Home = ({}) => {
     }
 
     const checkInputs = () => {
-        if(receiver_phone.length < 6 || sender_phone.length < 6)
+        if(receiver_phone.length < 10 || sender_phone.length < 10)
             return true
         for (const packageItem of packages) {
             for (const key in packageItem) {
