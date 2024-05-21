@@ -104,12 +104,20 @@ const Home = ({}) => {
             receiver_countryCode: country
         }
         console.log(full_data)
-        const sk = await handleAddCart()
-        const price = await handleGetPrice(body)
-        await handleUpdateCart(sk, {price,...full_data})
-        await handleMakeCheckOut(sk)
-        await router.push('/shipments')
-        setLoading(false)
+        try {
+            const sk = await handleAddCart()
+            const price = await handleGetPrice(body)
+            await handleUpdateCart(sk, {price,...full_data})
+            await handleMakeCheckOut(sk)
+            await router.push('/shipments')
+        } catch(e){
+            console.log(e)
+        }finally {
+            setLoading(false)
+
+        }
+
+
     }
     const handleAddCart = async () => {
         const endpoint = process.env.API_URL + `/instanna`;
@@ -128,7 +136,7 @@ const Home = ({}) => {
 
     async function handleUpdateCart(secureKey, additionalInfo) {
         const endpoint = process.env.API_URL + `/instanna`;
-        const variables = {secureKey, items: [], isMerge: true, additional_info: JSON.stringify(additionalInfo)};
+        const variables = {secureKey, items: [], isMerge: true, additional_info: additionalInfo};
 
         try {
             const data = await request(endpoint, UPDATE_TENANT_CART_MUTATION, variables, {
@@ -178,6 +186,9 @@ const Home = ({}) => {
     }
 
     const checkInputs = () => {
+        if(items.length <1){
+            return true
+        }
         if(receiver_phone.length < 10 || sender_phone.length < 10)
             return true
         for (const packageItem of packages) {
@@ -236,8 +247,8 @@ const Home = ({}) => {
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <input {...register('city', {required: true, maxLength: 50})}
                        className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
-                <input {...register('state', {required: true, maxLength: 50})}
-                       className="border border-gray-400 p-2 rounded" placeholder="State" type="text"/>
+                <input maxLength={2} {...register('state', {required: true, maxLength: 2})}
+                       className="border border-gray-400 p-2 rounded" placeholder="State Code(like CA|TN|...)" type="text"/>
 
                 <input {...register('address', {required: true, maxLength: 500})}
                        className="border col-span-2 border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
@@ -284,6 +295,11 @@ const Home = ({}) => {
                            placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
                 </div>
                 <div className="grid grid-cols-3 gap-4 mb-4">
+                    <PhoneInput
+                        inputStyle={{height: "100%", width: "100%"}}
+                        value={sender_phone}
+                        onChange={phone => setSender_phone(phone)}
+                    />
                     <input {...register('sender_city', {required: true, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
                     {/*<select {...register('sender_city1', {required: true, maxLength: 50})}*/}
@@ -294,11 +310,9 @@ const Home = ({}) => {
                     {/*</select>*/}
                     <input {...register('sender_zipcode', {required: true, maxLength: 50})}
                            className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
-                    <PhoneInput
-                        inputStyle={{height: "100%", width: "100%"}}
-                        value={sender_phone}
-                        onChange={phone => setSender_phone(phone)}
-                    />
+                    <input maxLength={2} {...register('sender_state', {required: true, maxLength: 2})}
+                           className="border border-gray-400 p-2 rounded" placeholder="State Code(like CA|TN|...)" type="text"/>
+
                 </div>
                 {/*<div className="mb-4">*/}
                 {/*    <input {...register('save_ship', {required: false})} className="mr-2"*/}

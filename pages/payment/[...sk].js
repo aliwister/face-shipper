@@ -52,7 +52,7 @@ export const getServerSideProps = async function ({ req, res }) {
     })
     const cart = await handleAddCart(session.id_token)
     console.log(cart)
-    const additionalInfo = !!cart.additionalInfo ? JSON.parse(JSON.parse(cart.additionalInfo)) : null
+    const additionalInfo = cart.additionalInfo  ?? null
     if (!additionalInfo) {
         return {
             redirect: {

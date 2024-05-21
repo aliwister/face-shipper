@@ -5,117 +5,15 @@ import Layout from '../../components/Layout'
 import 'react-phone-input-2/lib/style.css'
 import Link from "next/link";
 import {request} from "graphql-request";
-import {
-    ADD_SHIPMENT_DOC,
-    CART,
-    CREATE_SHIPMENT,
-    ORDER_HISTORY,
-    UPDATE_TENANT_CART_MUTATION
-} from "../../framework/graphql";
+import {ADD_SHIPMENT_DOC, CART, CREATE_SHIPMENT, ORDER_HISTORY} from "../../framework/graphql";
 import axios from "axios";
 import useUser from "../../lib/useUser";
 
 const Home = ({sk, additionalInfo, orders}) => {
-    //console.log(orders)
     const {user} = useUser()
 
-    const handleGetLabel = async (order) => {
-        console.log(order)
-
-        // const body = {
-        //     "labelResponseOptions": "URL_ONLY",
-        //     "requestedShipment": {
-        //         "shipper": {
-        //             "contact": {
-        //                 "personName": order.sender_name,
-        //                 //"phoneNumber": order.sender_phone,
-        //                 "phoneNumber": 1234567891,
-        //                 //"companyName": order.sender_company
-        //                 "companyName": "trader"
-        //             },
-        //             "address": {
-        //                 "streetLines": [//todo
-        //                     'street 1'
-        //                 ],
-        //                 //"city": order.sender_city,
-        //                 "city": order.sender_city,
-        //                 "postalCode": order.sender_zipcode,
-        //                 "countryCode": "US"
-        //             }
-        //         },
-        //         "recipients": [
-        //             {
-        //                 "contact": {
-        //                     "personName": order.name,
-        //                     //"phoneNumber": order.sender_phone,
-        //                     "phoneNumber": 1234567891,
-        //                     //"companyName": order.company
-        //                     "companyName": "trader"
-        //                 },
-        //                 "address": {
-        //                     "streetLines": [//todo
-        //                         'street 1'
-        //
-        //                     ],
-        //                     "city": order.city,
-        //                     "postalCode": order.zipcode,
-        //                     "countryCode": order.receiver_countryCode
-        //                 }
-        //             }
-        //         ],
-        //         "shipDatestamp": order.date,
-        //         "serviceType": "FEDEX_INTERNATIONAL_CONNECT_PLUS",
-        //         "packagingType": "YOUR_PACKAGING",
-        //         "pickupType": "USE_SCHEDULED_PICKUP",
-        //         "blockInsightVisibility": false,
-        //         "shippingChargesPayment": {
-        //             "paymentType": "SENDER"
-        //         },
-        //         "labelSpecification": {
-        //             "imageType": "PDF",
-        //             "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
-        //         },
-        //         "customsClearanceDetail": {
-        //             "dutiesPayment": {
-        //                 "paymentType": "SENDER"
-        //             },
-        //             "isDocumentOnly": true,
-        //             //"commodities": order.items//todo
-        //             "commodities": [{
-        //                 name: 'cereal',
-        //                 description: "Prepared foods obtained from unroasted cereal flakes or from mixtures of unroasted cereal flakes and roasted cereal flakes or swelled cereals - In airtight containers and not containing apricots, citrus fruits, peaches or pears",
-        //                 harmonizedCode : "1904.20.100000",
-        //                 countryOfManufacture : "US",
-        //                 quantity : 1,
-        //                 quantityUnits : "PCS",
-        //                 weight: {
-        //                     value: 1,
-        //                     units: "KG"
-        //                 },
-        //                 customsValue: {
-        //                     amount: 1,
-        //                     currency: "USD"
-        //                 },partNumber:'p4',"numberOfPieces": 1,
-        //                 "unitPrice": {amount: 100,//todo
-        //                     currency: "USD"}
-        //             }]
-        //         },
-        //         "shippingDocumentSpecification": {
-        //             "shippingDocumentTypes": [
-        //                 "COMMERCIAL_INVOICE"
-        //             ],
-        //             "commercialInvoiceDetail": {
-        //                 "documentFormat": {
-        //                     "stockType": "PAPER_LETTER",
-        //                     "docType": "PDF"
-        //                 }
-        //             }
-        //         },
-        //         "requestedPackageLineItems": order.requestedPackageLineItems
-        //     }
-        // }
-        // console.log(body)
-        const body = {
+    const handleGetLabel = async (order,test) => {
+        const body = test ?{
             "labelResponseOptions": "URL_ONLY",
             "requestedShipment": {
                 "shipper": {
@@ -212,43 +110,125 @@ const Home = ({sk, additionalInfo, orders}) => {
                     }
                 ]
             }
+        }: {
+            "labelResponseOptions": "URL_ONLY",
+            "requestedShipment": {
+                "shipper": {
+                    "contact": {
+                        "personName": order.additionalInfo.sender_name,
+                        "phoneNumber": order.additionalInfo.sender_phone,
+                        "companyName": order.additionalInfo.sender_company
+                    },
+                    "address": {
+                        "streetLines": [//todo
+                            'street 1'
+                        ],
+                        "city": order.additionalInfo.sender_city,
+                        "postalCode": order.additionalInfo.sender_zipcode,
+                        "countryCode": "US",
+                        stateOrProvinceCode:order.additionalInfo?.sender_state?.toUpperCase()
+                    }
+                },
+                "recipients": [
+                    {
+                        "contact": {
+                            "personName": order.additionalInfo.name,
+                            "phoneNumber": order.additionalInfo.sender_phone,
+                            "companyName": order.additionalInfo.company
+                        },
+                        "address": {
+                            "streetLines": [//todo
+                                'street 1'
+
+                            ],
+                            "city": order.additionalInfo.city,
+                            "postalCode": order.additionalInfo.zipcode,
+                            "countryCode": order.additionalInfo.receiver_countryCode,
+                            stateOrProvinceCode:order.additionalInfo.state.toUpperCase()
+
+                        }
+                    }
+                ],
+                "shipDatestamp": order.additionalInfo.date,
+                "serviceType": "FEDEX_INTERNATIONAL_CONNECT_PLUS",
+                "packagingType": "YOUR_PACKAGING",
+                "pickupType": "USE_SCHEDULED_PICKUP",
+                "blockInsightVisibility": false,
+                "shippingChargesPayment": {
+                    "paymentType": "SENDER"
+                },
+                "labelSpecification": {
+                    "imageType": "PDF",
+                    "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+                },
+                "customsClearanceDetail": {
+                    "dutiesPayment": {
+                        "paymentType": "SENDER"
+                    },
+                    "isDocumentOnly": true,
+                    ...(!!order.additionalInfo.items && {"commodities": order.additionalInfo.items})
+
+
+                },
+                "shippingDocumentSpecification": {
+                    "shippingDocumentTypes": [
+                        "COMMERCIAL_INVOICE"
+                    ],
+                    "commercialInvoiceDetail": {
+                        "documentFormat": {
+                            "stockType": "PAPER_LETTER",
+                            "docType": "PDF"
+                        }
+                    }
+                },
+                "requestedPackageLineItems": order.additionalInfo.requestedPackageLineItems
+            }
         }
+
+        console.log(body)
+
         try {
             const data = await axios.post('/api/label_fedex', body)
+            const shipment = await createShipment(data.data,order)
+            const link = document.createElement('a');
+            const url = data.data.output.transactionShipments[0].shipmentDocuments.find((tmp) => tmp.contentType === 'MERGED_LABEL_DOCUMENTS').url
+            await handleAddLabel({
+                "id" : shipment.id,
+                "filename": url
+            })
+            link.href = url;
+            link.setAttribute(
+                'download',
+                `label.pdf`,
+            );
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
             console.log(data)
         } catch (err) {
-            console.log(err)
+            alert(err?.response?.data?.errors ? err?.response?.data?.errors[0]?.message : 'Something wrong happened')
         } finally {
             //setLoading(false)
         }
     }
-    const createShipment = async (data) => {
+    const createShipment = async (data, order) => {
         const variables = {
             "shipment": {
-                "reference": "test1234",
-                "trackingNum": "test1234",
+                "reference": order.id,
+                "trackingNum": data.transactionId,
                 "shipmentMethod": "Air",
                 "shipmentType": "PURCHASE",
                 "shipmentStatus": "PENDING",
-                "pkgCount": 2,
+                "pkgCount": order.additionalInfo.requestedPackageLineItems.length,
                 "handlingInstructions": "test1234 test1234"
             },
-            "shipmentItems": [
-                {
-                    "productId": "123456",
-                    "sequence": 2,
-                    "quantity": 5,
-                    "description": "Spearo Recipes3: Actionable Seafood Meals",
-                    "price": 2.00,
-                    "purchaseShipments": []
-                }
-            ]
+            "shipmentItems": []
         }
-        //const shipment = await handleCreateShipment(variables)
+        const shipment = await handleCreateShipment(variables)
+        return shipment
     }
-    const saveLabel = (data) => {
 
-    }
+
     async function handleCreateShipment(variables) {
         const endpoint = process.env.FACE_TRUST + `/instanna`;
 
@@ -256,12 +236,13 @@ const Home = ({sk, additionalInfo, orders}) => {
             const data = await request(endpoint, CREATE_SHIPMENT, variables, {
                 Authorization: `Bearer ${user.id_token}`, 'Accept-Language': 'en-us',
             });
-            return data;
+            return data.createShipment;
         } catch (error) {
             console.error('Error updating tenant cart:', error);
             throw error;
         }
     }
+
     async function handleAddLabel(variables) {
         const endpoint = process.env.FACE_TRUST + `/instanna`;
 
@@ -275,6 +256,7 @@ const Home = ({sk, additionalInfo, orders}) => {
             throw error;
         }
     }
+
     return (
         <Layout>
             <h1 className="text-6xl font-bold text-center mb-16">
@@ -338,9 +320,7 @@ const Home = ({sk, additionalInfo, orders}) => {
                             <td className="px-6 py-4">
                                 <Link href={'/payment/' + sk}
                                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-4">Pay</Link>
-                                <button onClick={()=>handleGetLabel(additionalInfo)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Get
-                                    Label(for test only)
-                                </button>
+
 
                             </td>
                         </tr>}
@@ -352,14 +332,19 @@ const Home = ({sk, additionalInfo, orders}) => {
                                     Completed
                                 </td>
                                 <td className="px-6 py-4">
-                                    {order.date}
+                                    {order.additionalInfo.date}
                                 </td>
                                 <td className="px-6 py-4">
-                                    {order.price?.toFixed(2)}$
+                                    {order.additionalInfo.price?.toFixed(2)}$
                                 </td>
                                 <td className="px-6 py-4">
-                                    <button onClick={()=>createShipment(null)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Get
+                                    <button onClick={() => handleGetLabel(order,false)}
+                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-8">Get
                                         Label
+                                    </button>
+                                    <button onClick={() => handleGetLabel(order,true)}
+                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Get
+                                        Label(test data)
                                     </button>
                                 </td>
                             </tr>
@@ -401,7 +386,8 @@ export const getServerSideProps = async function ({req, res}) {
     }
     const cart = await handleAddCart(session.id_token)
     const orders = await getOrders(session.id_token)
-    const additionalInfo = !!cart.additionalInfo ? JSON.parse(JSON.parse(cart.additionalInfo)) : null
+    const additionalInfo = cart.additionalInfo ?? null
+    console.log(additionalInfo)
     return {
         props: {
             user: session.username, sk: cart.secureKey, additionalInfo, orders
