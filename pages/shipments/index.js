@@ -11,7 +11,7 @@ import useUser from "../../lib/useUser";
 
 const Home = ({sk, additionalInfo, orders}) => {
     const {user} = useUser()
-
+    console.log(orders)
     const handleGetLabel = async (order,test) => {
         const body = test ?{
             "labelResponseOptions": "URL_ONLY",
@@ -285,30 +285,55 @@ const Home = ({sk, additionalInfo, orders}) => {
                             </td>
                         </tr>}
                     {orders.orderHistory.items.map((order, idx) => {
-                        return (
-                            <tr key={idx}
-                                className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                <td className="px-6 py-4 bg-green-300 text-black font-bold">
-                                    Completed
-                                </td>
-                                <td className="px-6 py-4">
-                                    {order.additionalInfo.date}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {order.additionalInfo.price?.toFixed(2)}$
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button onClick={() => handleGetLabel(order,false)}
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-8">Get
-                                        Label
-                                    </button>
-                                    <button onClick={() => handleGetLabel(order,true)}
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Get
-                                        Label(test data)
-                                    </button>
-                                </td>
-                            </tr>
-                        )
+                        if(order.orderState === "PAYMENT_ACCEPTED"){
+                            return (
+                                <tr key={idx}
+                                    className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                    <td className="px-6 py-4 bg-green-300 text-black font-bold">
+                                        Completed
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {order.additionalInfo.date}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {order.additionalInfo.price?.toFixed(2)}$
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <button onClick={() => handleGetLabel(order,false)}
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-8">Generate
+                                            Label
+                                        </button>
+                                        <button onClick={() => handleGetLabel(order,true)}
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Generate
+                                            Label(test data)
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        } else {
+                            return (
+                                <tr key={idx}
+                                    className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                    <td className="px-6 py-4 bg-blue-300 text-black font-bold">
+                                        Label Generated
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {order.additionalInfo.date}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {order.additionalInfo.price?.toFixed(2)}$
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <button onClick={() => handleGetLabel(order,false)}
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-8">
+                                            Get
+                                            Label
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        }
+
                     })}
 
                     </tbody>

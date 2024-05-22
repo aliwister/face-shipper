@@ -228,6 +228,7 @@ export const ORDER_HISTORY = `query orderHistory($state: [OrderState], $offset: 
   orderHistory(state: $state, offset: $offset, limit: $limit) {
     items{
         id
+        orderState
         additionalInfo {
             sender_state
             price
