@@ -65,7 +65,11 @@ function QuoteForm() {
             requestedPackageLineItems,
             date: date?.toISOString().slice(0, 10),
         }
-        setFinalData({...body,unit})
+        console.log(body)
+        setFinalData({...body,unit,weight,
+            width,
+            height,
+            length})
 
         setLoading(true)
         try {
