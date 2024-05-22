@@ -346,3 +346,13 @@ export const ADD_SHIPMENT_DOC = `mutation AddShipmentDoc($id:Long, $filename: St
     value
   }
 }`;
+export const ORDER_STATE = `mutation updateOrderState($id: Long, $state: OrderState) {
+    updateOrderState(id: $id, state: $state) {
+        id
+        additionalInfo{
+            date
+        }
+        orderState
+
+    }
+}`;

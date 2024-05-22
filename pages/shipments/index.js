@@ -5,7 +5,7 @@ import Layout from '../../components/Layout'
 import 'react-phone-input-2/lib/style.css'
 import Link from "next/link";
 import {request} from "graphql-request";
-import {ADD_SHIPMENT_DOC, CART, CREATE_SHIPMENT, ORDER_HISTORY} from "../../framework/graphql";
+import {ADD_SHIPMENT_DOC, CART, CREATE_SHIPMENT, ORDER_HISTORY, ORDER_STATE} from "../../framework/graphql";
 import axios from "axios";
 import useUser from "../../lib/useUser";
 
@@ -189,10 +189,10 @@ const Home = ({sk, additionalInfo, orders}) => {
 
         try {
             const data = await axios.post('/api/label_fedex', body)
-            const shipment = await createShipment(data.data,order)
+            const shipment = await createShipment(user.id_token,data.data,order)
             const link = document.createElement('a');
             const url = data.data.output.transactionShipments[0].shipmentDocuments.find((tmp) => tmp.contentType === 'MERGED_LABEL_DOCUMENTS').url
-            await handleAddLabel({
+            await handleAddLabel(user.id_token,{
                 "id" : shipment.id,
                 "filename": url
             })
@@ -204,58 +204,18 @@ const Home = ({sk, additionalInfo, orders}) => {
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
-            console.log(data)
+            await changeState(user.id_token,{
+                "id":order.id,
+                "state":"SHIPPED"
+            })
+            //console.log(data)
         } catch (err) {
             alert(err?.response?.data?.errors ? err?.response?.data?.errors[0]?.message : 'Something wrong happened')
         } finally {
             //setLoading(false)
         }
     }
-    const createShipment = async (data, order) => {
-        const variables = {
-            "shipment": {
-                "reference": order.id,
-                "trackingNum": data.transactionId,
-                "shipmentMethod": "Air",
-                "shipmentType": "PURCHASE",
-                "shipmentStatus": "PENDING",
-                "pkgCount": order.additionalInfo.requestedPackageLineItems.length,
-                "handlingInstructions": "test1234 test1234"
-            },
-            "shipmentItems": []
-        }
-        const shipment = await handleCreateShipment(variables)
-        return shipment
-    }
 
-
-    async function handleCreateShipment(variables) {
-        const endpoint = process.env.FACE_TRUST + `/instanna`;
-
-        try {
-            const data = await request(endpoint, CREATE_SHIPMENT, variables, {
-                Authorization: `Bearer ${user.id_token}`, 'Accept-Language': 'en-us',
-            });
-            return data.createShipment;
-        } catch (error) {
-            console.error('Error updating tenant cart:', error);
-            throw error;
-        }
-    }
-
-    async function handleAddLabel(variables) {
-        const endpoint = process.env.FACE_TRUST + `/instanna`;
-
-        try {
-            const data = await request(endpoint, ADD_SHIPMENT_DOC, variables, {
-                Authorization: `Bearer ${user.id_token}`, 'Accept-Language': 'en-us',
-            });
-            return data;
-        } catch (error) {
-            console.error('Error updating tenant cart:', error);
-            throw error;
-        }
-    }
 
     return (
         <Layout>
@@ -362,15 +322,6 @@ const Home = ({sk, additionalInfo, orders}) => {
 export default Home
 
 export const getServerSideProps = async function ({req, res}) {
-
-    // if (!user || !user.authorities.includes('ROLE_SHIPPER')) {
-    //     return {
-    //         redirect: {
-    //             destination: '/login',
-    //             permanent: false,
-    //         },
-    //     }
-    // }
     const session = await getIronSession(
         req,
         res,
@@ -387,7 +338,7 @@ export const getServerSideProps = async function ({req, res}) {
     const cart = await handleAddCart(session.id_token)
     const orders = await getOrders(session.id_token)
     const additionalInfo = cart.additionalInfo ?? null
-    console.log(additionalInfo)
+    //console.log(additionalInfo)
     return {
         props: {
             user: session.username, sk: cart.secureKey, additionalInfo, orders
@@ -410,11 +361,11 @@ const handleAddCart = async (id_token) => {
 const getOrders = async (id_token) => {
     const endpoint = process.env.API_URL + `/instanna`;
     const variables = {
-        "state": ["PAYMENT_ACCEPTED"],
+        "state": ["PAYMENT_ACCEPTED",'SHIPPED'],
         "offset": 0,
         "limit": 10
     }
-    console.log(endpoint)
+    //console.log(endpoint)
     try {
         const data = await request(endpoint, ORDER_HISTORY, variables, {
             Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
@@ -422,6 +373,62 @@ const getOrders = async (id_token) => {
         return data;
     } catch (error) {
         console.error('Error fetching cart data:', error);
+        throw error;
+    }
+}
+const changeState = async (id_token,variables)=>{
+    const endpoint = process.env.API_URL + `/instanna`;
+
+    try {
+        const data = await request(endpoint, ORDER_STATE, variables, {
+            Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
+        });
+        return data;
+    } catch (error) {
+        console.error('Error fetching cart data:', error);
+        throw error;
+    }
+}
+const createShipment = async (id_token,data, order) => {
+    const variables = {
+        "shipment": {
+            "reference": order.id,
+            "trackingNum": data.transactionId,
+            "shipmentMethod": "Air",
+            "shipmentType": "PURCHASE",
+            "shipmentStatus": "PENDING",
+            "pkgCount": order.additionalInfo.requestedPackageLineItems.length,
+            "handlingInstructions": "test1234 test1234"
+        },
+        "shipmentItems": []
+    }
+    return await handleCreateShipment(id_token,variables)
+}
+
+
+async function handleCreateShipment(id_token,variables) {
+    const endpoint = process.env.FACE_TRUST + `/instanna`;
+
+    try {
+        const data = await request(endpoint, CREATE_SHIPMENT, variables, {
+            Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
+        });
+        return data?.createShipment;
+    } catch (error) {
+        console.error('Error updating tenant cart:', error);
+        throw error;
+    }
+}
+
+async function handleAddLabel(id_token,variables) {
+    const endpoint = process.env.FACE_TRUST + `/instanna`;
+
+    try {
+        return await request(endpoint, ADD_SHIPMENT_DOC, variables, {
+            Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
+        });
+    } catch (error) {
+        console.error('Error updating tenant cart:', error);
         throw error;
     }
 }
