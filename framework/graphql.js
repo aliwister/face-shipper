@@ -357,3 +357,13 @@ export const ORDER_STATE = `mutation updateOrderState($id: Long, $state: OrderSt
 
     }
 }`;
+export const SHIPMENT_BY_ORDER = `query shipmentsByRef($ref: String) {
+  shipmentsByRef(ref: $ref) {
+    id
+  }
+}`;
+export const SHIPMENT_DOCS = `query shipmentsDocs($id: ID) {
+  shipmentsDocs(id: $id) {
+    fileKey
+  }
+}`;

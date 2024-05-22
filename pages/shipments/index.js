@@ -5,14 +5,40 @@ import Layout from '../../components/Layout'
 import 'react-phone-input-2/lib/style.css'
 import Link from "next/link";
 import {request} from "graphql-request";
-import {ADD_SHIPMENT_DOC, CART, CREATE_SHIPMENT, ORDER_HISTORY, ORDER_STATE} from "../../framework/graphql";
+import {
+    ADD_SHIPMENT_DOC,
+    CART,
+    CREATE_SHIPMENT,
+    ORDER_HISTORY,
+    ORDER_STATE,
+    SHIPMENT_BY_ORDER, SHIPMENT_DOCS
+} from "../../framework/graphql";
 import axios from "axios";
 import useUser from "../../lib/useUser";
 
 const Home = ({sk, additionalInfo, orders}) => {
     const {user} = useUser()
     console.log(orders)
-    const handleGetLabel = async (order,test) => {
+    const handleGetLabel = async (order) =>{
+        const shipment = await getShipment(user.id_token,{
+            "ref":order.id,
+
+        })
+        const doc = getDoc(user.id_token,{
+            "id":shipment.id,
+        })
+        const link = document.createElement('a');
+
+        link.href = doc.fileKey;
+        link.setAttribute(
+            'download',
+            `label.pdf`,
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+    }
+    const handleGenerateLabel = async (order,test) => {
         const body = test ?{
             "labelResponseOptions": "URL_ONLY",
             "requestedShipment": {
@@ -299,11 +325,11 @@ const Home = ({sk, additionalInfo, orders}) => {
                                         {order.additionalInfo.price?.toFixed(2)}$
                                     </td>
                                     <td className="px-6 py-4">
-                                        <button onClick={() => handleGetLabel(order,false)}
+                                        <button onClick={() => handleGenerateLabel(order,false)}
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-8">Generate
                                             Label
                                         </button>
-                                        <button onClick={() => handleGetLabel(order,true)}
+                                        <button onClick={() => handleGenerateLabel(order,true)}
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Generate
                                             Label(test data)
                                         </button>
@@ -450,6 +476,32 @@ async function handleAddLabel(id_token,variables) {
 
     try {
         return await request(endpoint, ADD_SHIPMENT_DOC, variables, {
+            Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
+        });
+    } catch (error) {
+        console.error('Error updating tenant cart:', error);
+        throw error;
+    }
+}
+async function getShipment(id_token,variables) {
+    const endpoint = process.env.FACE_TRUST + `/instanna`;
+
+    try {
+        const data = await request(endpoint, SHIPMENT_BY_ORDER, variables, {
+            Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
+        });
+        return data.data
+    } catch (error) {
+        console.error('Error updating tenant cart:', error);
+        throw error;
+    }
+}
+
+async function getDoc(id_token,variables) {
+    const endpoint = process.env.FACE_TRUST + `/instanna`;
+
+    try {
+        return await request(endpoint, SHIPMENT_DOCS, variables, {
             Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
         });
     } catch (error) {
