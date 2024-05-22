@@ -246,7 +246,7 @@ const Home = ({}) => {
             </div>
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <input {...register('city', {required: true, maxLength: 50})}
-                       className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
+                       className="border border-gray-400 p-2 rounded col-span-2" placeholder="City" type="text"/>
                 {/*<input maxLength={2} {...register('state', {required: true, maxLength: 2})}*/}
                 {/*       className="border border-gray-400 p-2 rounded" placeholder="State Code(like CA|TN|...)" type="text"/>*/}
 
@@ -263,15 +263,15 @@ const Home = ({}) => {
             <h2 className="text-xl font-bold mb-4">
                 Ship From
             </h2>
-            <select disabled onChange={(e) => setAddressType(e.target.value)}
-                    className="border border-gray-400 p-2 rounded mb-4">
-                <option selected value={'saved_Address'}>
-                    Don't use saved Ship From Address
-                </option>
-                <option value={'new_Address'}>
-                    Create New Ship From Address
-                </option>
-            </select>
+            {/*<select disabled onChange={(e) => setAddressType(e.target.value)}*/}
+            {/*        className="border border-gray-400 p-2 rounded mb-4">*/}
+            {/*    <option selected value={'saved_Address'}>*/}
+            {/*        Don't use saved Ship From Address*/}
+            {/*    </option>*/}
+            {/*    <option value={'new_Address'}>*/}
+            {/*        Create New Ship From Address*/}
+            {/*    </option>*/}
+            {/*</select>*/}
             {addressType !== 'new_Address' && <div className={"w-full"}>
                 {/*<h3 className="text-lg font-semibold mb-2">*/}
                 {/*    Physical Address*/}
@@ -294,7 +294,7 @@ const Home = ({}) => {
                            className="border border-gray-400 p-2 rounded"
                            placeholder="Apt / Unit / Suite / etc." type="text"/>
                 </div>
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-4 gap-4 mb-4">
                     <PhoneInput
                         inputStyle={{height: "100%", width: "100%"}}
                         value={sender_phone}

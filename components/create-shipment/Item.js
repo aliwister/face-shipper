@@ -99,13 +99,29 @@ export default function Item({item, index, setItems}) {
                     </div>
                     <div className={'w-full'}>
                         <h2 className="text-sm  mb-1">
+                            UNIT PRICE
+                        </h2>
+                        <div className="flex ">
+                            <input onChange={(e) => handleChange(index, 'unitPrice', {currency:item.unitPrice.currency,amount:e.target.value})}
+                                   className="border w-full border-gray-400 p-2 rounded" value={item.unitPrice.amount}
+                                   placeholder="CUSTOMS VALUE" type="text"/>
+                            <select disabled
+                                    className="border border-gray-400 p-2 rounded">
+                                <option>
+                                    {item.unitPrice.currency}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className={'w-full'}>
+                        <h2 className="text-sm  mb-1">
                             HARMONIZED CODE
                         </h2>
                         <input onChange={(e) => handleChange(index, 'harmonizedCode', e.target.value)}
                                className="border w-full border-gray-400 p-2 rounded mb-2" value={item.harmonizedCode}
                                placeholder="HARMONIZED CODE" type="text"/>
                     </div>
-                    <div className={'w-full col-span-6'}>
+                    <div className={'w-full col-span-5'}>
                         <h2 className="text-sm  mb-1">
                             ITEM DESCRIPTION
                         </h2>
