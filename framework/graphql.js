@@ -362,8 +362,8 @@ export const SHIPMENT_BY_ORDER = `query shipmentsByRef($ref: String) {
     id
   }
 }`;
-export const SHIPMENT_DOCS = `query shipmentsDocs($id: ID) {
-  shipmentsDocs(id: $id) {
+export const SHIPMENT_DOCS = `query shipmentDocs($id: ID) {
+  shipmentDocs(id: $id) {
     fileKey
   }
 }`;

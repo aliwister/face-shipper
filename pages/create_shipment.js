@@ -164,7 +164,7 @@ const Home = ({}) => {
                 }
             }
         } catch (err) {
-            console.log(err)
+            throw err
         } finally {
             setLoading(false)
         }
@@ -228,7 +228,7 @@ const Home = ({}) => {
             </div>
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <input {...register('email', {required: false, maxLength: 50})}
-                       className="border border-gray-400 p-2 rounded" placeholder="Email (optional)" type="email"/>
+                       className="border border-gray-400 p-2 rounded" placeholder="Email" type="email"/>
                 <PhoneInput
                     inputStyle={{height: "100%", width: "100%"}}
                     disableDropdown
@@ -242,21 +242,21 @@ const Home = ({}) => {
                 <input {...register('name', {required: true, maxLength: 50})}
                        className="border border-gray-400 p-2 rounded" placeholder="Name" type="text"/>
                 <input {...register('company', {required: false, maxLength: 50})}
-                       className="border border-gray-400 p-2 rounded" placeholder="Company (optional)" type="text"/>
+                       className="border border-gray-400 p-2 rounded" placeholder="Company" type="text"/>
             </div>
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <input {...register('city', {required: true, maxLength: 50})}
                        className="border border-gray-400 p-2 rounded" placeholder="City" type="text"/>
-                <input maxLength={2} {...register('state', {required: true, maxLength: 2})}
-                       className="border border-gray-400 p-2 rounded" placeholder="State Code(like CA|TN|...)" type="text"/>
+                {/*<input maxLength={2} {...register('state', {required: true, maxLength: 2})}*/}
+                {/*       className="border border-gray-400 p-2 rounded" placeholder="State Code(like CA|TN|...)" type="text"/>*/}
 
-                <input {...register('address', {required: true, maxLength: 500})}
-                       className="border col-span-2 border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
+                <input maxLength={35} {...register('address', {required: true, maxLength: 35})}
+                       className="border col-span-2 border-gray-400 p-2 rounded" placeholder="Address(Blvd,Street,...)" type="text"/>
                 <input {...register('zipcode', {required: true, maxLength: 50})}
                        className="border border-gray-400 p-2 rounded" placeholder="Zipcode" type="text"/>
-                <input {...register('address_opt', {required: false, maxLength: 50})}
+                <input maxLength={35} {...register('address_opt', {required: false, maxLength: 35})}
                        className="border border-gray-400 p-2 rounded"
-                       placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
+                       placeholder="Apt / Unit / Suite / etc." type="text"/>
             </div>
 
 
@@ -281,18 +281,18 @@ const Home = ({}) => {
                 {/*</h3>*/}
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <input {...register('sender_name', {required: false, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Name (optional)"
+                           className="border border-gray-400 p-2 rounded" placeholder="Name "
                            type="text"/>
                     <input {...register('sender_company', {required: false, maxLength: 50})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Company (optional)"
+                           className="border border-gray-400 p-2 rounded" placeholder="Company"
                            type="text"/>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input {...register('sender_address', {required: true, maxLength: 500})}
-                           className="border border-gray-400 p-2 rounded" placeholder="Address" type="text"/>
-                    <input {...register('sender_address_opt', {required: false, maxLength: 50})}
+                    <input maxLength={35} {...register('sender_address', {required: true, maxLength: 35})}
+                           className="border border-gray-400 p-2 rounded" placeholder="Address(Blvd,Street,...)" type="text"/>
+                    <input maxLength={35} {...register('sender_address_opt', {required: true, maxLength: 35})}
                            className="border border-gray-400 p-2 rounded"
-                           placeholder="Apt / Unit / Suite / etc. (optional)" type="text"/>
+                           placeholder="Apt / Unit / Suite / etc." type="text"/>
                 </div>
                 <div className="grid grid-cols-3 gap-4 mb-4">
                     <PhoneInput

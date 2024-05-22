@@ -24,12 +24,12 @@ const Home = ({sk, additionalInfo, orders}) => {
             "ref":order.id,
 
         })
-        const doc = getDoc(user.id_token,{
-            "id":shipment.id,
+        const doc = await getDoc(user.id_token,{
+            "id":shipment.shipmentsByRef[0].id,
         })
         const link = document.createElement('a');
 
-        link.href = doc.fileKey;
+        link.href = doc.shipmentDocs[0].fileKey
         link.setAttribute(
             'download',
             `label.pdf`,
@@ -147,7 +147,7 @@ const Home = ({sk, additionalInfo, orders}) => {
                     },
                     "address": {
                         "streetLines": [//todo
-                            'street 1'
+                            order.additionalInfo.sender_address,order.additionalInfo.sender_address_opt
                         ],
                         "city": order.additionalInfo.sender_city,
                         "postalCode": order.additionalInfo.sender_zipcode,
@@ -164,13 +164,13 @@ const Home = ({sk, additionalInfo, orders}) => {
                         },
                         "address": {
                             "streetLines": [//todo
-                                'street 1'
+                                order.additionalInfo.address,order.additionalInfo.address_opt
 
                             ],
                             "city": order.additionalInfo.city,
                             "postalCode": order.additionalInfo.zipcode,
                             "countryCode": order.additionalInfo.receiver_countryCode,
-                            stateOrProvinceCode:order.additionalInfo.state.toUpperCase()
+                            //stateOrProvinceCode:order.additionalInfo.state.toUpperCase()
 
                         }
                     }
@@ -444,14 +444,14 @@ const createShipment = async (id_token,data, order) => {
     const variables = {
         "shipment": {
             "reference": order.id,
-            "trackingNum": data.transactionId,
+            "trackingNum": data.transactionId + new Date().toISOString(),
             "shipmentMethod": "Air",
             "shipmentType": "PURCHASE",
             "shipmentStatus": "PENDING",
             "pkgCount": order.additionalInfo.requestedPackageLineItems.length,
             "handlingInstructions": "test1234 test1234"
         },
-        "shipmentItems": []
+        //"shipmentItems": []
     }
     return await handleCreateShipment(id_token,variables)
 }
@@ -490,7 +490,7 @@ async function getShipment(id_token,variables) {
         const data = await request(endpoint, SHIPMENT_BY_ORDER, variables, {
             Authorization: `Bearer ${id_token}`, 'Accept-Language': 'en-us',
         });
-        return data.data
+        return data
     } catch (error) {
         console.error('Error updating tenant cart:', error);
         throw error;
