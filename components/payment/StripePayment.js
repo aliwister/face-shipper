@@ -8,7 +8,7 @@ import useUser from "../../lib/useUser";
 
 
 let stripePromise = null;
-export const StripePayment = ({pk, token, setLoading, formRef,price}) => {
+export const StripePayment = ({pk, token, setLoading, formRef,price,once ,onSubmit}) => {
   const [clientSecret, setClientSecret] = useState("");
   const {user} = useUser()
   useEffect( () => {
@@ -53,7 +53,7 @@ export const StripePayment = ({pk, token, setLoading, formRef,price}) => {
           /*
         // @ts-ignore */
           options={options}>
-        <StripeCheckoutForm formRef={formRef} return_url={process.env.HOST_URL+'/payment/callbacks/stripe'} setLoading={setLoading}/>
+        <StripeCheckoutForm once={once} onSubmit={onSubmit} formRef={formRef} return_url={process.env.HOST_URL+'/payment/callbacks/stripe'} setLoading={setLoading}/>
       </Elements>
   );
 }

@@ -76,7 +76,8 @@ function QuoteForm() {
             const data = await axios.post('/api/rates_fedex', body)
             setResults(data)
         } catch (err) {
-            setResults(err.response.data)
+            alert(err?.response?.data)
+            setResults(err?.response?.data)
         } finally {
             setLoading(false)
         }

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 
-const StripeCheckoutForm = ({return_url, setLoading, formRef}) => {
+const StripeCheckoutForm = ({return_url, setLoading, formRef,once ,onSubmit}) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -45,12 +45,17 @@ const StripeCheckoutForm = ({return_url, setLoading, formRef}) => {
   };
   setLoading(false);
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
-      <PaymentElement />
-      {/*<button disabled={!stripe} >سسس</button>*/}
-      {/* Show error message to your customers */}
-      {errorMessage && <div>{errorMessage}</div>}
-    </form>
+      <>
+        <form onSubmit={handleSubmit} ref={formRef}>
+          <PaymentElement />
+          {/*<button disabled={!stripe} >سسس</button>*/}
+          {/* Show error message to your customers */}
+          {errorMessage && <div>{errorMessage}</div>}
+        </form>
+        <button disabled={ !stripe} className="bg-blue-500 mt-8 disabled:bg-gray-400 text-white px-4 py-2 rounded" type={"button"} onClick={onSubmit}>Complete Order</button>
+
+      </>
+
   )
 };
 
